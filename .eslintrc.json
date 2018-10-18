@@ -1,0 +1,19 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "strict": "warn",
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "camelcase": ["warn", { "properties": "never" }],
+    "semi": ["warn", "always"],
+    "no-trailing-spaces": "warn",
+    "quotes": ["warn", "single", { "avoidEscape": true }],
+    "no-console": "off"
+  }
+}
