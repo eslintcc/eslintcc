@@ -4,7 +4,7 @@
   "description": "CLI Tools for ESLint Cyclomatic Complexity",
   "repository": "github:IgorNovozhilov/eslintcc",
   "license": "MIT",
-  "main": "source/cli.js",
+  "main": "./source/cli.js",
   "bin": {
     "eslintcc": "eslintcc"
   },
