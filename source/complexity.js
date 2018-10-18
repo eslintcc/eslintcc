@@ -3,13 +3,16 @@
 const { CLIEngine } = require('eslint');
 
 const { purifyESLintConfigRules } = require('./lib/config');
+const { patchComplexityRule } = require('./lib/complexity-rule');
 
 const defaultComplexity = 0;
-const complexityRE = /.*complexity of (\d+)..*/;
 
 
 // Setup hook for cleaning user-defined rules, because used only complexity rule
 purifyESLintConfigRules();
+
+// Patch a cyclomatic complexity rule for more usable for analyze
+patchComplexityRule();
 
 
 class Complexity {
@@ -22,10 +25,11 @@ class Complexity {
   static analyzeFileComplexity({ filePath, messages }) {
     const fileComplexity = { filePath, complexity: 0, messages: [] };
     for (const { column, endColumn, endLine, line, message, nodeType } of messages) {
-      const complexityMessage = { column, endColumn, endLine, line, message, nodeType };
-      complexityMessage.complexity = parseInt(message.replace(complexityRE, '$1'));
-      fileComplexity.messages.push(complexityMessage);
-      fileComplexity.complexity += complexityMessage.complexity;
+      const { name, complexity, ruleMessage } = JSON.parse(message);
+      const complexityData = { column, endColumn, endLine, line, nodeType, name, complexity, ruleMessage };
+      complexityData.complexity = parseInt(complexityData.complexity);
+      fileComplexity.messages.push(complexityData);
+      fileComplexity.complexity += complexityData.complexity;
     }
     return fileComplexity;
   }
