@@ -1,2 +1,3 @@
-# eslintcc
-CLI Tools for ESLint Cyclomatic Complexity
+# ESLint Cyclomatic Complexity Tool
+
+ESLintCC is a JavaScript tool that computes cyclomatic complexity by using ESLint

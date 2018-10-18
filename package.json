@@ -1,7 +1,7 @@
 {
   "name": "eslintcc",
   "version": "0.0.0-pre.0",
-  "description": "CLI Tools for ESLint Cyclomatic Complexity",
+  "description": "ESLintCC is a JavaScript tool that computes cyclomatic complexity by using ESLint",
   "repository": "github:IgorNovozhilov/eslintcc",
   "license": "MIT",
   "main": "./source/cli.js",
