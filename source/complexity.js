@@ -2,18 +2,21 @@
 
 const { CLIEngine } = require('eslint');
 
-const useEslintrc = false;
+const { purifyESLintConfigRules } = require('./lib/config');
+
 const defaultComplexity = 0;
 const complexityRE = /.*complexity of (\d+)..*/;
+
+
+// Setup hook for cleaning user-defined rules, because used only complexity rule
+purifyESLintConfigRules();
 
 
 class Complexity {
 
   constructor({ complexity = defaultComplexity } = {}) {
-    // TODO: Нужен простой поиск файла, без загрузки, иначе падает поиск модулей из опции extends
-    const { parser, parserOptions } = new CLIEngine().getConfigForFile();
     const rules = { complexity: ['error', complexity] };
-    this.cli = new CLIEngine({ parser, parserOptions, useEslintrc, rules });
+    this.cli = new CLIEngine({ rules });
   }
 
   static analyzeFileComplexity({ filePath, messages }) {
