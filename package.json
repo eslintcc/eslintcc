@@ -11,5 +11,8 @@
   "files": [
     "source",
     "eslintcc"
-  ]
+  ],
+  "dependencies": {
+    "eslint": "^5.7.0"
+  }
 }
