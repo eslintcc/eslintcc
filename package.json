@@ -2,6 +2,13 @@
   "name": "eslintcc",
   "version": "0.0.0-pre.1",
   "description": "ESLintCC is a ECMAScript/JavaScript tool that computes cyclomatic complexity by using ESLint",
+  "keywords": [
+    "eslint",
+    "javascript",
+    "linter",
+    "static-code-analysis",
+    "cyclomatic-complexity"
+  ],
   "repository": "github:IgorNovozhilov/eslintcc",
   "license": "MIT",
   "main": "./source/cli.js",
