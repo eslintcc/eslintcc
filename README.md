@@ -6,6 +6,11 @@
 > ESLint calculates cyclomatic complexity,
 > while this tool only collects a report based on his [complexity rule messages][eslint_rule]
 
+## Installation and Usage
+
+> Requirements, principles of local and global installation and usage
+>   are the same as [ESLint Installation and Usage][eslint_usage]
+
 * * *
 
 **...while in development... :relaxed:**
@@ -17,3 +22,5 @@
 [eslint_npm]: https://www.npmjs.com/package/eslint
 
 [eslint_rule]: https://eslint.org/docs/rules/complexity
+
+[eslint_usage]: https://github.com/eslint/eslint#installation-and-usage
