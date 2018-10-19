@@ -1,6 +1,6 @@
 # ESLint Cyclomatic Complexity Tool [![npm][npm_img]][npm_url]
 
-ESLintCC is a JavaScript tool that computes cyclomatic complexity by using ESLint
+ESLintCC is a ECMAScript/JavaScript tool that computes cyclomatic complexity by using ESLint
 
 > While in development :relaxed:
 
