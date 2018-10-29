@@ -4,7 +4,10 @@
     "type": "node",
     "request": "launch",
     "name": "Self Complexity",
-    "program": "${workspaceFolder}/source/cli.js"
+    "program": "${workspaceFolder}/source/cli.js",
+    "args": [
+      "."
+    ]
   }, {
     "type": "node",
     "request": "launch",
@@ -12,7 +15,8 @@
     "program": "${workspaceFolder}/source/cli.js",
     "args": [
       "-gt",
-      "3"
+      "3",
+      "."
     ]
   }]
 }

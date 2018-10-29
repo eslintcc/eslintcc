@@ -1,17 +1,24 @@
 'use strict';
 
+const { getProcessArgs } = require('@ndk/env/args');
+
 const { Complexity } = require('./complexity');
 const { ReportLogger } = require('./logging');
 
-
-function parseArgs() {
-  const options = {};
-  const args = process.argv.slice(2);
-  const gt = parseInt(args[args.indexOf('-gt') + 1]);
-  if (!isNaN(gt)) {
-    options.complexity = gt;
+const processArgs = getProcessArgs({
+  types: {
+    gt: 'Option'
   }
-  return options;
-}
+});
 
-new ReportLogger(new Complexity(parseArgs()).executeOnFiles(['.'])).log();
+
+
+if (processArgs.argv.length > 0) {
+  const complexity = new Complexity({
+    complexity: processArgs.options.gt ? parseInt(processArgs.options.gt) : undefined
+  });
+  const report = complexity.executeOnFiles(processArgs.argv);
+  new ReportLogger(report).log();
+} else {
+  console.log(require('./help'));
+}
