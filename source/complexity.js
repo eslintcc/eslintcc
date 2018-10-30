@@ -4,7 +4,7 @@ const { CLIEngine } = require('eslint');
 
 const { purifyESLintConfigRules } = require('./lib/config');
 const { patchComplexityRule } = require('./lib/complexity-rule');
-const { resolveRanks, resolveRankLabel } = require('./lib/rank');
+const { Ranks } = require('./lib/rank');
 
 
 // Setup hook for cleaning user-defined rules, because used only complexity rule
@@ -21,7 +21,7 @@ class Complexity {
     lessThan = Infinity,
     ranks = null
   } = {}) {
-    this.ranks = resolveRanks(ranks);
+    this.ranks = new Ranks(ranks);
     this.options = {
       greaterThan: this.ranks[String(greaterThan).toUpperCase()] || Number(greaterThan),
       lessThan: this.ranks[String(lessThan).toUpperCase()] || Number(lessThan),
@@ -36,7 +36,7 @@ class Complexity {
       const { name, complexity, ruleMessage } = JSON.parse(message);
       const complexityData = { column, endColumn, endLine, line, nodeType, name, complexity, ruleMessage };
       complexityData.complexity = parseInt(complexityData.complexity);
-      complexityData.rank = resolveRankLabel(complexityData.complexity, this.ranks);
+      complexityData.rank = this.ranks.getName(complexityData.complexity);
       fileComplexity.messages.push(complexityData);
       fileComplexity.complexity += complexityData.complexity;
     }
