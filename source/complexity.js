@@ -6,8 +6,6 @@ const { purifyESLintConfigRules } = require('./lib/config');
 const { patchComplexityRule } = require('./lib/complexity-rule');
 const { resolveRanks, resolveRankLabel } = require('./lib/rank');
 
-const defaultComplexity = 0;
-
 
 // Setup hook for cleaning user-defined rules, because used only complexity rule
 purifyESLintConfigRules();
@@ -18,9 +16,17 @@ patchComplexityRule();
 
 class Complexity {
 
-  constructor({ complexity = defaultComplexity, ranks = null } = {}) {
+  constructor({
+    greaterThan = 0,
+    lessThan = Infinity,
+    ranks = null
+  } = {}) {
     this.ranks = resolveRanks(ranks);
-    const rules = { complexity: ['error', complexity] };
+    this.options = {
+      greaterThan: this.ranks[String(greaterThan).toUpperCase()] || Number(greaterThan),
+      lessThan: this.ranks[String(lessThan).toUpperCase()] || Number(lessThan),
+    };
+    const rules = { complexity: ['error', this.options.greaterThan] };
     this.cli = new CLIEngine({ rules });
   }
 
