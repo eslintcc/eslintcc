@@ -2,6 +2,7 @@
 
 const { createEmptyConfig } = require('eslint/lib/config/config-ops');
 const validator = require('eslint/lib/config/config-validator');
+const complexity = require('eslint/lib/rules/complexity');
 
 
 function __purifyConfig(config) {
@@ -34,4 +35,24 @@ function purifyESLintConfigRules() {
 }
 
 
-exports.purifyESLintConfigRules = purifyESLintConfigRules;
+/**
+ * ESLint does not return additional data, for analyzing cyclomatic complexity, defined by the rule.
+ *  To make them easier to analyze, we will redefine the message in JSON format,
+ *  and then it will parse in "Complexity" class.
+ */
+function patchComplexityRule() {
+  complexity.meta.messages.complex = JSON.stringify({
+    name: '{{name}}',
+    complexity: '{{complexity}}',
+    ruleMessage: complexity.meta.messages.complex
+  });
+}
+
+
+function patchingESLint() {
+  purifyESLintConfigRules();
+  patchComplexityRule();
+}
+
+
+exports.patchingESLint = patchingESLint;

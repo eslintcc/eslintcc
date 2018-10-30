@@ -2,16 +2,12 @@
 
 const { CLIEngine } = require('eslint');
 
-const { purifyESLintConfigRules } = require('./lib/config');
-const { patchComplexityRule } = require('./lib/complexity-rule');
+const { patchingESLint } = require('./lib/eslint-patches');
 const { Ranks } = require('./lib/rank');
 
 
-// Setup hook for cleaning user-defined rules, because used only complexity rule
-purifyESLintConfigRules();
-
-// Patch a cyclomatic complexity rule for more usable for analyze
-patchComplexityRule();
+// Patching ESLint behavior, for use as a metrics generator
+patchingESLint();
 
 
 class Complexity {
