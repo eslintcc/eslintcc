@@ -12,6 +12,12 @@ patchingESLint();
 
 class Complexity {
 
+  get complexityRules() {
+    return {
+      complexity: ['error', 0]
+    };
+  }
+
   constructor({
     greaterThan = 0,
     lessThan = Infinity,
@@ -22,8 +28,14 @@ class Complexity {
       greaterThan: this.ranks[String(greaterThan).toUpperCase()] || Number(greaterThan),
       lessThan: this.ranks[String(lessThan).toUpperCase()] || Number(lessThan),
     };
-    const rules = { complexity: ['error', this.options.greaterThan] };
-    this.cli = new CLIEngine({ rules });
+    this.cli = new CLIEngine({ rules: this.complexityRules });
+    this.originalVerify = this.cli.linter.verify.bind(this.cli.linter);
+    this.cli.linter.verify = this.verify.bind(this);
+  }
+
+  verify(textOrSourceCode, config, filenameOrOptions) {
+    const messages = this.originalVerify(textOrSourceCode, config, filenameOrOptions);
+    return messages;
   }
 
   analyzeFileComplexity({ filePath, messages }) {
