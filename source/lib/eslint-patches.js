@@ -1,12 +1,26 @@
 'use strict';
 
+const EventEmitter = require('events');
+
+const uuidv4 = require('uuid/v4');
+const { CLIEngine } = require('eslint');
 const { createEmptyConfig } = require('eslint/lib/config/config-ops');
+
+// Config validator to patched config object
 const validator = require('eslint/lib/config/config-validator');
+
+// Rules to patched
 const complexity = require('eslint/lib/rules/complexity');
+const maxDepth = require('eslint/lib/rules/max-depth');
 
 
+const runtimeInstanceCache = {};
+
+
+/**
+ * Clear all options that affect the rules
+ */
 function __purifyConfig(config) {
-  // Clear all options that affect the rules
   const empty = createEmptyConfig();
   config.globals = empty.globals;
   config.env = empty.env;
@@ -16,6 +30,7 @@ function __purifyConfig(config) {
   config.overrides = empty.overrides;
   return config;
 }
+
 
 /**
  * To implement the hook, the rule validation function is used,
@@ -29,30 +44,97 @@ function __purifyConfig(config) {
  *  will lead to the fact that there are errors when loading the dependency modules
  *  that are not installed locally for "eslintcc".
  */
-function purifyESLintConfigRules() {
+function __purifyESLintConfigRules() {
   const originValidate = validator.validate.bind(validator);
   validator.validate = (config, ...args) => originValidate(__purifyConfig(config), ...args);
 }
 
 
 /**
- * ESLint does not return additional data, for analyzing cyclomatic complexity, defined by the rule.
- *  To make them easier to analyze, we will redefine the message in JSON format,
- *  and then it will parse in "Complexity" class.
+ * Allows you to override the properties of the object on which the method is applied "Object.freeze".
+ * Used to intercept messages in a method "context.report" inside a "Linter" and "rule.create",
+ *  which are defined in depth of ESLint logic
  */
-function patchComplexityRule() {
-  complexity.meta.messages.complex = JSON.stringify({
-    name: '{{name}}',
-    complexity: '{{complexity}}',
-    ruleMessage: complexity.meta.messages.complex
+function __antifreeze(frozen, properties) {
+  return new Proxy(properties, {
+    get(properties, name) {
+      return properties[name] || frozen[name];
+    }
   });
 }
 
 
+/**
+ * ESLint does not return additional data, for analyzing messages, defined by the rules.
+ * To make them easier to analyze, we will redefine the message handler,
+ *  and then message descriptor will parse in "ComplexityReport" class.
+ */
+function __patchComplexityRule(rule) {
+  rule.create = ((originalCreate) => (context) => {
+    return originalCreate(__antifreeze(context, {
+      report(message) {
+        const uuid = context.settings.PatchedCLIEngineInstanceUUID;
+        const cli = runtimeInstanceCache[uuid];
+        const fileName = context.getFilename();
+        cli.events.emit('pushMessage', fileName, context.id, message);
+        return context.report(message);
+      }
+    }));
+  })(rule.create.bind(rule));
+}
+
+
+/**
+ * Run all ESLint complexity rules patches
+ */
+function __patchComplexityRules() {
+  __patchComplexityRule(complexity);
+  __patchComplexityRule(maxDepth);
+}
+
+
+/**
+ * Run all ESLint behavior patches
+ */
 function patchingESLint() {
-  purifyESLintConfigRules();
-  patchComplexityRule();
+  __purifyESLintConfigRules();
+  __patchComplexityRules();
+}
+
+
+/**
+ * Extend the class "CLIEngine" introducing the logic of message interception and work with the event model
+ */
+class PatchedCLIEngine extends CLIEngine {
+
+  constructor(options) {
+    const uuid = uuidv4();
+    options.baseConfig = options.baseConfig || {};
+    options.baseConfig.settings = options.baseConfig.settings || {};
+    options.baseConfig.settings.PatchedCLIEngineInstanceUUID = uuid;
+    super(options);
+    runtimeInstanceCache[uuid] = this;
+    this.runtimeInstanceCache = uuid;
+    this.events = new EventEmitter();
+    this.originalLinterVerify = this.linter.verify.bind(this.linter);
+    this.linter.verify = this.patchingLinterVerify.bind(this);
+  }
+
+  patchingLinterVerify(source, config, options) {
+    this.events.emit('beforeFileVerify', options.filename);
+    const messages = this.originalLinterVerify(source, config, options);
+    this.events.emit('afterFileVerify', options.filename, messages);
+    return messages;
+  }
+
+  destroy() {
+    delete runtimeInstanceCache[this.runtimeInstanceCache];
+    delete this.linter.verify;
+    delete this.originalLinterVerify;
+  }
+
 }
 
 
 exports.patchingESLint = patchingESLint;
+exports.PatchedCLIEngine = PatchedCLIEngine;
