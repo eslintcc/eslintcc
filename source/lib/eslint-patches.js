@@ -12,9 +12,12 @@ const validator = require('eslint/lib/config/config-validator');
 // Rules to patched
 const complexity = require('eslint/lib/rules/complexity');
 const maxDepth = require('eslint/lib/rules/max-depth');
-
-
-const runtimeInstanceCache = {};
+const maxLen = require('eslint/lib/rules/max-len');
+const maxLines = require('eslint/lib/rules/max-lines');
+const maxLinesPerFunction = require('eslint/lib/rules/max-lines-per-function');
+const maxNestedCallbacks = require('eslint/lib/rules/max-nested-callbacks');
+const maxParams = require('eslint/lib/rules/max-params');
+const maxStatements = require('eslint/lib/rules/max-statements');
 
 
 /**
@@ -65,6 +68,13 @@ function __antifreeze(frozen, properties) {
 
 
 /**
+ * The report generator in ESLint not as not associated with a class CLIEngine,
+ *  so linked them via cache by UUID in settings for rule.
+ */
+const __runtimeInstanceCache = {};
+
+
+/**
  * ESLint does not return additional data, for analyzing messages, defined by the rules.
  * To make them easier to analyze, we will redefine the message handler,
  *  and then message descriptor will parse in "ComplexityReport" class.
@@ -74,9 +84,9 @@ function __patchComplexityRule(rule) {
     return originalCreate(__antifreeze(context, {
       report(message) {
         const uuid = context.settings.PatchedCLIEngineInstanceUUID;
-        const cli = runtimeInstanceCache[uuid];
+        const egine = __runtimeInstanceCache[uuid];
         const fileName = context.getFilename();
-        cli.events.emit('pushMessage', fileName, context.id, message);
+        egine.events.emit('pushMessage', fileName, context.id, message);
         return context.report(message);
       }
     }));
@@ -90,6 +100,12 @@ function __patchComplexityRule(rule) {
 function __patchComplexityRules() {
   __patchComplexityRule(complexity);
   __patchComplexityRule(maxDepth);
+  __patchComplexityRule(maxLen);
+  __patchComplexityRule(maxLines);
+  __patchComplexityRule(maxLinesPerFunction);
+  __patchComplexityRule(maxNestedCallbacks);
+  __patchComplexityRule(maxParams);
+  __patchComplexityRule(maxStatements);
 }
 
 
@@ -113,8 +129,8 @@ class PatchedCLIEngine extends CLIEngine {
     options.baseConfig.settings = options.baseConfig.settings || {};
     options.baseConfig.settings.PatchedCLIEngineInstanceUUID = uuid;
     super(options);
-    runtimeInstanceCache[uuid] = this;
-    this.runtimeInstanceCache = uuid;
+    __runtimeInstanceCache[uuid] = this;
+    this.uuid = uuid;
     this.events = new EventEmitter();
     this.originalLinterVerify = this.linter.verify.bind(this.linter);
     this.linter.verify = this.patchingLinterVerify.bind(this);
@@ -128,7 +144,7 @@ class PatchedCLIEngine extends CLIEngine {
   }
 
   destroy() {
-    delete runtimeInstanceCache[this.runtimeInstanceCache];
+    delete __runtimeInstanceCache[this.uuid];
     delete this.linter.verify;
     delete this.originalLinterVerify;
   }
