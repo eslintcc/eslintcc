@@ -18,9 +18,14 @@ class ComplexityFileReportMessage {
   }
 
   static resolveNodeName(node, recursiveUp = false) {
+    if (node === null) {
+      return null;
+    }
     const parent = node.parent;
-    const nameWithParent = (name, separator = ', ') =>
-      parent.type === 'Program' ? name : (this.resolveNodeName(parent, true) + separator + name);
+    const nameWithParent = (name, separator = ', ') => {
+      const parentNamr = this.resolveNodeName(parent, true);
+      return parentNamr ? (parentNamr + separator + name) : name;
+    };
     switch (node.type) {
       case 'FunctionDeclaration':
         return nameWithParent('function ' + node.id.name);
@@ -36,12 +41,12 @@ class ComplexityFileReportMessage {
         }
         return this.resolveNodeName(parent, true);
       case 'ArrowFunctionExpression':
-        return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.end.line}`);
+        return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
       default:
         if (recursiveUp || node.loc.start.line === parent.loc.start.line) {
           return this.resolveNodeName(parent, true);
         } else {
-          return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.end.line}`);
+          return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
         }
     }
   }
