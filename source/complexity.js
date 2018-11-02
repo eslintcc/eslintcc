@@ -8,64 +8,67 @@ const { Ranks } = require('./lib/rank');
 patchingESLint();
 
 
-class ComplexityFileNodeReport {
+class ComplexityFileReportMessage {
 
-  static getID(node) {
-    return node.loc.start.line + ':' + node.loc.end.line;
+  static getID(messageType, node) {
+    const view = messageType.view;
+    const start = `${node.loc.start.line}:${node.loc.start.column}`;
+    const end = `${node.loc.end.line}:${node.loc.end.column}`;
+    return `${view}/${start}/${end}`;
   }
 
-  static resolveNodeName(node) {
+  static resolveNodeName(node, recursiveUp = false) {
     const parent = node.parent;
+    const nameWithParent = (name, separator = ', ') =>
+      parent.type === 'Program' ? name : (this.resolveNodeName(parent, true) + separator + name);
     switch (node.type) {
-      case 'FunctionExpression':
-      case 'ClassBody':
-      case 'AssignmentExpression':
-      case 'ExpressionStatement':
-      case 'BlockStatement':
-      case 'ObjectExpression':
-      case 'NewExpression':
-      case 'ReturnStatement':
-      case 'CallExpression':
-        return this.resolveNodeName(parent);
       case 'FunctionDeclaration':
-        if (parent.type === 'Program') {
-          return 'function ' + node.id.name;
-        }
-        return this.resolveNodeName(parent) + ', function ' + node.id.name;
-      case 'ArrowFunctionExpression':
-        return this.resolveNodeName(parent) + ', arrow function';
+        return nameWithParent('function ' + node.id.name);
       case 'MethodDefinition':
-        return this.resolveNodeName(parent) + (node.static ? '.' : '#') + node.key.name;
+        return nameWithParent(node.key.name, node.static ? '.' : '#');
       case 'ClassDeclaration':
-        if (parent.type === 'Program') {
-          return 'class ' + node.id.name;
-        }
-        return this.resolveNodeName(parent) + ', class ' + node.id.name;
+        return nameWithParent('class ' + node.id.name);
+      case 'VariableDeclarator':
+        return nameWithParent('variable ' + node.id.name);
       case 'Property':
         if (node.method) {
-          return this.resolveNodeName(parent) + ', function ' + node.key.name;
+          return nameWithParent('function ' + node.key.name);
         }
-        return this.resolveNodeName(parent);
+        return this.resolveNodeName(parent, true);
+      case 'ArrowFunctionExpression':
+        return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.end.line}`);
       default:
-        return 'anonymous';
+        if (recursiveUp || node.loc.start.line === parent.loc.start.line) {
+          return this.resolveNodeName(parent, true);
+        } else {
+          return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.end.line}`);
+        }
     }
   }
 
-  constructor(node) {
-    this.startLine = node.loc.start.line;
-    this.endLine = node.loc.end.line;
+  static['resolveValue:complexity'](data) {
+    return data.complexity;
+  }
+
+  static['resolveValue:max-depth'](data) {
+    return data.depth;
+  }
+
+  static['resolveValue:max-nested-callbacks'](data) {
+    return data.num;
+  }
+
+  constructor(messageID, messageType, node) {
+    this.id = messageID;
+    this.view = messageType.view;
+    this.loc = node.loc;
     this.namePath = this.constructor.resolveNodeName(node);
     this.complexity = {};
   }
 
-  pushData(ruleId, data) {
-    switch (ruleId) {
-      case 'complexity':
-        this.complexity[ruleId] = data.complexity;
-        break;
-      default:
-        throw new Error(`Unknown rule ID: ${ruleId}`);
-    }
+  pushData(ruleId, messageType, data) {
+    const value = this.constructor[`resolveValue:${ruleId}`](data);
+    this[messageType.type][ruleId] = value;
   }
 
 }
@@ -75,19 +78,31 @@ class ComplexityFileReport {
 
   constructor(fileName) {
     this.fileName = fileName;
-    this.nodes = new Map();
+    this.messagesViewsMap = { function: {}, block: {} };
+    this.messagesMap = {};
+    this.messages = [];
   }
 
-  pushNodeMessage(ruleId, message) {
-    const nodeID = ComplexityFileNodeReport.getID(message.node);
-    let node = null;
-    if (this.nodes.has(nodeID)) {
-      node = this.nodes.get(nodeID);
-    } else {
-      node = new ComplexityFileNodeReport(message.node);
-      this.nodes.set(nodeID, node);
-    }
-    node.pushData(ruleId, message.data);
+  toJSON() {
+    return {
+      fileName: this.fileName,
+      messages: this.messages
+    };
+  }
+
+  __pushMessage(messageID, messageType, node) {
+    const message = new ComplexityFileReportMessage(messageID, messageType, node);
+    this.messagesViewsMap[messageType.view][messageID] = message;
+    this.messagesMap[messageID] = message;
+    this.messages.push(message);
+    return message;
+  }
+
+  pushMessage(ruleId, messageType, rawMessage) {
+    const messageID = ComplexityFileReportMessage.getID(messageType, rawMessage.node);
+    const message = this.messagesMap[messageID] ||
+      this.__pushMessage(messageID, messageType, rawMessage.node);
+    message.pushData(ruleId, messageType, rawMessage.data);
   }
 
 }
@@ -95,30 +110,44 @@ class ComplexityFileReport {
 
 class ComplexityReport {
 
-  static get nodeRulesIds() {
-    return ['complexity'];
+  static get ruleTypes() {
+    return {
+      'complexity': { type: 'complexity', view: 'function' },
+      'max-depth': { type: 'complexity', view: 'block' },
+      'max-nested-callbacks': { type: 'complexity', view: 'function' }
+    };
   }
 
   constructor() {
-    this.nodeRulesIds = this.constructor.nodeRulesIds;
-    this.files = {};
+    this.ruleTypes = this.constructor.ruleTypes;
+    this.filesMap = {};
+    this.files = [];
+  }
+
+  toJSON() {
+    return {
+      files: this.files
+    };
   }
 
   pushFile(fileName) {
-    this.files[fileName] = new ComplexityFileReport(fileName);
+    const fileInstance = new ComplexityFileReport(fileName);
+    this.filesMap[fileName] = fileInstance;
+    this.files.push(fileInstance);
   }
 
   pushMessage(fileName, ruleId, message) {
-    const fileReport = this.files[fileName];
-    if (this.nodeRulesIds.includes(ruleId)) {
-      fileReport.pushNodeMessage(ruleId, message);
-    } else {
+    const fileReport = this.filesMap[fileName];
+    const messageType = this.ruleTypes[ruleId];
+    if (typeof messageType === 'undefined') {
       throw new Error(`Unknown rule ID: ${ruleId}`);
+    } else {
+      fileReport.pushMessage(ruleId, messageType, message);
     }
   }
 
   finishFile(fileName) {
-    console.log('finishFile', fileName);
+    console.log('finishFile', JSON.stringify(this.filesMap[fileName], null, '\t'));
   }
 
 }
@@ -129,11 +158,11 @@ class Complexity {
   get complexityRules() {
     return {
       'complexity': ['error', 0],
-      // 'max-depth': ['error', 0],
+      'max-depth': ['error', 0],
       // 'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
       // 'max-lines': ['error', 0],
       // 'max-lines-per-function': ['error', { max: 0 }],
-      // 'max-nested-callbacks': ['error', 0],
+      'max-nested-callbacks': ['error', 0],
       // 'max-params': ['error', 0],
       // 'max-statements': ['error', 0]
     };
