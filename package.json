@@ -20,7 +20,7 @@
     "eslintcc"
   ],
   "dependencies": {
-    "eslint": "^5.7.0",
+    "eslint": "^5.8.0",
     "@ndk/env": "^0.0.3",
     "uuid": "^3.3.2"
   }
