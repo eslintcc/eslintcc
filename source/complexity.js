@@ -30,7 +30,7 @@ class ComplexityFileReportMessage {
       case 'FunctionDeclaration':
         return nameWithParent('function ' + node.id.name);
       case 'MethodDefinition':
-        return nameWithParent(node.key.name, node.static ? '.' : '#');
+        return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
       case 'ClassDeclaration':
         return nameWithParent('class ' + node.id.name);
       case 'VariableDeclarator':
@@ -61,6 +61,10 @@ class ComplexityFileReportMessage {
 
   static['resolveValue:max-nested-callbacks'](data) {
     return data.num;
+  }
+
+  static['resolveValue:max-params'](data) {
+    return data.count;
   }
 
   constructor(messageID, messageType, node) {
@@ -119,7 +123,8 @@ class ComplexityReport {
     return {
       'complexity': { type: 'complexity', view: 'function' },
       'max-depth': { type: 'complexity', view: 'block' },
-      'max-nested-callbacks': { type: 'complexity', view: 'function' }
+      'max-nested-callbacks': { type: 'complexity', view: 'function' },
+      'max-params': { type: 'complexity', view: 'function' }
     };
   }
 
@@ -168,7 +173,7 @@ class Complexity {
       // 'max-lines': ['error', 0],
       // 'max-lines-per-function': ['error', { max: 0 }],
       'max-nested-callbacks': ['error', 0],
-      // 'max-params': ['error', 0],
+      'max-params': ['error', 0],
       // 'max-statements': ['error', 0]
     };
   }
