@@ -57,7 +57,6 @@ class Ranks {
       }
     }
     this.ranks = ranks;
-    Object.assign(this, ranks);
   }
 
   getValue(ruleID, value) {
@@ -66,7 +65,8 @@ class Ranks {
       const rankMaxValue = ranks[rankLabels[i]];
       if (value <= rankMaxValue) {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
-        return i + (value - prevMaxValue) / (rankMaxValue - prevMaxValue);
+        const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
+        return i + (value - prevMaxValue) / range;
       }
     }
   }
