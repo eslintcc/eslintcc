@@ -62,11 +62,15 @@ class Ranks {
   getValue(ruleID, value) {
     const ranks = this.ranks[ruleID];
     for (let i = 0; i < rankLabels.length; i++) {
-      const rankMaxValue = ranks[rankLabels[i]];
+      const rankLabel = rankLabels[i];
+      const rankMaxValue = ranks[rankLabel];
       if (value <= rankMaxValue) {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
-        return i + (value - prevMaxValue) / range;
+        return {
+          rankValue: i + (value - prevMaxValue) / range,
+          rankLabel: rankLabel
+        };
       }
     }
   }
