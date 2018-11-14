@@ -7,10 +7,14 @@ const { ReportLogger } = require('./logging');
 
 const processArgs = getProcessArgs({
   types: {
+    format: 'Option',
+    showRules: 'Flag',
     greaterThan: 'Option',
     lessThan: 'Option'
   },
   aliases: {
+    format: 'f',
+    showRules: ['show-rules', 'sr'],
     greaterThan: ['greater-than', 'gt'],
     lessThan: ['less-than', 'lt']
   }
@@ -18,9 +22,10 @@ const processArgs = getProcessArgs({
 
 
 if (processArgs.argv.length > 0) {
-  const complexity = new Complexity(Object.assign({}, processArgs.flags, processArgs.options));
-  const report = complexity.executeOnFiles(processArgs.argv);
-  new ReportLogger(report).log();
+  const options = Object.assign({}, processArgs.flags, processArgs.options);
+  const complexity = new Complexity(options);
+  new ReportLogger(complexity, options);
+  complexity.executeOnFiles(processArgs.argv);
 } else {
   console.log(require('./help'));
 }

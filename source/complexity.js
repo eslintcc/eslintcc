@@ -1,5 +1,7 @@
 'use strict';
 
+const EventEmitter = require('events');
+
 const { patchingESLint, PatchedCLIEngine } = require('./lib/eslint-patches');
 const { Ranks } = require('./lib/rank');
 
@@ -75,8 +77,10 @@ class ComplexityFileReportMessage {
     this.namePath = this.constructor.resolveNodeName(messageNode);
     this.complexityRules = {};
     this.complexityRanks = {};
-    this.maxComplexityValue = 0;
-    this.maxComplexityLabel = null;
+    this.maxRuleValue = 0;
+    this.maxRuleId = null;
+    this.maxValue = 0;
+    this.maxLabel = null;
   }
 
   toJSON() {
@@ -87,8 +91,8 @@ class ComplexityFileReportMessage {
       namePath: this.namePath,
       complexityRules: this.complexityRules,
       complexityRanks: this.complexityRanks,
-      maxComplexityValue: this.maxComplexityValue,
-      maxComplexityLabel: this.maxComplexityLabel
+      maxValue: this.maxValue,
+      maxLabel: this.maxLabel
     };
   }
 
@@ -98,9 +102,11 @@ class ComplexityFileReportMessage {
     this[`${messageType.type}Rules`][ruleId] = value;
     this[`${messageType.type}Ranks`][`${ruleId}-value`] = rankValue;
     this[`${messageType.type}Ranks`][`${ruleId}-label`] = rankLabel;
-    if (rankValue > this.maxComplexityValue) {
-      this.maxComplexityValue = rankValue;
-      this.maxComplexityLabel = rankLabel;
+    if (rankValue > this.maxValue) {
+      this.maxRuleValue = value;
+      this.maxRuleId = ruleId;
+      this.maxValue = rankValue;
+      this.maxLabel = rankLabel;
     }
   }
 
@@ -162,6 +168,7 @@ class ComplexityReport {
     this.ruleTypes = this.constructor.ruleTypes;
     this.filesMap = {};
     this.files = [];
+    this.events = new EventEmitter();
   }
 
   toJSON() {
@@ -187,7 +194,7 @@ class ComplexityReport {
   }
 
   finishFile(fileName) {
-    console.log('finishFile', JSON.stringify(this.filesMap[fileName], null, '\t'));
+    this.events.emit('fileFinish', this.filesMap[fileName]);
   }
 
 }
@@ -218,6 +225,7 @@ class Complexity {
       greaterThan: this.ranks[String(greaterThan).toUpperCase()] || Number(greaterThan),
       lessThan: this.ranks[String(lessThan).toUpperCase()] || Number(lessThan),
     };
+    this.events = new EventEmitter();
   }
 
   executeOnFiles(patterns) {
@@ -227,17 +235,11 @@ class Complexity {
       .on('beforeFileVerify', report.pushFile.bind(report))
       .on('pushMessage', report.pushMessage.bind(report))
       .on('afterFileVerify', report.finishFile.bind(report));
+    report.events.on('fileFinish', (...args) => this.events.emit('fileFinish', ...args));
     engine.executeOnFiles(patterns);
     engine.destroy();
+    this.events.emit('finish', report);
     return report;
-    // const report = this.cli.executeOnFiles(patterns).results;
-    // const reportComplexity = { cwd: process.cwd(), complexity: 0, results: [] };
-    // for (const fileReport of report) {
-    //   const fileComplexity = this.analyzeFileComplexity(fileReport);
-    //   reportComplexity.results.push(fileComplexity);
-    //   reportComplexity.complexity += fileComplexity.complexity;
-    // }
-    // return reportComplexity;
   }
 
 }

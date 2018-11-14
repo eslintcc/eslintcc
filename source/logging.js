@@ -4,32 +4,41 @@ const { relative } = require('path');
 
 class ReportLogger {
 
-  constructor(report) {
-    this.report = report;
+  constructor(complexity, {
+    cwd = process.cwd(),
+    format = 'text',
+    showRules = false
+  }) {
+    this.complexity = complexity;
+    this.options = { cwd, format, showRules };
+    this.complexity.events
+      .on('fileFinish', this.fileFinish.bind(this))
+      .on('finish', this.finish.bind(this));
   }
 
-  getFileLineByIndex(fileIndex) {
-    const file = this.report.results[fileIndex];
-    const text = relative(this.report.cwd, file.filePath);
-    return text;
-  }
-
-  getLineByIndex(fileIndex, lineIndex) {
-    const { rank, line, column, ruleMessage } = this.report.results[fileIndex].messages[lineIndex];
-    const text = `  ${rank} ${line}:${column} ${ruleMessage}`;
-    return text;
-  }
-
-  log() {
-    const results = this.report.results;
-    for (let fileIndex = 0; fileIndex < results.length; fileIndex++) {
-      const messages = results[fileIndex].messages;
-      if (messages.length > 0) {
-        console.log(this.getFileLineByIndex(fileIndex));
-        for (let lineIndex = 0; lineIndex < messages.length; lineIndex++) {
-          console.log(this.getLineByIndex(fileIndex, lineIndex));
+  fileFinish(fileReport) {
+    if (this.options.format === 'text' && fileReport.messages.length > 0) {
+      console.log(relative(this.options.cwd, fileReport.fileName));
+      for (let lineIndex = 0; lineIndex < fileReport.messages.length; lineIndex++) {
+        const {
+          maxLabel,
+          loc: { start: { line, column } },
+          namePath,
+          maxRuleId,
+          maxRuleValue
+        } = fileReport.messages[lineIndex];
+        let text = `  ${maxLabel} ${line}:${column} ${namePath}`;
+        if (this.options.showRules) {
+          text += ` (${maxRuleId} = ${maxRuleValue})`;
         }
+        console.log(text);
       }
+    }
+  }
+
+  finish(report) {
+    if (this.options.format === 'json') {
+      console.log(JSON.stringify(report));
     }
   }
 
