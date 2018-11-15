@@ -29,8 +29,9 @@ class ComplexityFileReportMessage {
       return parentNamr ? (parentNamr + separator + name) : name;
     };
     switch (node.type) {
+      case 'FunctionExpression':
       case 'FunctionDeclaration':
-        return nameWithParent('function ' + node.id.name);
+        return nameWithParent('function ' + ((node.id || {}).name || 'anonymous'));
       case 'MethodDefinition':
         return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
       case 'ClassDeclaration':
