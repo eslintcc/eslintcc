@@ -1,6 +1,14 @@
 'use strict';
 
 const rankLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
+const rankLabelsMaxValue = {
+  A: 1,
+  B: 2,
+  C: 3,
+  D: 4,
+  E: 5,
+  F: Infinity
+};
 
 
 class Ranks {
@@ -57,6 +65,15 @@ class Ranks {
       }
     }
     this.ranks = ranks;
+  }
+
+  getLabelMaxValue(label) {
+    const maxValue = rankLabelsMaxValue[String(label).toUpperCase()] || Number(label);
+    if (isNaN(maxValue)) {
+      return null;
+    } else {
+      return maxValue;
+    }
   }
 
   getValue(ruleID, value) {

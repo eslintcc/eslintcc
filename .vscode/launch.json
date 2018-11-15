@@ -11,11 +11,11 @@
   }, {
     "type": "node",
     "request": "launch",
-    "name": "Self Complexity >3",
+    "name": "Self Complexity > C",
     "program": "${workspaceFolder}/source/cli.js",
     "args": [
       "-gt",
-      "3",
+      "c",
       "."
     ]
   }]

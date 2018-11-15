@@ -216,14 +216,14 @@ class Complexity {
   }
 
   constructor({
-    greaterThan = 0,
-    lessThan = Infinity,
+    greaterThan = undefined,
+    lessThan = undefined,
     ranks = null
   } = {}) {
     this.ranks = new Ranks(ranks);
     this.options = {
-      greaterThan: this.ranks[String(greaterThan).toUpperCase()] || Number(greaterThan),
-      lessThan: this.ranks[String(lessThan).toUpperCase()] || Number(lessThan),
+      greaterThan: this.ranks.getLabelMaxValue(greaterThan),
+      lessThan: this.ranks.getLabelMaxValue(lessThan),
     };
     this.events = new EventEmitter();
   }
