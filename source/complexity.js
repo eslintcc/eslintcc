@@ -25,13 +25,17 @@ class ComplexityFileReportMessage {
     }
     const parent = node.parent;
     const nameWithParent = (name, separator = ', ') => {
-      const parentNamr = this.resolveNodeName(parent, true);
-      return parentNamr ? (parentNamr + separator + name) : name;
+      const parentName = this.resolveNodeName(parent, true);
+      return parentName ? (parentName + separator + name) : name;
     };
     switch (node.type) {
       case 'FunctionExpression':
       case 'FunctionDeclaration':
-        return nameWithParent('function ' + ((node.id || {}).name || 'anonymous'));
+        if (!node.id && (recursiveUp || node.loc.start.line === parent.loc.start.line)) {
+          return this.resolveNodeName(parent, true);
+        } else {
+          return nameWithParent('function ' + ((node.id || {}).name || 'anonymous'));
+        }
       case 'MethodDefinition':
         return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
       case 'ClassDeclaration':
