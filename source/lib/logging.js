@@ -4,6 +4,17 @@ const { relative } = require('path');
 
 class ReportLogger {
 
+  get defaultColors() {
+    return {
+      A: '\x1b[32;1mA\x1b[0m',
+      B: '\x1b[32;1mB\x1b[0m',
+      C: '\x1b[33;1mC\x1b[0m',
+      D: '\x1b[33;1mD\x1b[0m',
+      E: '\x1b[31;1mE\x1b[0m',
+      F: '\x1b[31;1mF\x1b[0m'
+    };
+  }
+
   constructor(complexity, {
     cwd = process.cwd(),
     format = 'text',
@@ -11,6 +22,7 @@ class ReportLogger {
   }) {
     this.complexity = complexity;
     this.options = { cwd, format, showRules };
+    this.colors = this.defaultColors;
     this.complexity.events
       .on('fileFinish', this.fileFinish.bind(this))
       .on('finish', this.finish.bind(this));
@@ -27,7 +39,7 @@ class ReportLogger {
           maxRuleId,
           maxRuleValue
         } = fileReport.messages[lineIndex];
-        let text = `  ${maxLabel} ${line}:${column} ${namePath}`;
+        let text = `  ${this.colors[maxLabel]} ${line}:${column} ${namePath}`;
         if (this.options.showRules) {
           text += ` (${maxRuleId} = ${maxRuleValue})`;
         }
