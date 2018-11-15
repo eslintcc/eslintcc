@@ -24,11 +24,11 @@ class ReportLogger {
     this.options = { cwd, format, showRules };
     this.colors = this.defaultColors;
     this.complexity.events
-      .on('fileFinish', this.fileFinish.bind(this))
+      .on('finishFile', this.finishFile.bind(this))
       .on('finish', this.finish.bind(this));
   }
 
-  fileFinish(fileReport) {
+  finishFile(fileReport) {
     if (this.options.format === 'text' && fileReport.messages.length > 0) {
       console.log(relative(this.options.cwd, fileReport.fileName));
       for (let lineIndex = 0; lineIndex < fileReport.messages.length; lineIndex++) {

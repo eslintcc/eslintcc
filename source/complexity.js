@@ -194,7 +194,7 @@ class ComplexityReport {
   }
 
   finishFile(fileName) {
-    this.events.emit('fileFinish', this.filesMap[fileName]);
+    this.events.emit('finishFile', this.filesMap[fileName]);
   }
 
 }
@@ -235,7 +235,7 @@ class Complexity {
       .on('beforeFileVerify', report.pushFile.bind(report))
       .on('pushMessage', report.pushMessage.bind(report))
       .on('afterFileVerify', report.finishFile.bind(report));
-    report.events.on('fileFinish', (...args) => this.events.emit('fileFinish', ...args));
+    report.events.on('finishFile', (...args) => this.events.emit('finishFile', ...args));
     engine.executeOnFiles(patterns);
     engine.destroy();
     this.events.emit('finish', report);
