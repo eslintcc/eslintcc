@@ -13,6 +13,26 @@ const rankLabelsMaxValue = {
 
 class Ranks {
 
+  static getLabelMaxValue(label) {
+    label = String(label).toUpperCase();
+    const maxValue = rankLabelsMaxValue[label] || Number(label);
+    if (isNaN(maxValue)) {
+      return null;
+    } else {
+      return maxValue;
+    }
+  }
+
+  static getLabelMinValue(label) {
+    label = String(label).toUpperCase();
+    const minValue = rankLabels.includes(label) ? rankLabels.indexOf(label) : Number(label);
+    if (isNaN(minValue)) {
+      return null;
+    } else {
+      return minValue;
+    }
+  }
+
   get defaultRanks() {
     // The maximum complexity value for rule, associated with the rank
     return {
@@ -65,15 +85,6 @@ class Ranks {
       }
     }
     this.ranks = ranks;
-  }
-
-  getLabelMaxValue(label) {
-    const maxValue = rankLabelsMaxValue[String(label).toUpperCase()] || Number(label);
-    if (isNaN(maxValue)) {
-      return null;
-    } else {
-      return maxValue;
-    }
   }
 
   getValue(ruleID, value) {

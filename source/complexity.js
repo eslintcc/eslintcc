@@ -168,8 +168,8 @@ class ComplexityReport {
     };
   }
 
-  constructor({ ranks }) {
-    this.ranks = ranks;
+  constructor({ ranks, greaterThan, lessThan }) {
+    this.options = { ranks, greaterThan, lessThan };
     this.ruleTypes = this.constructor.ruleTypes;
     this.filesMap = {};
     this.files = [];
@@ -183,7 +183,7 @@ class ComplexityReport {
   }
 
   pushFile(fileName) {
-    const fileInstance = new ComplexityFileReport(fileName, { ranks: this.ranks });
+    const fileInstance = new ComplexityFileReport(fileName, this.options);
     this.filesMap[fileName] = fileInstance;
     this.files.push(fileInstance);
   }
@@ -199,7 +199,21 @@ class ComplexityReport {
   }
 
   finishFile(fileName) {
-    this.events.emit('finishFile', this.filesMap[fileName]);
+    const fileReport = this.filesMap[fileName];
+    if (this.options.greaterThan || this.options.lessThan) {
+      const greaterThan = this.options.greaterThan || -Infinity;
+      const lessThan = (this.options.lessThan || Infinity);
+      fileReport.messages = fileReport.messages.filter(message => {
+        if (message.maxValue <= greaterThan) {
+          return false;
+        }
+        if (message.maxValue > lessThan) {
+          return false;
+        }
+        return true;
+      });
+    }
+    this.events.emit('finishFile', fileReport);
   }
 
 }
@@ -225,17 +239,17 @@ class Complexity {
     lessThan = undefined,
     ranks = null
   } = {}) {
-    this.ranks = new Ranks(ranks);
     this.options = {
-      greaterThan: this.ranks.getLabelMaxValue(greaterThan),
-      lessThan: this.ranks.getLabelMaxValue(lessThan),
+      ranks: new Ranks(ranks),
+      greaterThan: Ranks.getLabelMaxValue(greaterThan),
+      lessThan: Ranks.getLabelMinValue(lessThan),
     };
     this.events = new EventEmitter();
   }
 
   executeOnFiles(patterns) {
     const engine = new PatchedCLIEngine({ rules: this.complexityRules });
-    const report = new ComplexityReport({ ranks: this.ranks });
+    const report = new ComplexityReport(this.options);
     engine.events
       .on('beforeFileVerify', report.pushFile.bind(report))
       .on('pushMessage', report.pushMessage.bind(report))
