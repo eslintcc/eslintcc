@@ -3,7 +3,7 @@
 const { getProcessArgs } = require('@ndk/env/args');
 
 const { Complexity } = require('./complexity');
-const { ReportLogger } = require('./logging');
+const { ReportLogger } = require('./lib/logging');
 
 const processArgs = getProcessArgs({
   types: {
@@ -27,5 +27,5 @@ if (processArgs.argv.length > 0) {
   new ReportLogger(complexity, options);
   complexity.executeOnFiles(processArgs.argv);
 } else {
-  console.log(require('./help'));
+  console.log(require('./lib/help'));
 }
