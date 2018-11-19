@@ -41,6 +41,10 @@ console.log(JSON.stringify(report, null, '\t'));
 ESLintCC uses ESLint along with [Its configuration system][eslint_config].
 You can use configuration comments and files, as described in the configuration for ESLint.
 
+**Difference:** ESLintCC uses its own settings for complexity rules,
+  so they cannot be overridden through a configuration file.
+However, you can disable them locally in the file.
+
 **Features:**
 
 1.  You can configurate [parserOptions][eslint_parser_options]
@@ -54,11 +58,33 @@ You can use configuration comments and files, as described in the configuration 
 }
 ```
 
-2.  You can disable checks for a specific complexity rule for a single file using a comment:
+2.  You can disable checks for a specific complexity rule for a file or part of file
+    [using a comment][eslint_disabling_comments]:
 
 ```js
+// For a file
 /* eslint max-params: off, max-depth: off */
 
+function myFunc(a, b, c, d, e) {
+  //...
+}
+```
+
+```js
+// For a block
+/* eslint-disable max-params */
+function myFunc(a, b, c, d, e) {
+  //...
+}
+/* eslint-enable max-params */
+function myFunc2(a, b) {
+  //...
+}
+```
+
+```js
+// For a line
+/* eslint-disable-next-line max-params */
 function myFunc(a, b, c, d, e) {
   //...
 }
@@ -83,3 +109,5 @@ function myFunc(a, b, c, d, e) {
 [eslint_parser_options]: https://eslint.org/docs/user-guide/configuring#specifying-parser-options
 
 [eslint_parser]: https://eslint.org/docs/user-guide/configuring#specifying-parser
+
+[eslint_disabling_comments]: https://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments
