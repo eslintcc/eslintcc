@@ -2,7 +2,6 @@
 
 const EventEmitter = require('events');
 
-const uuidv4 = require('uuid/v4');
 const { CLIEngine } = require('eslint');
 const { createEmptyConfig } = require('eslint/lib/config/config-ops');
 
@@ -68,25 +67,20 @@ function __antifreeze(frozen, properties) {
 
 
 /**
- * The report generator in ESLint not as not associated with a class CLIEngine,
- *  so linked them via cache by UUID in settings for rule.
- */
-const __runtimeInstanceCache = {};
-
-
-/**
  * ESLint does not return additional data, for analyzing messages, defined by the rules.
- * To make them easier to analyze, we will redefine the message handler,
- *  and then message descriptor will parse in "ComplexityReport" class.
+ * To simplify their analysis, we'll override the message handler to get the message as an object.
  */
 function __patchComplexityRule(rule) {
   rule.create = ((originalCreate) => (context) => {
     return originalCreate(__antifreeze(context, {
       report(message) {
-        const uuid = context.settings.PatchedCLIEngineInstanceUUID;
-        const egine = __runtimeInstanceCache[uuid];
-        const fileName = context.getFilename();
-        egine.events.emit('pushMessage', fileName, context.id, message);
+        message.message = {
+          ruleId: context.id,
+          node: message.node,
+          data: message.data
+        };
+        message.data = null;
+        message.messageId = null;
         return context.report(message);
       }
     }));
@@ -124,27 +118,19 @@ function patchingESLint() {
 class PatchedCLIEngine extends CLIEngine {
 
   constructor(options) {
-    const uuid = uuidv4();
-    options.baseConfig = options.baseConfig || {};
-    options.baseConfig.settings = options.baseConfig.settings || {};
-    options.baseConfig.settings.PatchedCLIEngineInstanceUUID = uuid;
     super(options);
-    __runtimeInstanceCache[uuid] = this;
-    this.uuid = uuid;
     this.events = new EventEmitter();
     this.originalLinterVerify = this.linter.verify.bind(this.linter);
     this.linter.verify = this.patchingLinterVerify.bind(this);
   }
 
   patchingLinterVerify(source, config, options) {
-    this.events.emit('beforeFileVerify', options.filename);
     const messages = this.originalLinterVerify(source, config, options);
-    this.events.emit('afterFileVerify', options.filename, messages);
+    this.events.emit('verifyFile', options.filename, messages);
     return messages;
   }
 
   destroy() {
-    delete __runtimeInstanceCache[this.uuid];
     delete this.linter.verify;
     delete this.originalLinterVerify;
   }

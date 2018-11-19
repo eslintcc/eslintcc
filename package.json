@@ -21,7 +21,6 @@
   ],
   "dependencies": {
     "eslint": "^5.9.0",
-    "@ndk/env": "^0.0.3",
-    "uuid": "^3.3.2"
+    "@ndk/env": "^0.0.3"
   }
 }

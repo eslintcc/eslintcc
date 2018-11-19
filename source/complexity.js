@@ -12,8 +12,8 @@ patchingESLint();
 
 class ComplexityFileReportMessage {
 
-  static getID(messageType, node) {
-    const view = messageType.view;
+  static getID(ruleType, node) {
+    const view = ruleType.view;
     const start = `${node.loc.start.line}:${node.loc.start.column}`;
     const end = `${node.loc.end.line}:${node.loc.end.column}`;
     return `${view}/${start}/${end}`;
@@ -74,12 +74,12 @@ class ComplexityFileReportMessage {
     return data.count;
   }
 
-  constructor({ messageID, messageType, messageNode }, { ranks }) {
+  constructor({ messageID, ruleType, node }, { ranks }) {
     this.ranks = ranks;
     this.id = messageID;
-    this.view = messageType.view;
-    this.loc = messageNode.loc;
-    this.namePath = this.constructor.resolveNodeName(messageNode);
+    this.view = ruleType.view;
+    this.loc = node.loc;
+    this.namePath = this.constructor.resolveNodeName(node);
     this.complexityRules = {};
     this.complexityRanks = {};
     this.maxRuleValue = 0;
@@ -101,12 +101,12 @@ class ComplexityFileReportMessage {
     };
   }
 
-  pushData(ruleId, messageType, data) {
+  pushData(ruleId, ruleType, data) {
     const value = this.constructor[`resolveValue:${ruleId}`](data);
     const { rankValue, rankLabel } = this.ranks.getValue(ruleId, value);
-    this[`${messageType.type}Rules`][ruleId] = value;
-    this[`${messageType.type}Ranks`][`${ruleId}-value`] = rankValue;
-    this[`${messageType.type}Ranks`][`${ruleId}-label`] = rankLabel;
+    this[`${ruleType.type}Rules`][ruleId] = value;
+    this[`${ruleType.type}Ranks`][`${ruleId}-value`] = rankValue;
+    this[`${ruleType.type}Ranks`][`${ruleId}-label`] = rankLabel;
     if (rankValue > this.maxValue) {
       this.maxRuleValue = value;
       this.maxRuleId = ruleId;
@@ -135,23 +135,18 @@ class ComplexityFileReport {
     };
   }
 
-  __pushMessage({ messageID, messageType, messageNode }) {
-    const message = new ComplexityFileReportMessage({ messageID, messageType, messageNode }, { ranks: this.ranks });
-    this.messagesViewsMap[messageType.view][messageID] = message;
+  __pushMessage({ messageID, ruleType, node }) {
+    const message = new ComplexityFileReportMessage({ messageID, ruleType, node }, { ranks: this.ranks });
+    this.messagesViewsMap[ruleType.view][messageID] = message;
     this.messagesMap[messageID] = message;
     this.messages.push(message);
     return message;
   }
 
-  pushMessage(ruleId, messageType, rawMessage) {
-    const messageID = ComplexityFileReportMessage.getID(messageType, rawMessage.node);
-    const message = this.messagesMap[messageID] ||
-      this.__pushMessage({
-        messageID,
-        messageType,
-        messageNode: rawMessage.node
-      });
-    message.pushData(ruleId, messageType, rawMessage.data);
+  pushMessage({ ruleId, ruleType, node, data }) {
+    const messageID = ComplexityFileReportMessage.getID(ruleType, node);
+    const message = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
+    message.pushData(ruleId, ruleType, data);
   }
 
 }
@@ -171,9 +166,8 @@ class ComplexityReport {
   constructor({ ranks, greaterThan, lessThan }) {
     this.options = { ranks, greaterThan, lessThan };
     this.ruleTypes = this.constructor.ruleTypes;
-    this.filesMap = {};
-    this.files = [];
     this.events = new EventEmitter();
+    this.files = [];
   }
 
   toJSON() {
@@ -182,24 +176,12 @@ class ComplexityReport {
     };
   }
 
-  pushFile(fileName) {
-    const fileInstance = new ComplexityFileReport(fileName, this.options);
-    this.filesMap[fileName] = fileInstance;
-    this.files.push(fileInstance);
-  }
-
-  pushMessage(fileName, ruleId, message) {
-    const fileReport = this.filesMap[fileName];
-    const messageType = this.ruleTypes[ruleId];
-    if (typeof messageType === 'undefined') {
-      throw new Error(`Unknown rule ID: ${ruleId}`);
-    } else {
-      fileReport.pushMessage(ruleId, messageType, message);
-    }
-  }
-
-  finishFile(fileName) {
-    const fileReport = this.filesMap[fileName];
+  verifyFile(fileName, messages) {
+    const fileReport = new ComplexityFileReport(fileName, this.options);
+    messages.forEach(({ message }) => {
+      message.ruleType = this.ruleTypes[message.ruleId];
+      fileReport.pushMessage(message);
+    });
     if (this.options.greaterThan || this.options.lessThan) {
       const greaterThan = this.options.greaterThan || -Infinity;
       const lessThan = (this.options.lessThan || Infinity);
@@ -213,7 +195,8 @@ class ComplexityReport {
         return true;
       });
     }
-    this.events.emit('finishFile', fileReport);
+    this.files.push(fileReport);
+    this.events.emit('verifyFile', fileReport);
   }
 
 }
@@ -250,11 +233,8 @@ class Complexity {
   executeOnFiles(patterns) {
     const engine = new PatchedCLIEngine({ rules: this.complexityRules });
     const report = new ComplexityReport(this.options);
-    engine.events
-      .on('beforeFileVerify', report.pushFile.bind(report))
-      .on('pushMessage', report.pushMessage.bind(report))
-      .on('afterFileVerify', report.finishFile.bind(report));
-    report.events.on('finishFile', (...args) => this.events.emit('finishFile', ...args));
+    engine.events.on('verifyFile', report.verifyFile.bind(report));
+    report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));
     engine.executeOnFiles(patterns);
     engine.destroy();
     this.events.emit('finish', report);
