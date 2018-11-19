@@ -18,6 +18,23 @@ const maxNestedCallbacks = require('eslint/lib/rules/max-nested-callbacks');
 const maxParams = require('eslint/lib/rules/max-params');
 const maxStatements = require('eslint/lib/rules/max-statements');
 
+/**
+ * Valid rules and rule values for the configuration file,
+ *  since through the configuration file, you can only disable the rules.
+ * Otherwise, you need to disable the rules locally in a source code file.
+ */
+const validRrules = [
+  'complexity',
+  'max-depth',
+  'max-len',
+  'max-lines',
+  'max-lines-per-function',
+  'max-nested-callbacks',
+  'max-params',
+  'max-statements'
+];
+const validRruleValues = ['off', 0];
+
 
 /**
  * Clear all options that affect the rules
@@ -26,7 +43,13 @@ function __purifyConfig(config) {
   const empty = createEmptyConfig();
   config.globals = empty.globals;
   config.env = empty.env;
+  const rules = config.rules;
   config.rules = empty.rules;
+  for (const rule in rules) {
+    if (validRrules.includes(rule) && validRruleValues.includes(rules[rule])) {
+      config.rules[rule] = rules[rule];
+    }
+  }
   config.extends = empty.config;
   config.plugins = empty.plugins;
   config.overrides = empty.overrides;
