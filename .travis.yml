@@ -3,7 +3,7 @@ node_js:        node
 cache:
   directories:  [node_modules]
 install:        npm install & npm update
-script:         npm run test_with_send_a_coverage
+script:         npm run travis-build
 notifications:
   email:        false
 before_install:

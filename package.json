@@ -28,7 +28,11 @@
   },
   "scripts": {
     "test": "node test",
-    "coverage": "nyc --reporter=text --all node test && nyc report --reporter=html",
-    "test_with_send_a_coverage": "nyc --reporter=lcov --all node test && nyc report --reporter=text && coveralls < coverage/lcov.info"
+    "coverage": "nyc node test && nyc report --reporter=html",
+    "coverage-all": "nyc --exclude=!test --exclude=coverage node test && nyc report --reporter=html",
+    "travis-build": "nyc --reporter=lcovonly node test && nyc report && coveralls < coverage/lcov.info"
+  },
+  "nyc": {
+    "all": true
   }
 }
