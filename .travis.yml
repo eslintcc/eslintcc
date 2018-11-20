@@ -3,7 +3,7 @@ node_js:        node
 cache:
   directories:  [node_modules]
 install:        npm install & npm update
-script:         nyc --report=lcov --all npm test & coveralls < coverage/lcov.info
+script:         npm run test_with_send_a_coverage
 notifications:
   email:        false
 before_install:
