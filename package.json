@@ -22,5 +22,11 @@
   "dependencies": {
     "eslint": "^5.9.0",
     "@ndk/env": "^0.0.3"
+  },
+  "devDependencies": {
+    "@ndk/test": "^0.0.4"
+  },
+  "scripts": {
+    "test": "node test"
   }
 }

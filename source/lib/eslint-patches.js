@@ -25,7 +25,6 @@ const maxStatements = require('eslint/lib/rules/max-statements');
 function __purifyConfig(config) {
   const empty = createEmptyConfig();
   config.globals = empty.globals;
-  config.env = empty.env;
   config.rules = empty.rules;
   config.extends = empty.config;
   config.plugins = empty.plugins;

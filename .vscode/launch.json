@@ -18,5 +18,10 @@
       "b",
       "."
     ]
+  }, {
+    "type": "node",
+    "request": "launch",
+    "name": "Tests",
+    "program": "${workspaceFolder}/test/index.js"
   }]
 }
