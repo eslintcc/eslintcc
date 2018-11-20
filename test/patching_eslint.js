@@ -4,7 +4,7 @@ const { equal, deepEqual } = require('assert').strict;
 
 const { Test } = require('@ndk/test');
 
-const { patchingESLint, PatchedCLIEngine } = require('../source/lib/eslint-patches.js');
+const { PatchedCLIEngine } = require('../source/lib/eslint-patches.js');
 
 
 class PatchingESLint extends Test {
@@ -15,7 +15,7 @@ class PatchingESLint extends Test {
 
   ['test: loading configuration']() {
     const beforeConfig = new PatchedCLIEngine().getConfigForFile('.');
-    patchingESLint();
+    require('../');
     const afterConfig = new PatchedCLIEngine().getConfigForFile('.');
     deepEqual(afterConfig.env, beforeConfig.env);
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
