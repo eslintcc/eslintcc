@@ -1,4 +1,4 @@
-# ESLint Cyclomatic Complexity Tool [![npm][npm_img]][npm_url] [![Build Status][build_img]][build_url]
+# ESLint Cyclomatic Complexity Tool [![npm][npm_img]][npm_url] [![Build Status][build_img]][build_url] [![Coverage Status][coverage_img]][coverage_url]
 
 [ESLintCC][npm_url] is a ECMAScript/JavaScript tool
   that computes cyclomatic complexity by using [ESLint][eslint_npm]
@@ -101,6 +101,10 @@ function myFunc(a, b, c, d, e) {
 [build_img]: https://travis-ci.com/eslintcc/eslintcc.svg?branch=master
 
 [build_url]: https://travis-ci.com/eslintcc/eslintcc
+
+[coverage_img]: https://coveralls.io/repos/github/eslintcc/eslintcc/badge.svg?branch=master
+
+[coverage_url]: https://coveralls.io/github/eslintcc/eslintcc?branch=master
 
 [eslint_npm]: https://www.npmjs.com/package/eslint
 
