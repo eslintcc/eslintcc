@@ -41,3 +41,5 @@ class PatchingESLint extends Test {
 
 module.exports = PatchingESLint;
 PatchingESLint.runIsMainModule();
+
+test()
