@@ -1,0 +1,11 @@
+language:       node_js
+node_js:        node
+cache:
+  directories:  [node_modules]
+install:        npm install & npm update
+script:         nyc --report=lcov --all npm test & coveralls < coverage/lcov.info
+notifications:
+  email:        false
+before_install:
+  - npm i -g nyc
+  - npm i -g coveralls
