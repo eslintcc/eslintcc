@@ -28,7 +28,7 @@
   },
   "scripts": {
     "test": "node test",
-    "coverage": "nyc --reporter=text --all node test & nyc report --reporter=html",
-    "test_with_send_a_coverage": "nyc --reporter=lcov --all node test & nyc report --reporter=text & coveralls < coverage/lcov.info"
+    "coverage": "nyc --reporter=text --all node test && nyc report --reporter=html",
+    "test_with_send_a_coverage": "nyc --reporter=lcov --all node test && nyc report --reporter=text && coveralls < coverage/lcov.info"
   }
 }
