@@ -236,7 +236,6 @@ class Complexity {
     engine.events.on('verifyFile', report.verifyFile.bind(report));
     report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));
     engine.executeOnFiles(patterns);
-    engine.destroy();
     this.events.emit('finish', report);
     return report;
   }

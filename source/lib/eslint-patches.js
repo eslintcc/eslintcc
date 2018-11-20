@@ -129,11 +129,6 @@ class PatchedCLIEngine extends CLIEngine {
     return messages;
   }
 
-  destroy() {
-    delete this.linter.verify;
-    delete this.originalLinterVerify;
-  }
-
 }
 
 
