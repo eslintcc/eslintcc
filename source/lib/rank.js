@@ -78,7 +78,7 @@ class Ranks {
         const customRanks = customRulesRanks[ruleID];
         for (let rankName in customRanks) {
           rankName = rankName.toUpperCase();
-          if (rankName in ranks) {
+          if (rankName in ranks[ruleID]) {
             ranks[ruleID][rankName] = Number(customRanks[rankName]);
           }
         }
@@ -99,15 +99,6 @@ class Ranks {
           rankValue: i + (value - prevMaxValue) / range,
           rankLabel: rankLabel
         };
-      }
-    }
-  }
-
-  getLabel(ruleID, value) {
-    const ranks = this.ranks[ruleID];
-    for (const name in ranks) {
-      if (value < ranks[name]) {
-        return name;
       }
     }
   }
