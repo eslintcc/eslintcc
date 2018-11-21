@@ -20,6 +20,13 @@ class TestRank extends Test {
     equal(undefined, ranks.ranks.complexity_);
   }
 
+  ['test: Ranks.getLabel(Min/Max)Value']() {
+    const minValues = ['A', 'B', 'C', 'D', 'E', 'F'].map(Ranks.getLabelMinValue);
+    deepEqual([0, 1, 2, 3, 4, 5], minValues);
+    const maxValues = ['A', 'B', 'C', 'D', 'E', 'F'].map(Ranks.getLabelMaxValue);
+    deepEqual([1, 2, 3, 4, 5, Infinity], maxValues);
+  }
+
 }
 
 
