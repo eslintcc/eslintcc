@@ -8,5 +8,6 @@
   "files.eol": "\n",
   "[javascript]": {
     "files.insertFinalNewline": true
-  }
+   },
+  "npm.enableScriptExplorer": true
 }
