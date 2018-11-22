@@ -1,6 +1,7 @@
 'use strict';
 
 const { equal, deepEqual } = require('assert').strict;
+const { execSync } = require('child_process');
 
 const { Test } = require('@ndk/test');
 
@@ -14,8 +15,8 @@ class PatchingESLint extends Test {
   }
 
   ['test: loading configuration']() {
-    const beforeConfig = new PatchedCLIEngine().getConfigForFile('.');
-    require('../');
+    const cmd = 'node ./test/src/patching_eslint__config';
+    const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     const afterConfig = new PatchedCLIEngine().getConfigForFile('.');
     deepEqual(afterConfig.env, beforeConfig.env);
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);

@@ -18,10 +18,12 @@ class ReportLogger {
   constructor(complexity, {
     cwd = process.cwd(),
     format = 'text',
-    showRules = false
+    showRules = false,
+    logger = console.log
   }) {
     this.complexity = complexity;
     this.options = { cwd, format, showRules };
+    this.logger = logger;
     this.colors = this.defaultColors;
     this.complexity.events
       .on('verifyFile', this.verifyFile.bind(this))
@@ -30,7 +32,7 @@ class ReportLogger {
 
   verifyFile(fileReport) {
     if (this.options.format === 'text' && fileReport.messages.length > 0) {
-      console.log(relative(this.options.cwd, fileReport.fileName));
+      this.logger(relative(this.options.cwd, fileReport.fileName));
       let padStart = 0;
       let padEnd = 0;
       for (const { loc: { start: { line, column } } } of fileReport.messages) {
@@ -52,14 +54,14 @@ class ReportLogger {
         if (this.options.showRules) {
           text += ` (${maxRuleId} = ${maxRuleValue})`;
         }
-        console.log(text);
+        this.logger(text);
       }
     }
   }
 
   finish(report) {
     if (this.options.format === 'json') {
-      console.log(JSON.stringify(report));
+      this.logger(JSON.stringify(report));
     }
   }
 
