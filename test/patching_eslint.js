@@ -6,6 +6,7 @@ const { execSync } = require('child_process');
 const { Test } = require('@ndk/test');
 
 const { PatchedCLIEngine } = require('../source/lib/eslint-patches.js');
+require('../');
 
 
 class PatchingESLint extends Test {

@@ -8,6 +8,8 @@ const AllTests = createTest('All tests', {
 
   ['test: rank']: require('./rank'),
 
+  ['test: complexity']: require('./complexity'),
+
   ['test: logging']: require('./logging')
 
 });
