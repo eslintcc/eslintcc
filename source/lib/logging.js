@@ -33,10 +33,9 @@ class ReportLogger {
   verifyFile(fileReport) {
     if (this.options.format === 'text' && fileReport.messages.length > 0) {
       this.logger(relative(this.options.cwd, fileReport.fileName));
-      let padStart = 0;
+      let padStart = fileReport.messages[fileReport.messages.length - 1].loc.start.line;
       let padEnd = 0;
-      for (const { loc: { start: { line, column } } } of fileReport.messages) {
-        if (line > padStart) padStart = line;
+      for (const { loc: { start: { column } } } of fileReport.messages) {
         if (column > padEnd) padEnd = column;
       }
       padStart = String(padStart).length;

@@ -96,7 +96,7 @@ class Ranks {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
         return {
-          rankValue: i + (value - prevMaxValue) / range,
+          rankValue: ((i + (value - prevMaxValue) / range) * 1000 ^ 0) / 1000,
           rankLabel: rankLabel
         };
       }

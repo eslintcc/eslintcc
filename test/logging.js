@@ -1,6 +1,7 @@
 'use strict';
 
-const { equal } = require('assert').strict;
+const { equal, deepEqual } = require('assert').strict;
+const { sep, resolve } = require('path');
 
 const { Test } = require('@ndk/test');
 
@@ -12,9 +13,10 @@ class TestReportLogger extends Test {
 
   constructor() {
     super();
+    this.filename = `test${sep}src${sep}logging__messages.js`;
     this.step = 0;
     this.messages = {
-      0: 'test/src/logging__messages.js',
+      0: this.filename,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2',
@@ -24,7 +26,7 @@ class TestReportLogger extends Test {
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55'
     };
     this.messagesSR = {
-      0: 'test/src/logging__messages.js',
+      0: this.filename,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc (complexity = 1)',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1 (max-params = 2)',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2 (max-params = 3)',
@@ -72,6 +74,147 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
+  }
+
+  ['test: ReportLogger json']() {
+    const complexity = new Complexity({});
+    new ReportLogger(complexity, {
+      format: 'json',
+      logger: report => {
+        report = JSON.parse(report);
+        deepEqual({
+          files: [{
+            'fileName': resolve('test/src/logging__messages_json.js'),
+            'messages': [{
+              'id': 'function/3:0/5:1',
+              'view': 'function',
+              'loc': {
+                'start': {
+                  'line': 3,
+                  'column': 0
+                },
+                'end': {
+                  'line': 5,
+                  'column': 1
+                }
+              },
+              'namePath': 'function myFunc',
+              'complexityRules': {
+                'complexity': 1
+              },
+              'complexityRanks': {
+                'complexity-value': 0.2,
+                'complexity-label': 'A'
+              },
+              'maxValue': 0.2,
+              'maxLabel': 'A'
+            }, {
+              'id': 'function/9:0/11:1',
+              'view': 'function',
+              'loc': {
+                'start': {
+                  'line': 9,
+                  'column': 0
+                },
+                'end': {
+                  'line': 11,
+                  'column': 1
+                }
+              },
+              'namePath': 'function myFunc1',
+              'complexityRules': {
+                'max-params': 2,
+                'complexity': 1
+              },
+              'complexityRanks': {
+                'max-params-value': 2,
+                'max-params-label': 'B',
+                'complexity-value': 0.2,
+                'complexity-label': 'A'
+              },
+              'maxValue': 2,
+              'maxLabel': 'B'
+            }, {
+              'id': 'function/15:0/21:1',
+              'view': 'function',
+              'loc': {
+                'start': {
+                  'line': 15,
+                  'column': 0
+                },
+                'end': {
+                  'line': 21,
+                  'column': 1
+                }
+              },
+              'namePath': 'function myFunc2',
+              'complexityRules': {
+                'max-params': 2,
+                'complexity': 2
+              },
+              'complexityRanks': {
+                'max-params-value': 2,
+                'max-params-label': 'B',
+                'complexity-value': 0.4,
+                'complexity-label': 'A'
+              },
+              'maxValue': 2,
+              'maxLabel': 'B'
+            }, {
+              'id': 'block/16:2/20:3',
+              'view': 'block',
+              'loc': {
+                'start': {
+                  'line': 16,
+                  'column': 2
+                },
+                'end': {
+                  'line': 20,
+                  'column': 3
+                }
+              },
+              'namePath': 'function myFunc2, IfStatement:16-20',
+              'complexityRules': {
+                'max-depth': 1
+              },
+              'complexityRanks': {
+                'max-depth-value': 0.5,
+                'max-depth-label': 'A'
+              },
+              'maxValue': 0.5,
+              'maxLabel': 'A'
+            }, {
+              'id': 'function/17:7/19:5',
+              'view': 'function',
+              'loc': {
+                'start': {
+                  'line': 17,
+                  'column': 7
+                },
+                'end': {
+                  'line': 19,
+                  'column': 5
+                }
+              },
+              'namePath': 'function myFunc2, ArrowFunctionExpression:17-19',
+              'complexityRules': {
+                'max-nested-callbacks': 1,
+                'complexity': 1
+              },
+              'complexityRanks': {
+                'max-nested-callbacks-value': 0.333,
+                'max-nested-callbacks-label': 'A',
+                'complexity-value': 0.2,
+                'complexity-label': 'A'
+              },
+              'maxValue': 0.333,
+              'maxLabel': 'A'
+            }]
+          }]
+        }, report);
+      }
+    });
+    complexity.executeOnFiles(['./test/src/logging__messages_json.js']);
   }
 
 }

@@ -69,6 +69,15 @@ class TestRank extends Test {
     ], [41, 60, 80, 130].map(getValue));
   }
 
+  ['test: Ranks#getValue - fractions']() {
+    const ranks = new Ranks();
+    const getValue = value => ranks.getValue('max-nested-callbacks', value);
+    deepEqual([
+      { rankLabel: 'A', rankValue: 0.333 },
+      { rankLabel: 'A', rankValue: 0.833 },
+      { rankLabel: 'B', rankValue: 1.7 }
+    ], [1, 2.5, 4.4].map(getValue));
+  }
 }
 
 
