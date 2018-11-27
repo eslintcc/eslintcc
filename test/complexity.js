@@ -1,6 +1,6 @@
 'use strict';
 
-const { deepEqual } = require('assert').strict;
+const { equal, deepEqual } = require('assert').strict;
 const { resolve } = require('path');
 
 const { Test } = require('@ndk/test');
@@ -14,7 +14,7 @@ class TestComplexity extends Test {
     return 'Complexity';
   }
 
-  ['test: executeOnFiles']() {
+  ['test: Complexity#executeOnFiles']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
 
@@ -66,7 +66,7 @@ class TestComplexity extends Test {
 
   }
 
-  ['test: Complexity toJSON']() {
+  ['test: Complexity#toJSON']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
@@ -84,6 +84,48 @@ class TestComplexity extends Test {
         }]
       }]
     }, JSON.parse(JSON.stringify(report)));
+  }
+
+  ['test: Complexity~greaterThan']() {
+    const complexity = new Complexity();
+    const messages = complexity.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('A', messages[0].maxLabel);
+    equal('B', messages[1].maxLabel);
+    equal('C', messages[2].maxLabel);
+    equal('F', messages[3].maxLabel);
+    equal('F', messages[4].maxLabel);
+    const complexityB = new Complexity({ greaterThan: 'B' });
+    const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('C', messagesB[0].maxLabel);
+    equal('F', messagesB[1].maxLabel);
+    equal('F', messagesB[2].maxLabel);
+    equal(undefined, messagesB[3]);
+    const complexityE = new Complexity({ greaterThan: 'E' });
+    const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('F', messagesE[0].maxLabel);
+    equal('F', messagesE[1].maxLabel);
+    equal(undefined, messagesE[2]);
+    const complexityN = new Complexity({ greaterThan: 6 });
+    const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('F', messagesN[0].maxLabel);
+    equal(undefined, messagesN[1]);
+  }
+
+  ['test: Complexity~lessThan']() {
+    const complexityB = new Complexity({ lessThan: 'B' });
+    const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('A', messagesB[0].maxLabel);
+    equal(undefined, messagesB[1]);
+    const complexityE = new Complexity({ lessThan: 'E' });
+    const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('A', messagesE[0].maxLabel);
+    equal('B', messagesE[1].maxLabel);
+    equal('C', messagesE[2].maxLabel);
+    equal(undefined, messagesE[3]);
+    const complexityN = new Complexity({ lessThan: 0.5 });
+    const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    equal('A', messagesN[0].maxLabel);
+    equal(undefined, messagesN[1]);
   }
 
 }
