@@ -14,7 +14,7 @@ class TestComplexity extends Test {
     return 'Complexity';
   }
 
-  ['test: Complexity#executeOnFiles']() {
+  ['test: #executeOnFiles']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
 
@@ -66,7 +66,7 @@ class TestComplexity extends Test {
 
   }
 
-  ['test: Complexity#toJSON']() {
+  ['test: #toJSON']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
@@ -86,7 +86,7 @@ class TestComplexity extends Test {
     }, JSON.parse(JSON.stringify(report)));
   }
 
-  ['test: Complexity~greaterThan']() {
+  ['test: ~greaterThan']() {
     const complexity = new Complexity();
     const messages = complexity.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
     equal('A', messages[0].maxLabel);
@@ -111,7 +111,7 @@ class TestComplexity extends Test {
     equal(undefined, messagesN[1]);
   }
 
-  ['test: Complexity~lessThan']() {
+  ['test: ~lessThan']() {
     const complexityB = new Complexity({ lessThan: 'B' });
     const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
     equal('A', messagesB[0].maxLabel);
@@ -126,6 +126,17 @@ class TestComplexity extends Test {
     const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
     equal('A', messagesN[0].maxLabel);
     equal(undefined, messagesN[1]);
+  }
+
+  ['test: ~resolveNodeName']() {
+    const messages = new Complexity()
+      .executeOnFiles(['test/src/complexity__messages_node_name.js'])
+      .files[0].messages;
+    equal('function myFunc1', messages[0].namePath);
+    equal('variable myFunc2', messages[1].namePath);
+    equal('function anonymous', messages[2].namePath);
+    equal('function anonymous', messages[3].namePath);
+    equal('function myFunc3', messages[4].namePath);
   }
 
 }

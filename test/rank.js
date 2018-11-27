@@ -13,27 +13,27 @@ class TestRank extends Test {
     return 'Ranks';
   }
 
-  ['test: Ranks init']() {
+  ['test: init']() {
     const ranks = new Ranks();
     deepEqual({ A: 5, B: 10, C: 20, D: 30, E: 40, F: Infinity }, ranks.ranks.complexity);
     equal(undefined, ranks.ranks.complexity_);
   }
 
-  ['test: Ranks~customRulesRanks']() {
+  ['test: ~customRulesRanks']() {
     const customRulesRanks = { A: 11, B: 22, C: 33, D: 44, E: 55, F: Infinity, G: 100 };
     const ranks = new Ranks({ 'complexity': customRulesRanks, 'complexity_': customRulesRanks });
     deepEqual({ A: 11, B: 22, C: 33, D: 44, E: 55, F: Infinity }, ranks.ranks.complexity);
     equal(undefined, ranks.ranks.complexity_);
   }
 
-  ['test: Ranks.getLabel(Min/Max)Value']() {
+  ['test: .getLabel(Min/Max)Value']() {
     const minValues = ['A', 'B', 'C', 'D', 'E', 'F', 50, '10', 'G'].map(Ranks.getLabelMinValue);
     deepEqual([0, 1, 2, 3, 4, 5, 50, 10, null], minValues);
     const maxValues = ['A', 'B', 'C', 'D', 'E', 'F', 50, '10', 'G'].map(Ranks.getLabelMaxValue);
     deepEqual([1, 2, 3, 4, 5, Infinity, 50, 10, null], maxValues);
   }
 
-  ['test: Ranks#getValue']() {
+  ['test: #getValue']() {
     const ranks = new Ranks();
     const getValue = value => ranks.getValue('complexity', value);
     deepEqual([
@@ -69,7 +69,7 @@ class TestRank extends Test {
     ], [41, 60, 80, 130].map(getValue));
   }
 
-  ['test: Ranks#getValue - fractions']() {
+  ['test: #getValue - fractions']() {
     const ranks = new Ranks();
     const getValue = value => ranks.getValue('max-nested-callbacks', value);
     deepEqual([

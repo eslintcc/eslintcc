@@ -32,7 +32,7 @@ class ComplexityFileReportMessage {
       case 'FunctionExpression':
       case 'FunctionDeclaration':
         if (!node.id && (recursiveUp || node.loc.start.line === parent.loc.start.line)) {
-          return this.resolveNodeName(parent, true);
+          return this.resolveNodeName(parent, true) || (recursiveUp ? '' : 'function anonymous');
         } else {
           return nameWithParent('function ' + ((node.id || {}).name || 'anonymous'));
         }

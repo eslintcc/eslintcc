@@ -49,7 +49,7 @@ class TestReportLogger extends Test {
     this.step++;
   }
 
-  ['test: ReportLogger init']() {
+  ['test: init']() {
     const complexity = new Complexity({});
     const reportLogger = new ReportLogger(complexity, {});
     equal(process.cwd(), reportLogger.options.cwd);
@@ -57,7 +57,7 @@ class TestReportLogger extends Test {
     equal(false, reportLogger.options.showRules);
   }
 
-  ['test: ReportLogger text']() {
+  ['test: text']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this.logger('messages', msg)
@@ -66,7 +66,7 @@ class TestReportLogger extends Test {
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
   }
 
-  ['test: ReportLogger text + showRules']() {
+  ['test: text + showRules']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this.logger('messagesSR', msg),
@@ -76,7 +76,7 @@ class TestReportLogger extends Test {
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
   }
 
-  ['test: ReportLogger json']() {
+  ['test: json']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       format: 'json',
