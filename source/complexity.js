@@ -44,7 +44,7 @@ class ComplexityFileReportMessage {
         return nameWithParent('variable ' + node.id.name);
       case 'Property':
         if (node.method) {
-          return nameWithParent('function ' + node.key.name);
+          return nameWithParent('function ' + (node.key.name || node.key.raw));
         }
         return this.resolveNodeName(parent, true);
       case 'ArrowFunctionExpression':

@@ -137,6 +137,21 @@ class TestComplexity extends Test {
     equal('function anonymous', messages[2].namePath);
     equal('function anonymous', messages[3].namePath);
     equal('function myFunc3', messages[4].namePath);
+    equal('class myClass1#constructor', messages[5].namePath);
+    equal('class myClass1#myMethod1', messages[6].namePath);
+    equal('class myClass1#myProp1', messages[7].namePath);
+    equal('class myClass1.myMethod1', messages[8].namePath);
+    equal('class myClass1.myProp1', messages[9].namePath);
+    equal('class myClass1.\'my method 2\'', messages[10].namePath);
+    equal('variable mo1, function \'my method 3\'', messages[11].namePath);
+    equal('variable arr1, ArrowFunctionExpression:38-42', messages[12].namePath);
+    equal('variable arr1, ArrowFunctionExpression:38-42, ArrowFunctionExpression:39-41', messages[13].namePath);
+    equal('function anonymous', messages[14].namePath);
+    equal('function anonymous', messages[15].namePath);
+    equal('IfStatement:48-52', messages[16].namePath);
+    equal('IfStatement:49-51', messages[17].namePath);
+    equal('variable mo2, function myMethod5', messages[18].namePath);
+    equal('variable myFunc4, function anonymous', messages[19].namePath);
   }
 
 }
