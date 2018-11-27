@@ -10,7 +10,9 @@ const AllTests = createTest('All tests', {
 
   ['test: complexity']: require('./complexity'),
 
-  ['test: logging']: require('./logging')
+  ['test: logging']: require('./logging'),
+
+  ['test: cli']: require('./cli')
 
 });
 
