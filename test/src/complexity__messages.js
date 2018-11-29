@@ -38,7 +38,13 @@ function myFunc5(a1, a2, a3, a4, a5, a6) {
 
 myFunc5();
 
-function myFunc6(a) {
+function myFunc6(a1, a2, a3, a4, a5, a6, a7) {
+  console.log(a1, a2, a3, a4, a5, a6, a7);
+}
+
+myFunc6();
+
+function myFunc7(a) {
   if (a) {
     if (a) {
       if (a) {
@@ -66,12 +72,12 @@ function myFunc6(a) {
   }
 }
 
-myFunc6();
+myFunc7();
 
-function myFunc7(a1) {
+function myFunc8(a1) {
   a1(() => {
     console.log(1);
   });
 }
 
-myFunc7();
+myFunc8();

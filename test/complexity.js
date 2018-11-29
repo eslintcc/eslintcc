@@ -18,6 +18,7 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
 
+    equal('function myFunc', report.files[0].messages[0].namePath);
     deepEqual({
       'complexity-value': 0.2,
       'complexity-label': 'A'
@@ -26,6 +27,7 @@ class TestComplexity extends Test {
       complexity: 1
     }, report.files[0].messages[0].complexityRules);
 
+    equal('function myFunc1', report.files[0].messages[1].namePath);
     deepEqual({
       'max-params-value': 2,
       'max-params-label': 'B',
@@ -37,33 +39,59 @@ class TestComplexity extends Test {
       'complexity': 1
     }, report.files[0].messages[1].complexityRules);
 
+    equal('function myFunc2', report.files[0].messages[2].namePath);
+    deepEqual({
+      'max-params-value': 3,
+      'max-params-label': 'C',
+      'complexity-value': 0.2,
+      'complexity-label': 'A'
+    }, report.files[0].messages[2].complexityRanks);
+    deepEqual({
+      'max-params': 3,
+      'complexity': 1
+    }, report.files[0].messages[2].complexityRules);
+
+    equal('function myFunc3', report.files[0].messages[3].namePath);
+    deepEqual({
+      'max-params-value': 3.5,
+      'max-params-label': 'D',
+      'complexity-value': 0.2,
+      'complexity-label': 'A'
+    }, report.files[0].messages[3].complexityRanks);
+    deepEqual({
+      'max-params': 4,
+      'complexity': 1
+    }, report.files[0].messages[3].complexityRules);
+
+    equal('function myFunc7, IfStatement:48-72', report.files[0].messages[8].namePath);
     deepEqual({
       'max-depth-label': 'A',
       'max-depth-value': 0.5
-    }, report.files[0].messages[7].complexityRanks);
+    }, report.files[0].messages[8].complexityRanks);
     deepEqual({
       'max-depth': 1
-    }, report.files[0].messages[7].complexityRules);
+    }, report.files[0].messages[8].complexityRules);
 
+    equal('function myFunc7, IfStatement:59-61', report.files[0].messages[19].namePath);
     deepEqual({
       'max-depth-label': 'F',
-      'max-depth-value': 6
-    }, report.files[0].messages[18].complexityRanks);
+      'max-depth-value': 5.5
+    }, report.files[0].messages[19].complexityRanks);
     deepEqual({
       'max-depth': 12
-    }, report.files[0].messages[18].complexityRules);
+    }, report.files[0].messages[19].complexityRules);
 
+    equal('function myFunc8, ArrowFunctionExpression:78-80', report.files[0].messages[21].namePath);
     deepEqual({
       'complexity-label': 'A',
       'complexity-value': 0.2,
       'max-nested-callbacks-label': 'A',
       'max-nested-callbacks-value': 0.333
-    }, report.files[0].messages[20].complexityRanks);
+    }, report.files[0].messages[21].complexityRanks);
     deepEqual({
       'complexity': 1,
       'max-nested-callbacks': 1
-    }, report.files[0].messages[20].complexityRules);
-
+    }, report.files[0].messages[21].complexityRules);
   }
 
   ['test: #toJSON']() {

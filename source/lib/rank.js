@@ -34,7 +34,12 @@ class Ranks {
   }
 
   get defaultRanks() {
-    // The maximum complexity value for rule, associated with the rank
+    // The maximum complexity score for rule, associated with the rank
+    // 'complexity' corresponds https://radon.readthedocs.io/en/latest/api.html#radon.complexity.cc_rank.
+    // The rest are calculated relative to the default score for the rule.
+    // Example formula for calculating the score relations:
+    //  [5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))
+
     return {
       'complexity': {
         A: 5,
@@ -48,24 +53,24 @@ class Ranks {
         A: 2,
         B: 3,
         C: 4,
-        D: 5,
-        E: 6,
+        D: 6,
+        E: 8,
         F: Infinity
       },
       'max-nested-callbacks': {
         A: 3,
         B: 5,
         C: 10,
-        D: 20,
-        E: 30,
+        D: 15,
+        E: 20,
         F: Infinity
       },
       'max-params': {
         A: 1,
         B: 2,
         C: 3,
-        D: 4,
-        E: 5,
+        D: 5,
+        E: 6,
         F: Infinity
       }
     };

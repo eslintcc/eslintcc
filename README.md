@@ -90,6 +90,36 @@ function myFunc(a, b, c, d, e) {
 }
 ```
 
+## Complexity ranks
+
+Every function and block will be ranked from A (best complexity score) to F (worst one).
+This ranks is based on the ranks of complexity of the [Python Radon][radon_cc_rank].
+
+**Rank	Risk**
+
+-   **A**	low - simple block
+-   **B**	low - well structured and stable block
+-   **C**	moderate - slightly complex block
+-   **D**	more than moderate - more complex block
+-   **E**	high - complex block, alarming
+-   **F**	very high - error-prone, unstable block
+
+Ranks corresponds to rule complexity scores as follows:
+
+| Rule                                                    | A     | B      | C       | D       | E       | F    |
+| ------------------------------------------------------- | ----- | ------ | ------- | ------- | ------- | ---- |
+| [**complexity**][eslint_rule]                           | 1 - 5 | 6 - 10 | 11 - 20 | 21 - 30 | 31 - 40 | 41 + |
+| [**max-depth**][eslint_max_depth]                       | 1 - 2 | 3      | 4 - 5   | 6 - 7   | 8       | 9 +  |
+| [**max-nested-callbacks**][eslint_max_nested_callbacks] | 1 - 3 | 4 - 5  | 6 - 10  | 11 - 15 | 16 - 20 | 21 + |
+| [**max-params**][eslint_max_params]                     | 1     | 2      | 3 - 4   | 5       | 6       | 7+   |
+
+> **Note:** For rank "C", the maximum score, using from the standard score of ESLint rules.
+>   See [complexity rules][eslint_rule].
+>   Other rules are calculated relative to the values of the "complexity" rule.
+>
+> Example formula:
+>   `[5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))`
+
 * * *
 
 **...while in development... :relaxed:**
@@ -110,6 +140,12 @@ function myFunc(a, b, c, d, e) {
 
 [eslint_rule]: https://eslint.org/docs/rules/complexity
 
+[eslint_max_depth]: https://eslint.org/docs/rules/max-depth
+
+[eslint_max_nested_callbacks]: https://eslint.org/docs/rules/max-nested-callbacks
+
+[eslint_max_params]: https://eslint.org/docs/rules/max-params
+
 [eslint_usage]: https://github.com/eslint/eslint#installation-and-usage
 
 [eslint_config]: https://eslint.org/docs/user-guide/configuring
@@ -119,3 +155,5 @@ function myFunc(a, b, c, d, e) {
 [eslint_parser]: https://eslint.org/docs/user-guide/configuring#specifying-parser
 
 [eslint_disabling_comments]: https://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments
+
+[radon_cc_rank]: https://radon.readthedocs.io/en/latest/api.html#radon.complexity.cc_rank
