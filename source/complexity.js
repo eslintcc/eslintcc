@@ -5,6 +5,37 @@ const EventEmitter = require('events');
 const { patchingESLint, PatchedCLIEngine } = require('./lib/eslint-patches');
 const { Ranks } = require('./lib/rank');
 
+const allComplexityRules = {
+  'complexity': ['error', 0],
+  'max-depth': ['error', 0],
+  'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
+  'max-lines': ['error', 0],
+  'max-lines-per-function': ['error', { max: 0 }],
+  'max-nested-callbacks': ['error', 0],
+  'max-params': ['error', 0],
+  'max-statements': ['error', 0]
+};
+const ruleCategories = {
+  all: allComplexityRules,
+  logic: {
+    'complexity': allComplexityRules['complexity'],
+    'max-depth': allComplexityRules['max-depth'],
+    'max-nested-callbacks': allComplexityRules['max-nested-callbacks'],
+    'max-params': allComplexityRules['max-params']
+  },
+  raw: {
+    'max-len': allComplexityRules['max-len'],
+    'max-lines': allComplexityRules['max-lines'],
+    'max-lines-per-function': allComplexityRules['max-lines-per-function'],
+    'max-statements': allComplexityRules['max-statements']
+  }
+};
+const ruleTypes = {
+  'complexity': { type: 'complexity', view: 'function' },
+  'max-depth': { type: 'complexity', view: 'block' },
+  'max-nested-callbacks': { type: 'complexity', view: 'function' },
+  'max-params': { type: 'complexity', view: 'function' }
+};
 
 // Patching ESLint behavior, for use as a metrics generator
 patchingESLint();
@@ -154,18 +185,8 @@ class ComplexityFileReport {
 
 class ComplexityReport {
 
-  static get ruleTypes() {
-    return {
-      'complexity': { type: 'complexity', view: 'function' },
-      'max-depth': { type: 'complexity', view: 'block' },
-      'max-nested-callbacks': { type: 'complexity', view: 'function' },
-      'max-params': { type: 'complexity', view: 'function' }
-    };
-  }
-
   constructor({ ranks, greaterThan, lessThan }) {
     this.options = { ranks, greaterThan, lessThan };
-    this.ruleTypes = this.constructor.ruleTypes;
     this.events = new EventEmitter();
     this.files = [];
   }
@@ -179,7 +200,7 @@ class ComplexityReport {
   verifyFile(fileName, messages) {
     const fileReport = new ComplexityFileReport(fileName, this.options);
     messages.forEach(({ message }) => {
-      message.ruleType = this.ruleTypes[message.ruleId];
+      message.ruleType = ruleTypes[message.ruleId];
       fileReport.pushMessage(message);
     });
     if (this.options.greaterThan || this.options.lessThan) {
@@ -204,34 +225,36 @@ class ComplexityReport {
 
 class Complexity {
 
-  get complexityRules() {
-    return {
-      'complexity': ['error', 0],
-      'max-depth': ['error', 0],
-      // 'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
-      // 'max-lines': ['error', 0],
-      // 'max-lines-per-function': ['error', { max: 0 }],
-      'max-nested-callbacks': ['error', 0],
-      'max-params': ['error', 0],
-      // 'max-statements': ['error', 0]
-    };
-  }
-
   constructor({
+    rules = 'logic',
     greaterThan = undefined,
     lessThan = undefined,
     ranks = null
   } = {}) {
     this.options = {
       ranks: new Ranks(ranks),
+      rules: rules,
       greaterThan: Ranks.getLabelMaxValue(greaterThan),
       lessThan: Ranks.getLabelMinValue(lessThan),
     };
     this.events = new EventEmitter();
   }
 
+  getComplexityRules(customCategory) {
+    const category = customCategory || this.options.rules;
+    if (category in allComplexityRules) {
+      return {
+        [category]: allComplexityRules[category]
+      };
+    } else if (category in ruleCategories) {
+      return ruleCategories[category];
+    } else {
+      return ruleCategories['logic'];
+    }
+  }
+
   executeOnFiles(patterns) {
-    const engine = new PatchedCLIEngine({ rules: this.complexityRules });
+    const engine = new PatchedCLIEngine({ rules: this.getComplexityRules() });
     const report = new ComplexityReport(this.options);
     engine.events.on('verifyFile', report.verifyFile.bind(report));
     report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));

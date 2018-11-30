@@ -14,6 +14,30 @@ class TestComplexity extends Test {
     return 'Complexity';
   }
 
+  constructor() {
+    super();
+    this.allRules = [
+      'complexity', 'max-depth', 'max-len', 'max-lines', 'max-lines-per-function',
+      'max-nested-callbacks', 'max-params', 'max-statements'
+    ];
+    this.logicRules = [
+      'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
+    ];
+    this.rawRules = [
+      'max-len', 'max-lines', 'max-lines-per-function', 'max-statements'
+    ];
+  }
+
+  ['test: #getComplexityRules']() {
+    const complexity = new Complexity();
+    deepEqual(this.logicRules, Object.keys(complexity.getComplexityRules()));
+    deepEqual(complexity.getComplexityRules('logic'), complexity.getComplexityRules());
+    deepEqual(complexity.getComplexityRules('error'), complexity.getComplexityRules('logic'));
+    deepEqual(this.allRules, Object.keys(complexity.getComplexityRules('all')));
+    deepEqual(this.rawRules, Object.keys(complexity.getComplexityRules('raw')));
+    deepEqual(['complexity'], Object.keys(complexity.getComplexityRules('complexity')));
+  }
+
   ['test: #executeOnFiles']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
@@ -92,6 +116,18 @@ class TestComplexity extends Test {
       'complexity': 1,
       'max-nested-callbacks': 1
     }, report.files[0].messages[21].complexityRules);
+  }
+
+  ['test: #executeOnFiles (complexity)']() {
+    const file = 'test/src/complexity__one_rule.js';
+    const complexity = new Complexity();
+    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    const onlyComplexity = new Complexity({ rules: 'complexity' });
+    const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
+    equal('max-params', report.maxRuleId);
+    deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
+    equal('complexity', onlyCReport.maxRuleId);
+    deepEqual({ 'complexity': 1 }, onlyCReport.complexityRules);
   }
 
   ['test: #toJSON']() {

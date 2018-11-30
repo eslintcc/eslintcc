@@ -13,6 +13,7 @@ const processArgs = getProcessArgs({
     lessThan: 'Option'
   },
   aliases: {
+    rules: 'r',
     format: 'f',
     showRules: ['show-rules', 'sr'],
     greaterThan: ['greater-than', 'gt'],
