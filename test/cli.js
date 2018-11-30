@@ -34,8 +34,8 @@ class TestCLI extends Test {
       'files': [{
         'fileName': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
-          'id': 'function/15:0/17:1',
-          'view': 'function',
+          'id': '15:0:17:1',
+          'type': 'function',
           'loc': { 'start': { 'line': 15, 'column': 0 }, 'end': { 'line': 17, 'column': 1 } },
           'namePath': 'function myFunc3',
           'complexityRules': { 'max-params': 3, 'complexity': 1 },

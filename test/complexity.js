@@ -16,25 +16,27 @@ class TestComplexity extends Test {
 
   constructor() {
     super();
-    this.allRules = [
-      'complexity', 'max-depth', 'max-len', 'max-lines', 'max-lines-per-function',
-      'max-nested-callbacks', 'max-params', 'max-statements'
-    ];
-    this.logicRules = [
-      'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
-    ];
-    this.rawRules = [
-      'max-len', 'max-lines', 'max-lines-per-function', 'max-statements'
-    ];
+    this.rules = {
+      all: [
+        'complexity', 'max-depth', 'max-len', 'max-lines', 'max-lines-per-function',
+        'max-nested-callbacks', 'max-params', 'max-statements'
+      ],
+      logic: [
+        'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
+      ],
+      raw: [
+        'max-len', 'max-lines', 'max-lines-per-function', 'max-statements'
+      ]
+    };
   }
 
   ['test: #getComplexityRules']() {
     const complexity = new Complexity();
-    deepEqual(this.logicRules, Object.keys(complexity.getComplexityRules()));
+    deepEqual(this.rules.logic, Object.keys(complexity.getComplexityRules()));
     deepEqual(complexity.getComplexityRules('logic'), complexity.getComplexityRules());
     deepEqual(complexity.getComplexityRules('error'), complexity.getComplexityRules('logic'));
-    deepEqual(this.allRules, Object.keys(complexity.getComplexityRules('all')));
-    deepEqual(this.rawRules, Object.keys(complexity.getComplexityRules('raw')));
+    deepEqual(this.rules.all, Object.keys(complexity.getComplexityRules('all')));
+    deepEqual(this.rules.raw, Object.keys(complexity.getComplexityRules('raw')));
     deepEqual(['complexity'], Object.keys(complexity.getComplexityRules('complexity')));
   }
 
@@ -137,8 +139,8 @@ class TestComplexity extends Test {
       'files': [{
         'fileName': resolve('test/src/complexity__messages_json.js'),
         'messages': [{
-          'id': 'function/3:0/5:1',
-          'view': 'function',
+          'id': '3:0:5:1',
+          'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'namePath': 'function myFunc',
           'complexityRules': { 'complexity': 1 },

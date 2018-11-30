@@ -31,10 +31,10 @@ const ruleCategories = {
   }
 };
 const ruleTypes = {
-  'complexity': { type: 'complexity', view: 'function' },
-  'max-depth': { type: 'complexity', view: 'block' },
-  'max-nested-callbacks': { type: 'complexity', view: 'function' },
-  'max-params': { type: 'complexity', view: 'function' }
+  'complexity': 'function',
+  'max-depth': 'block',
+  'max-nested-callbacks': 'function',
+  'max-params': 'function'
 };
 
 // Patching ESLint behavior, for use as a metrics generator
@@ -43,11 +43,9 @@ patchingESLint();
 
 class ComplexityFileReportMessage {
 
-  static getID(ruleType, node) {
-    const view = ruleType.view;
-    const start = `${node.loc.start.line}:${node.loc.start.column}`;
-    const end = `${node.loc.end.line}:${node.loc.end.column}`;
-    return `${view}/${start}/${end}`;
+  static getID(node) {
+    const { start, end } = node.loc;
+    return `${start.line}:${start.column}:${end.line}:${end.column}`;
   }
 
   static resolveNodeName(node, recursiveUp = false) {
@@ -106,9 +104,9 @@ class ComplexityFileReportMessage {
   }
 
   constructor({ messageID, ruleType, node }, { ranks }) {
-    this.ranks = ranks;
+    this.options = { ranks };
     this.id = messageID;
-    this.view = ruleType.view;
+    this.type = ruleType;
     this.loc = node.loc;
     this.namePath = this.constructor.resolveNodeName(node);
     this.complexityRules = {};
@@ -122,7 +120,7 @@ class ComplexityFileReportMessage {
   toJSON() {
     return {
       id: this.id,
-      view: this.view,
+      type: this.type,
       loc: this.loc,
       namePath: this.namePath,
       complexityRules: this.complexityRules,
@@ -132,12 +130,12 @@ class ComplexityFileReportMessage {
     };
   }
 
-  pushData(ruleId, ruleType, data) {
+  pushData(ruleId, data) {
     const value = this.constructor[`resolveValue:${ruleId}`](data);
-    const { rankValue, rankLabel } = this.ranks.getValue(ruleId, value);
-    this[`${ruleType.type}Rules`][ruleId] = value;
-    this[`${ruleType.type}Ranks`][`${ruleId}-value`] = rankValue;
-    this[`${ruleType.type}Ranks`][`${ruleId}-label`] = rankLabel;
+    const { rankValue, rankLabel } = this.options.ranks.getValue(ruleId, value);
+    this.complexityRules[ruleId] = value;
+    this.complexityRanks[`${ruleId}-value`] = rankValue;
+    this.complexityRanks[`${ruleId}-label`] = rankLabel;
     if (rankValue > this.maxValue) {
       this.maxRuleValue = value;
       this.maxRuleId = ruleId;
@@ -154,7 +152,7 @@ class ComplexityFileReport {
   constructor(fileName, { ranks }) {
     this.fileName = fileName;
     this.ranks = ranks;
-    this.messagesViewsMap = { function: {}, block: {} };
+    this.messagesTypesMap = { function: {}, block: {} };
     this.messagesMap = {};
     this.messages = [];
   }
@@ -168,16 +166,16 @@ class ComplexityFileReport {
 
   __pushMessage({ messageID, ruleType, node }) {
     const message = new ComplexityFileReportMessage({ messageID, ruleType, node }, { ranks: this.ranks });
-    this.messagesViewsMap[ruleType.view][messageID] = message;
+    this.messagesTypesMap[ruleType][messageID] = message;
     this.messagesMap[messageID] = message;
     this.messages.push(message);
     return message;
   }
 
   pushMessage({ ruleId, ruleType, node, data }) {
-    const messageID = ComplexityFileReportMessage.getID(ruleType, node);
+    const messageID = ComplexityFileReportMessage.getID(node);
     const message = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
-    message.pushData(ruleId, ruleType, data);
+    message.pushData(ruleId, data);
   }
 
 }

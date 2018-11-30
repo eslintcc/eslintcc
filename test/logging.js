@@ -86,8 +86,8 @@ class TestReportLogger extends Test {
           files: [{
             'fileName': resolve('test/src/logging__messages_json.js'),
             'messages': [{
-              'id': 'function/3:0/5:1',
-              'view': 'function',
+              'id': '3:0:5:1',
+              'type': 'function',
               'loc': {
                 'start': {
                   'line': 3,
@@ -109,8 +109,8 @@ class TestReportLogger extends Test {
               'maxValue': 0.2,
               'maxLabel': 'A'
             }, {
-              'id': 'function/9:0/11:1',
-              'view': 'function',
+              'id': '9:0:11:1',
+              'type': 'function',
               'loc': {
                 'start': {
                   'line': 9,
@@ -135,8 +135,8 @@ class TestReportLogger extends Test {
               'maxValue': 2,
               'maxLabel': 'B'
             }, {
-              'id': 'function/15:0/21:1',
-              'view': 'function',
+              'id': '15:0:21:1',
+              'type': 'function',
               'loc': {
                 'start': {
                   'line': 15,
@@ -161,8 +161,8 @@ class TestReportLogger extends Test {
               'maxValue': 2,
               'maxLabel': 'B'
             }, {
-              'id': 'block/16:2/20:3',
-              'view': 'block',
+              'id': '16:2:20:3',
+              'type': 'block',
               'loc': {
                 'start': {
                   'line': 16,
@@ -184,8 +184,8 @@ class TestReportLogger extends Test {
               'maxValue': 0.5,
               'maxLabel': 'A'
             }, {
-              'id': 'function/17:7/19:5',
-              'view': 'function',
+              'id': '17:7:19:5',
+              'type': 'function',
               'loc': {
                 'start': {
                   'line': 17,
