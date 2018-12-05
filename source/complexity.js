@@ -10,7 +10,7 @@ const allComplexityRules = {
   'max-depth': ['error', 0],
   //'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
   //'max-lines': ['error', 0],
-  //'max-lines-per-function': ['error', { max: 0 }],
+  'max-lines-per-function': ['error', { max: 0 }],
   'max-nested-callbacks': ['error', 0],
   'max-params': ['error', 0],
   'max-statements': ['error', 0]
@@ -26,13 +26,14 @@ const ruleCategories = {
   raw: {
     //'max-len': allComplexityRules['max-len'],
     //'max-lines': allComplexityRules['max-lines'],
-    //'max-lines-per-function': allComplexityRules['max-lines-per-function'],
+    'max-lines-per-function': allComplexityRules['max-lines-per-function'],
     'max-statements': allComplexityRules['max-statements']
   }
 };
 const ruleTypes = {
   'complexity': 'function',
   'max-depth': 'block',
+  'max-lines-per-function': 'function',
   'max-nested-callbacks': 'function',
   'max-params': 'function',
   'max-statements': 'function'
@@ -94,6 +95,10 @@ class ComplexityFileReportMessage {
 
   static['resolveValue:max-depth'](data) {
     return data.depth;
+  }
+
+  static['resolveValue:max-lines-per-function'](data) {
+    return data.lineCount;
   }
 
   static['resolveValue:max-nested-callbacks'](data) {

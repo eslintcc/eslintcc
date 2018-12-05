@@ -59,7 +59,14 @@ class Ranks {
       },
       //'max-len': {},
       //'max-lines': {},
-      //'max-lines-per-function': {},
+      'max-lines-per-function': {
+        A: 13,
+        B: 25,
+        C: 50,
+        D: 75,
+        E: 100,
+        F: Infinity
+      },
       'max-nested-callbacks': {
         A: 3,
         B: 5,

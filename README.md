@@ -113,9 +113,10 @@ Ranks corresponds to rule complexity scores as follows:
 | [**max-nested-callbacks**][eslint_max_nested_callbacks] | 1 - 3 | 4 - 5  | 6 - 10  | 11 - 15 | 16 - 20 | 21 + |
 | [**max-params**][eslint_max_params]                     | 1     | 2      | 3 - 4   | 5       | 6       | 7+   |
 
-| Raw rules                                   | A     | B     | C      | D       | E       | F    |
-| ------------------------------------------- | ----- | ----- | ------ | ------- | ------- | ---- |
-| [**max-statements**][eslint_max_statements] | 1 - 3 | 4 - 5 | 6 - 10 | 11 - 15 | 16 - 20 | 21 + |
+| Raw rules                                                   | A      | B       | C       | D       | E        | F     |
+| ----------------------------------------------------------- | ------ | ------- | ------- | ------- | -------- | ----- |
+| [**max-lines-per-function**][eslint_max_lines_per_function] | 1 - 13 | 14 - 25 | 26 - 50 | 51 - 75 | 76 - 100 | 101 + |
+| [**max-statements**][eslint_max_statements]                 | 1 - 3  | 4 - 5   | 6 - 10  | 11 - 15 | 16 - 20  | 21 +  |
 
 > **Note:** For rank "C", the maximum score, using from the standard score of ESLint rules.
 >   See [complexity rules][eslint_rule].
@@ -145,6 +146,8 @@ Ranks corresponds to rule complexity scores as follows:
 [eslint_rule]: https://eslint.org/docs/rules/complexity
 
 [eslint_max_depth]: https://eslint.org/docs/rules/max-depth
+
+[eslint_max_lines_per_function]: https://eslint.org/docs/rules/max-lines-per-function
 
 [eslint_max_nested_callbacks]: https://eslint.org/docs/rules/max-nested-callbacks
 

@@ -19,15 +19,16 @@ class TestComplexity extends Test {
     this.rules = {
       all: [
         'complexity', 'max-depth',
-        // 'max-len', 'max-lines', 'max-lines-per-function',
+        // 'max-len', 'max-lines',
+        'max-lines-per-function',
         'max-nested-callbacks', 'max-params', 'max-statements'
       ],
       logic: [
         'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
       ],
       raw: [
-        // 'max-len', 'max-lines', 'max-lines-per-function',
-        'max-statements'
+        // 'max-len', 'max-lines',
+        'max-lines-per-function', 'max-statements'
       ]
     };
   }
@@ -143,7 +144,16 @@ class TestComplexity extends Test {
     const rawComplexity = new Complexity({ rules: 'raw' });
     const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages[0];
     equal('max-statements', rawReport.maxRuleId);
-    deepEqual({ 'max-statements': 4 }, rawReport.complexityRules);
+    deepEqual({
+      'max-lines-per-function': 8,
+      'max-statements': 4
+    }, rawReport.complexityRules);
+    deepEqual({
+      'max-lines-per-function-label': 'A',
+      'max-lines-per-function-value': 0.615,
+      'max-statements-label': 'B',
+      'max-statements-value': 1.5
+    }, rawReport.complexityRanks);
   }
 
   ['test: #toJSON']() {
