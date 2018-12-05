@@ -18,14 +18,16 @@ class TestComplexity extends Test {
     super();
     this.rules = {
       all: [
-        'complexity', 'max-depth', 'max-len', 'max-lines', 'max-lines-per-function',
+        'complexity', 'max-depth',
+        // 'max-len', 'max-lines', 'max-lines-per-function',
         'max-nested-callbacks', 'max-params', 'max-statements'
       ],
       logic: [
         'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
       ],
       raw: [
-        'max-len', 'max-lines', 'max-lines-per-function', 'max-statements'
+        // 'max-len', 'max-lines', 'max-lines-per-function',
+        'max-statements'
       ]
     };
   }
@@ -124,12 +126,24 @@ class TestComplexity extends Test {
     const file = 'test/src/complexity__one_rule.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
-    const onlyComplexity = new Complexity({ rules: 'complexity' });
-    const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
     equal('max-params', report.maxRuleId);
     deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
+    const onlyComplexity = new Complexity({ rules: 'complexity' });
+    const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
     equal('complexity', onlyCReport.maxRuleId);
     deepEqual({ 'complexity': 1 }, onlyCReport.complexityRules);
+  }
+
+  ['test: #executeOnFiles (raw rules)']() {
+    const file = 'test/src/complexity__raw_rules.js';
+    const complexity = new Complexity();
+    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    equal('max-params', report.maxRuleId);
+    deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
+    const rawComplexity = new Complexity({ rules: 'raw' });
+    const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages[0];
+    equal('max-statements', rawReport.maxRuleId);
+    deepEqual({ 'max-statements': 4 }, rawReport.complexityRules);
   }
 
   ['test: #toJSON']() {

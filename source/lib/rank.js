@@ -57,6 +57,9 @@ class Ranks {
         E: 8,
         F: Infinity
       },
+      //'max-len': {},
+      //'max-lines': {},
+      //'max-lines-per-function': {},
       'max-nested-callbacks': {
         A: 3,
         B: 5,
@@ -71,6 +74,14 @@ class Ranks {
         C: 3,
         D: 5,
         E: 6,
+        F: Infinity
+      },
+      'max-statements': {
+        A: 3,
+        B: 5,
+        C: 10,
+        D: 15,
+        E: 20,
         F: Infinity
       }
     };

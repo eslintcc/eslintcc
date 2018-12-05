@@ -8,9 +8,9 @@ const { Ranks } = require('./lib/rank');
 const allComplexityRules = {
   'complexity': ['error', 0],
   'max-depth': ['error', 0],
-  'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
-  'max-lines': ['error', 0],
-  'max-lines-per-function': ['error', { max: 0 }],
+  //'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
+  //'max-lines': ['error', 0],
+  //'max-lines-per-function': ['error', { max: 0 }],
   'max-nested-callbacks': ['error', 0],
   'max-params': ['error', 0],
   'max-statements': ['error', 0]
@@ -24,9 +24,9 @@ const ruleCategories = {
     'max-params': allComplexityRules['max-params']
   },
   raw: {
-    'max-len': allComplexityRules['max-len'],
-    'max-lines': allComplexityRules['max-lines'],
-    'max-lines-per-function': allComplexityRules['max-lines-per-function'],
+    //'max-len': allComplexityRules['max-len'],
+    //'max-lines': allComplexityRules['max-lines'],
+    //'max-lines-per-function': allComplexityRules['max-lines-per-function'],
     'max-statements': allComplexityRules['max-statements']
   }
 };
@@ -34,7 +34,8 @@ const ruleTypes = {
   'complexity': 'function',
   'max-depth': 'block',
   'max-nested-callbacks': 'function',
-  'max-params': 'function'
+  'max-params': 'function',
+  'max-statements': 'function'
 };
 
 // Patching ESLint behavior, for use as a metrics generator
@@ -100,6 +101,10 @@ class ComplexityFileReportMessage {
   }
 
   static['resolveValue:max-params'](data) {
+    return data.count;
+  }
+
+  static['resolveValue:max-statements'](data) {
     return data.count;
   }
 
