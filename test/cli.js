@@ -52,6 +52,55 @@ class TestCLI extends Test {
     }, report);
   }
 
+  ['test: json + rules']() {
+    const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
+    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
+    deepEqual({
+      'files': [{
+        'fileName': resolve('test/src/complexity__one_rule.js'),
+        'messages': [{
+          'id': '3:0:5:1',
+          'type': 'function',
+          'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
+          'namePath': 'function myFunc',
+          'complexityRules': {
+            'max-params': 7,
+            'complexity': 1
+          },
+          'complexityRanks': {
+            'max-params-value': 5.166,
+            'max-params-label': 'F',
+            'complexity-value': 0.2,
+            'complexity-label': 'A'
+          },
+          'maxValue': 5.166,
+          'maxLabel': 'F'
+        }]
+      }]
+    }, report1);
+    const report2 = JSON.parse(execSync(cmd + ' --rules complexity', { encoding: 'utf-8' }));
+    deepEqual({
+      'files': [{
+        'fileName': resolve('test/src/complexity__one_rule.js'),
+        'messages': [{
+          'id': '3:0:5:1',
+          'type': 'function',
+          'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
+          'namePath': 'function myFunc',
+          'complexityRules': {
+            'complexity': 1
+          },
+          'complexityRanks': {
+            'complexity-value': 0.2,
+            'complexity-label': 'A'
+          },
+          'maxValue': 0.2,
+          'maxLabel': 'A'
+        }]
+      }]
+    }, report2);
+  }
+
 }
 
 
