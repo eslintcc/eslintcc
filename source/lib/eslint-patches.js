@@ -106,7 +106,6 @@ function __patchComplexityRules() {
  * Run all ESLint behavior patches
  */
 function patchingESLint() {
-  __purifyESLintConfigRules();
   __patchComplexityRules();
 }
 
