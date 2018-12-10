@@ -32,9 +32,11 @@ const report = complexity.executeOnFiles(['yourfile.js']);
 console.log(JSON.stringify(report, null, '\t'));
 ```
 
-**Note:** ESLintCC ignores all plugins, shareable configs and rules, specified in configuration files,
+**Note:** ESLintCC ignores all plugins and rules, specified in configuration files,
     and uses to generate a report only [complexity rules][eslint_rule].
-  So there is no need to install these dependencies for use ESLintCC.
+  So there is no need to install plugins dependencies for use ESLintCC.
+  But, if using a [shareable configuration package][share_conf],
+    you use must also be installed locally or globally to work with a locally or globally installed ESLintCC.
 
 ## Configuration
 
@@ -141,6 +143,8 @@ Ranks corresponds to rule complexity scores as follows:
 [coverage_url]: https://coveralls.io/github/eslintcc/eslintcc?branch=master
 
 [eslint_npm]: https://www.npmjs.com/package/eslint
+
+[share_conf]: https://eslint.org/docs/user-guide/configuring#using-a-shareable-configuration-package
 
 [eslint_rule]: https://eslint.org/docs/rules/complexity
 

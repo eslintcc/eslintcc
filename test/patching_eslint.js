@@ -12,7 +12,7 @@ require('../');
 class PatchingESLint extends Test {
 
   get name() {
-    return 'Loading configuration';
+    return 'Patching ESlint';
   }
 
   ['test: purify config']() {
@@ -23,7 +23,7 @@ class PatchingESLint extends Test {
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
     deepEqual(afterConfig.parser, beforeConfig.parser);
     equal('eslint:recommended', beforeConfig.extends);
-    equal(undefined, afterConfig.extends);
+    equal('eslint:recommended', afterConfig.extends);
     equal(undefined, beforeConfig.plugins);
     equal(undefined, afterConfig.plugins);
     deepEqual(['warn', 2, { 'SwitchCase': 1 }], beforeConfig.rules.indent);

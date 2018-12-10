@@ -26,9 +26,14 @@ function __purifyConfig(config) {
   const empty = createEmptyConfig();
   config.globals = empty.globals;
   config.rules = empty.rules;
-  config.extends = empty.config;
   config.plugins = empty.plugins;
-  config.overrides = empty.overrides;
+  if (config.overrides) {
+    for (let override of config.overrides) {
+      override.globals = empty.globals;
+      override.rules = empty.rules;
+      override.plugins = empty.plugins;
+    }
+  }
   return config;
 }
 
@@ -106,6 +111,7 @@ function __patchComplexityRules() {
  * Run all ESLint behavior patches
  */
 function patchingESLint() {
+  __purifyESLintConfigRules();
   __patchComplexityRules();
 }
 
