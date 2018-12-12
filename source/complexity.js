@@ -81,10 +81,14 @@ class ComplexityFileReportMessage {
       case 'ArrowFunctionExpression':
         return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
       default:
-        if (recursiveUp || node.loc.start.line === parent.loc.start.line) {
+        if (recursiveUp || parent && node.loc.start.line === parent.loc.start.line) {
           return this.resolveNodeName(parent, true);
         } else {
-          return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
+          if (node.loc.start.line === node.loc.end.line) {
+            return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.start.column}`);
+          } else {
+            return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
+          }
         }
     }
   }
@@ -128,7 +132,7 @@ class ComplexityFileReportMessage {
   }
 
   toJSON() {
-    return {
+    const json = {
       id: this.id,
       type: this.type,
       loc: this.loc,
@@ -138,6 +142,10 @@ class ComplexityFileReportMessage {
       maxValue: this.maxValue,
       maxLabel: this.maxLabel
     };
+    if (this.errorMessage) {
+      json.errorMessage = this.errorMessage;
+    }
+    return json;
   }
 
   pushData(ruleId, data) {
@@ -154,6 +162,18 @@ class ComplexityFileReportMessage {
     }
   }
 
+  pushFatalMessage(ruleId, message) {
+    const { rankValue, rankLabel } = this.options.ranks.constructor.getMaxValue();
+    this.complexityRules[ruleId] = 1;
+    this.complexityRanks[`${ruleId}-value`] = rankValue;
+    this.complexityRanks[`${ruleId}-label`] = rankLabel;
+    this.errorMessage = message;
+    this.maxRuleValue = 1;
+    this.maxRuleId = ruleId;
+    this.maxValue = rankValue;
+    this.maxLabel = rankLabel;
+  }
+
 }
 
 
@@ -162,7 +182,7 @@ class ComplexityFileReport {
   constructor(fileName, { ranks }) {
     this.fileName = fileName;
     this.ranks = ranks;
-    this.messagesTypesMap = { function: {}, block: {} };
+    this.messagesTypesMap = { file: {}, function: {}, block: {} };
     this.messagesMap = {};
     this.messages = [];
   }
@@ -184,8 +204,16 @@ class ComplexityFileReport {
 
   pushMessage({ ruleId, ruleType, node, data }) {
     const messageID = ComplexityFileReportMessage.getID(node);
-    const message = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
-    message.pushData(ruleId, data);
+    const reportMessage = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
+    reportMessage.pushData(ruleId, data);
+  }
+
+  pushFatalMessage({ ruleId, ruleType, line, column, message }) {
+    const loc = { start: { line, column }, end: { line, column } };
+    const node = { loc, type: 'Program', parent: null };
+    const messageID = ComplexityFileReportMessage.getID(node);
+    const reportMessage = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
+    reportMessage.pushFatalMessage(ruleId, message);
   }
 
 }
@@ -207,9 +235,16 @@ class ComplexityReport {
 
   verifyFile(fileName, messages) {
     const fileReport = new ComplexityFileReport(fileName, this.options);
-    messages.forEach(({ message }) => {
-      message.ruleType = ruleTypes[message.ruleId];
-      fileReport.pushMessage(message);
+    messages.forEach(message => {
+      if (message.fatal) {
+        message.ruleId = 'fatal-error';
+        message.ruleType = 'file';
+        fileReport.pushFatalMessage(message);
+      } else {
+        message = message.message;
+        message.ruleType = ruleTypes[message.ruleId];
+        fileReport.pushMessage(message);
+      }
     });
     if (this.options.greaterThan || this.options.lessThan) {
       const greaterThan = this.options.greaterThan || -Infinity;

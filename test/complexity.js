@@ -156,6 +156,39 @@ class TestComplexity extends Test {
     }, rawReport.complexityRanks);
   }
 
+  ['test: #executeOnFiles (parse Error: Fatal)']() {
+    const file = 'test/src/complexity__fatal.js';
+    const complexity = new Complexity();
+    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    deepEqual({ 'fatal-error-label': 'F', 'fatal-error-value': 6 }, report.complexityRanks);
+    deepEqual({ 'fatal-error': 1 }, report.complexityRules);
+    equal('4:3:4:3', report.id);
+    equal('F', report.maxLabel);
+    equal('fatal-error', report.maxRuleId);
+    equal(1, report.maxRuleValue);
+    equal(6, report.maxValue);
+    equal("Parsing error: The keyword 'let' is reserved", report.errorMessage);
+    equal('Program:4:3', report.namePath);
+    equal('file', report.type);
+  }
+
+  ['test: #executeOnFiles (parse Error: Fatal, JSON)']() {
+    const file = 'test/src/complexity__fatal.js';
+    const complexity = new Complexity();
+    const report = JSON.stringify(complexity.executeOnFiles([file]).files[0].messages[0]);
+    deepEqual({
+      'id': '4:3:4:3',
+      'type': 'file',
+      'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
+      'namePath': 'Program:4:3',
+      'complexityRules': { 'fatal-error': 1 },
+      'complexityRanks': { 'fatal-error-value': 6, 'fatal-error-label': 'F' },
+      'maxValue': 6,
+      'maxLabel': 'F',
+      'errorMessage': "Parsing error: The keyword 'let' is reserved"
+    }, JSON.parse(report));
+  }
+
   ['test: #toJSON']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);

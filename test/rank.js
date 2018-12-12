@@ -33,6 +33,11 @@ class TestRank extends Test {
     deepEqual([1, 2, 3, 4, 5, Infinity, 50, 10, null], maxValues);
   }
 
+  ['test: .getMaxValue']() {
+    const maxValue = Ranks.getMaxValue();
+    deepEqual({ rankValue: 6, rankLabel: 'F' }, maxValue);
+  }
+
   ['test: #getValue']() {
     const ranks = new Ranks();
     const getValue = value => ranks.getValue('complexity', value);

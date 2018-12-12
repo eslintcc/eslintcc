@@ -33,6 +33,13 @@ class Ranks {
     }
   }
 
+  static getMaxValue() {
+    return {
+      rankValue: rankLabelsMaxValue['E'] + 1,
+      rankLabel: 'F'
+    };
+  }
+
   get defaultRanks() {
     // The maximum complexity score for rule, associated with the rank
     // 'complexity' corresponds https://radon.readthedocs.io/en/latest/api.html#radon.complexity.cc_rank.

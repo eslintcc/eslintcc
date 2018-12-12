@@ -36,6 +36,11 @@ class TestReportLogger extends Test {
       7: '  \x1b[33;1mC\x1b[0m 41:0  function myFunc6 (complexity = 13)',
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55 (max-depth = 12)'
     };
+    this.messagesFatal = {
+      0: `test${sep}src${sep}complexity__fatal.js`,
+      1: '  \x1b[31;1mF\x1b[0m 4:3 Program:4:3 (fatal-error = 1)',
+      2: "    \x1b[31;1mError\x1b[0m Parsing error: The keyword 'let' is reserved"
+    };
   }
 
   get name() {
@@ -64,6 +69,7 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
+    equal(20, this.step);
   }
 
   ['test: text + showRules']() {
@@ -74,6 +80,18 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
+    equal(20, this.step);
+  }
+
+  ['test: text + messagesFatal']() {
+    const complexity = new Complexity({});
+    new ReportLogger(complexity, {
+      logger: msg => this.logger('messagesFatal', msg),
+      showRules: true
+    });
+    this.step = 0;
+    complexity.executeOnFiles(['./test/src/complexity__fatal.js']);
+    equal(3, this.step);
   }
 
   ['test: json']() {

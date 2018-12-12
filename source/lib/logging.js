@@ -15,6 +15,10 @@ class ReportLogger {
     };
   }
 
+  get defaultErrorColor() {
+    return '\x1b[31;1mError\x1b[0m';
+  }
+
   constructor(complexity, {
     cwd = process.cwd(),
     format = 'text',
@@ -25,6 +29,7 @@ class ReportLogger {
     this.options = { cwd, format, showRules };
     this.logger = logger;
     this.colors = this.defaultColors;
+    this.errorColor = this.defaultErrorColor;
     this.complexity.events
       .on('verifyFile', this.verifyFile.bind(this))
       .on('finish', this.finish.bind(this));
@@ -46,7 +51,8 @@ class ReportLogger {
           loc: { start: { line, column } },
           namePath,
           maxRuleId,
-          maxRuleValue
+          maxRuleValue,
+          errorMessage
         } = message;
         const locStart = `${String(line).padStart(padStart)}:${String(column).padEnd(padEnd)}`;
         let text = `  ${this.colors[maxLabel]} ${locStart} ${namePath}`;
@@ -54,6 +60,9 @@ class ReportLogger {
           text += ` (${maxRuleId} = ${maxRuleValue})`;
         }
         this.logger(text);
+        if (errorMessage) {
+          this.logger(`    ${this.errorColor} ${errorMessage}`);
+        }
       }
     }
   }
