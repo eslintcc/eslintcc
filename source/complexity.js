@@ -9,7 +9,7 @@ const allComplexityRules = {
   'complexity': ['error', 0],
   'max-depth': ['error', 0],
   //'max-len': ['error', 1], // TODO: https://github.com/IgorNovozhilov/eslintcc/issues/1
-  //'max-lines': ['error', 0],
+  'max-lines': ['error', 0],
   'max-lines-per-function': ['error', { max: 0 }],
   'max-nested-callbacks': ['error', 0],
   'max-params': ['error', 0],
@@ -25,7 +25,7 @@ const ruleCategories = {
   },
   raw: {
     //'max-len': allComplexityRules['max-len'],
-    //'max-lines': allComplexityRules['max-lines'],
+    'max-lines': allComplexityRules['max-lines'],
     'max-lines-per-function': allComplexityRules['max-lines-per-function'],
     'max-statements': allComplexityRules['max-statements']
   }
@@ -33,6 +33,7 @@ const ruleCategories = {
 const ruleTypes = {
   'complexity': 'function',
   'max-depth': 'block',
+  'max-lines': 'file',
   'max-lines-per-function': 'function',
   'max-nested-callbacks': 'function',
   'max-params': 'function',
@@ -99,6 +100,10 @@ class ComplexityFileReportMessage {
 
   static['resolveValue:max-depth'](data) {
     return data.depth;
+  }
+
+  static['resolveValue:max-lines'](data) {
+    return data.actual;
   }
 
   static['resolveValue:max-lines-per-function'](data) {
@@ -203,6 +208,11 @@ class ComplexityFileReport {
   }
 
   pushMessage({ ruleId, ruleType, node, data }) {
+    node = node || {
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
+      type: 'Program',
+      parent: null
+    };
     const messageID = ComplexityFileReportMessage.getID(node);
     const reportMessage = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
     reportMessage.pushData(ruleId, data);

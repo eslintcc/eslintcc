@@ -19,16 +19,16 @@ class TestComplexity extends Test {
     this.rules = {
       all: [
         'complexity', 'max-depth',
-        // 'max-len', 'max-lines',
-        'max-lines-per-function',
+        // 'max-len',
+        'max-lines', 'max-lines-per-function',
         'max-nested-callbacks', 'max-params', 'max-statements'
       ],
       logic: [
         'complexity', 'max-depth', 'max-nested-callbacks', 'max-params'
       ],
       raw: [
-        // 'max-len', 'max-lines',
-        'max-lines-per-function', 'max-statements'
+        // 'max-len',
+        'max-lines', 'max-lines-per-function', 'max-statements'
       ]
     };
   }
@@ -142,18 +142,26 @@ class TestComplexity extends Test {
     equal('max-params', report.maxRuleId);
     deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
     const rawComplexity = new Complexity({ rules: 'raw' });
-    const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages[0];
-    equal('max-statements', rawReport.maxRuleId);
+    const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages;
+    equal('max-lines', rawReport[0].maxRuleId);
+    deepEqual({
+      'max-lines': 13
+    }, rawReport[0].complexityRules);
+    deepEqual({
+      'max-lines-label': 'A',
+      'max-lines-value': 0.173
+    }, rawReport[0].complexityRanks);
+    equal('max-statements', rawReport[1].maxRuleId);
     deepEqual({
       'max-lines-per-function': 8,
       'max-statements': 4
-    }, rawReport.complexityRules);
+    }, rawReport[1].complexityRules);
     deepEqual({
       'max-lines-per-function-label': 'A',
       'max-lines-per-function-value': 0.615,
       'max-statements-label': 'B',
       'max-statements-value': 1.5
-    }, rawReport.complexityRanks);
+    }, rawReport[1].complexityRanks);
   }
 
   ['test: #executeOnFiles (parse Error: Fatal)']() {

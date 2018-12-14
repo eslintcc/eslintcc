@@ -65,7 +65,14 @@ class Ranks {
         F: Infinity
       },
       //'max-len': {},
-      //'max-lines': {},
+      'max-lines': {
+        A: 75,
+        B: 150,
+        C: 300,
+        D: 450,
+        E: 600,
+        F: Infinity
+      },
       'max-lines-per-function': {
         A: 13,
         B: 25,
