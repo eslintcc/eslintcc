@@ -64,3 +64,9 @@ mo2.myMethod5();
 const myFunc4 =
   function() {};
 myFunc4();
+
+const mo3 = {
+  myFunc5: function() {},
+  myFunc6: function myFunc7() {},
+};
+mo3.myFunc5();

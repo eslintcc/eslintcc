@@ -283,6 +283,8 @@ class TestComplexity extends Test {
     equal('IfStatement:49-51', messages[17].namePath);
     equal('variable mo2, function myMethod5', messages[18].namePath);
     equal('variable myFunc4, function anonymous', messages[19].namePath);
+    equal('variable mo3, function myFunc5', messages[20].namePath);
+    equal('variable mo3, function myFunc7', messages[21].namePath);
   }
 
 }

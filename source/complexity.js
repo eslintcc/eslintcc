@@ -33,6 +33,7 @@ const ruleCategories = {
 const ruleTypes = {
   'complexity': 'function',
   'max-depth': 'block',
+  //'max-len': 'line',
   'max-lines': 'file',
   'max-lines-per-function': 'function',
   'max-nested-callbacks': 'function',
@@ -75,7 +76,7 @@ class ComplexityFileReportMessage {
       case 'VariableDeclarator':
         return nameWithParent('variable ' + node.id.name);
       case 'Property':
-        if (node.method) {
+        if (node.method || node.value && !node.value.id && node.value.type === 'FunctionExpression') {
           return nameWithParent('function ' + (node.key.name || node.key.raw));
         }
         return this.resolveNodeName(parent, true);
@@ -199,7 +200,7 @@ class ComplexityFileReport {
     };
   }
 
-  __pushMessage({ messageID, ruleType, node }) {
+  __pushMessage(messageID, ruleType, node) {
     const message = new ComplexityFileReportMessage({ messageID, ruleType, node }, { ranks: this.ranks });
     this.messagesTypesMap[ruleType][messageID] = message;
     this.messagesMap[messageID] = message;
@@ -214,7 +215,7 @@ class ComplexityFileReport {
       parent: null
     };
     const messageID = ComplexityFileReportMessage.getID(node);
-    const reportMessage = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
+    const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
     reportMessage.pushData(ruleId, data);
   }
 
@@ -222,7 +223,7 @@ class ComplexityFileReport {
     const loc = { start: { line, column }, end: { line, column } };
     const node = { loc, type: 'Program', parent: null };
     const messageID = ComplexityFileReportMessage.getID(node);
-    const reportMessage = this.messagesMap[messageID] || this.__pushMessage({ messageID, ruleType, node });
+    const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
     reportMessage.pushFatalMessage(ruleId, message);
   }
 
