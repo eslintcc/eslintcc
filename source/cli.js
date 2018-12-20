@@ -7,6 +7,7 @@ const { ReportLogger } = require('./lib/logging');
 
 const processArgs = getProcessArgs({
   types: {
+    rules: 'Array',
     format: 'Option',
     showRules: 'Flag',
     greaterThan: 'Option',

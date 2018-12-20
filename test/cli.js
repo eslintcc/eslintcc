@@ -101,6 +101,15 @@ class TestCLI extends Test {
     }, report2);
   }
 
+  ['test: json + 2-rules']() {
+    const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
+    const cmd2 = cmd + ' --rules logic --rules max-statements';
+    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' })).files[0].messages[0].complexityRules;
+    deepEqual({ 'max-params': 7, 'complexity': 1 }, report1);
+    const report2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages[0].complexityRules;
+    deepEqual({ 'complexity': 1, 'max-params': 7, 'max-statements': 1 }, report2);
+  }
+
 }
 
 

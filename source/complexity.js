@@ -257,14 +257,15 @@ class ComplexityReport {
         fileReport.pushMessage(message);
       }
     });
-    if (this.options.greaterThan || this.options.lessThan) {
-      const greaterThan = this.options.greaterThan || -Infinity;
-      const lessThan = (this.options.lessThan || Infinity);
+    const { greaterThan, lessThan } = this.options;
+    if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
+      const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
+      const lt = typeof lessThan === 'number' ? lessThan : Infinity;
       fileReport.messages = fileReport.messages.filter(message => {
-        if (message.maxValue <= greaterThan) {
+        if (message.maxValue <= gt) {
           return false;
         }
-        if (message.maxValue > lessThan) {
+        if (message.maxValue > lt) {
           return false;
         }
         return true;
@@ -296,14 +297,22 @@ class Complexity {
 
   getComplexityRules(customCategory) {
     const category = customCategory || this.options.rules;
-    if (category in allComplexityRules) {
-      return {
-        [category]: allComplexityRules[category]
-      };
-    } else if (category in ruleCategories) {
-      return ruleCategories[category];
+    if (category instanceof Array) {
+      const rules = {};
+      for (const ctg of category) {
+        Object.assign(rules, this.getComplexityRules(ctg));
+      }
+      return rules;
     } else {
-      return ruleCategories['logic'];
+      if (category in allComplexityRules) {
+        return {
+          [category]: allComplexityRules[category]
+        };
+      } else if (category in ruleCategories) {
+        return ruleCategories[category];
+      } else {
+        return ruleCategories['logic'];
+      }
     }
   }
 

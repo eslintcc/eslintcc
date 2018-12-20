@@ -127,9 +127,29 @@ Ranks corresponds to rule complexity scores as follows:
 > Example formula:
 >   `[5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))`
 
-* * *
+## Command line options
 
-**...while in development... :relaxed:**
+Command line format:
+
+    $ eslintcc [options] file.js [file.js] [dir]
+
+| Option                              | Type             | Description                                                 |
+| ----------------------------------- | ---------------- | ----------------------------------------------------------- |
+| --rules <rules>, -r=<rules>         | Array of String  | Rule, or group: all, logic, raw. Default: logic             |
+| --format <format>, -f=<format>      | String           | Use a specific output format, text or json. Default: text   |
+| --show-rules, -sr                   | Flag             | Show rule name and value, if used text format               |
+| --greater-than <value>, -gt=<value> | String or Number | Will show rules more than rank a, b, c, d, e, or rank value |
+| --less-than <value>, -lt=<value>    | String or Number | Will show rules less than rank b, c, d, e, f, or rank value |
+
+### Command examples
+
+Output as JSON and show rules more than rank **E**:
+
+    $ eslintcc -f=json -gt=e file.js
+
+Use only 2 rules and show rule name:
+
+    $ eslintcc --rules complexity --rules max-depth --show-rules file.js
 
 [npm_img]: https://img.shields.io/npm/v/eslintcc.svg
 
