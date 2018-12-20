@@ -1,9 +1,9 @@
-# ESLint Cyclomatic Complexity Tool [![npm][npm_img]][npm_url] [![Build Status][build_img]][build_url] [![Coverage Status][coverage_img]][coverage_url]
+# ESLint Complexity Tool [![npm][npm_img]][npm_url] [![Build Status][build_img]][build_url] [![Coverage Status][coverage_img]][coverage_url]
 
 [ESLintCC][npm_url] is a ECMAScript/JavaScript tool
-  that computes cyclomatic complexity by using [ESLint][eslint_npm]
+  that computes code complexity by using [ESLint][eslint_npm]
 
-> ESLint calculates cyclomatic complexity,
+> ESLint calculates code complexity,
 > while this tool only collects a report based on his [complexity rule messages][eslint_rule]
 
 ## Installation and Usage
