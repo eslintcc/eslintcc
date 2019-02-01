@@ -23,7 +23,7 @@ if (packageJSON.dependencies.eslint !== eslintVersion) {
   exec('git config user.email igor.github.bot@gmail.com');
   exec('git config user.name igor-github-bot');
   exec('git checkout master');
-  exec('git remote add origin-master https://${NPM_TOKEN}@github.com/eslintcc/eslintcc');
+  exec('git remote add origin-master https://${GITHUB_ACCESS_TOKEN}@github.com/eslintcc/eslintcc');
   exec(`git commit -a -m "Обновление до eslint@${eslintVersion.slice(1)}"`);
   exec('git push origin-master');
   exec('git remote remove origin-master');
