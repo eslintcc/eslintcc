@@ -3,6 +3,11 @@
   "configurations": [{
     "type": "node",
     "request": "launch",
+    "name": "Current file",
+    "program": "${file}"
+  }, {
+    "type": "node",
+    "request": "launch",
     "name": "Self Complexity",
     "program": "${workspaceFolder}/source/cli.js",
     "args": [

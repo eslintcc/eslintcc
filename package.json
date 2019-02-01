@@ -1,6 +1,6 @@
 {
   "name": "eslintcc",
-  "version": "0.0.3-pre.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/eslintcc/eslintcc",
   "description": "ESLintCC is a ECMAScript/JavaScript tool that computes complexity of code by using ESLint",
   "keywords": [
@@ -25,15 +25,20 @@
     "@ndk/env": "^0.0.3"
   },
   "devDependencies": {
+    "semver": "^5.6.0",
     "@ndk/test": "^0.0.4"
   },
   "scripts": {
     "test": "node test",
-    "coverage": "nyc node test && nyc report --reporter=html",
-    "coverage-all": "nyc --exclude=!test --exclude=coverage node test && nyc report --reporter=html",
-    "travis-build": "eslint . --ignore-pattern /test/src/ && nyc --reporter=lcovonly node test && nyc report && coveralls < coverage/lcov.info"
+    "coverage": "node bin/coverage",
+    "coverage-all": "node bin/coverage-all"
   },
   "nyc": {
-    "all": true
+    "all": true,
+    "exclude": [
+      "bin",
+      "coverage",
+      "test"
+    ]
   }
 }

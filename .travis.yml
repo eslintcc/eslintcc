@@ -2,8 +2,8 @@ language:       node_js
 node_js:        node
 cache:
   directories:  [node_modules]
-install:        npm install && npm update
-script:         npm run travis-build
+install:        npm install
+script:         node ./bin/travis-build
 notifications:
   email:        false
 before_install:
