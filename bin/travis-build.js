@@ -20,8 +20,8 @@ if (packageJSON.dependencies.eslint !== eslintVersion) {
   packageJSON.version = require('semver').inc(packageJSON.version, 'patch');
   writeJSON('package.json', packageJSON);
   exec('node test');
-  exec('git config user.email', 'igor.github.bot@gmail.com');
-  exec('git config user.name', 'igor-github-bot');
+  exec('git config user.email igor.github.bot@gmail.com');
+  exec('git config user.name igor-github-bot');
   exec('git checkout master');
   exec(`git remote add origin-master https://${process.env.GITHUB_ACCESS_TOKEN}@github.com/eslintcc/eslintcc`);
   exec(`git commit -a -m "Обновление до eslint@${eslintVersion.slice(1)}"`);
