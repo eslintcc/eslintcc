@@ -4,8 +4,4 @@ cache:
   directories:  [node_modules]
 install:        npm install
 script:         node ./bin/travis-build
-notifications:
-  email:        false
-before_install:
-  - npm i -g nyc
-  - npm i -g coveralls
+before_install: npm i -g nyc coveralls
