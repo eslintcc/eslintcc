@@ -8,6 +8,11 @@ exec('nyc --reporter=lcovonly node test');
 exec('nyc report');
 exec('coveralls < coverage/lcov.info');
 
+if (process.env.TRAVIS_BRANCH !== 'master' || process.env.TRAVIS_PULL_REQUEST !== 'false') {
+  // Если это не master ветка, дальнейшие шаги не требуются
+  process.exit(0);
+}
+
 // Проверяем обновление версии ESLint
 exec('npm i eslint@latest semver@latest');
 const packageJSON = readJSON('package.json');
