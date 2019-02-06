@@ -284,13 +284,15 @@ class Complexity {
     rules = 'logic',
     greaterThan = undefined,
     lessThan = undefined,
-    ranks = null
+    ranks = null,
+    noInlineConfig = false
   } = {}) {
     this.options = {
       ranks: new Ranks(ranks),
       rules: rules,
       greaterThan: Ranks.getLabelMaxValue(greaterThan),
       lessThan: Ranks.getLabelMinValue(lessThan),
+      noInlineConfig: noInlineConfig
     };
     this.events = new EventEmitter();
   }
@@ -317,7 +319,10 @@ class Complexity {
   }
 
   executeOnFiles(patterns) {
-    const engine = new PatchedCLIEngine({ rules: this.getComplexityRules() });
+    const engine = new PatchedCLIEngine({
+      allowInlineConfig: !this.options.noInlineConfig,
+      rules: this.getComplexityRules()
+    });
     const report = new ComplexityReport(this.options);
     engine.events.on('verifyFile', report.verifyFile.bind(report));
     report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));

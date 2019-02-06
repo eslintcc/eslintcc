@@ -133,13 +133,14 @@ Command line format:
 
     $ eslintcc [options] file.js [file.js] [dir]
 
-| Option                                    | Type             | Description                                                 |
-| ----------------------------------------- | ---------------- | ----------------------------------------------------------- |
-| --rules &lt;rules>, -r=&lt;rules>         | Array of String  | Rule, or group: all, logic, raw. Default: logic             |
-| --format &lt;format>, -f=&lt;format>      | String           | Use a specific output format, text or json. Default: text   |
-| --show-rules, -sr                         | Flag             | Show rule name and value, if used text format               |
-| --greater-than &lt;value>, -gt=&lt;value> | String or Number | Will show rules more than rank a, b, c, d, e, or rank value |
-| --less-than &lt;value>, -lt=&lt;value>    | String or Number | Will show rules less than rank b, c, d, e, f, or rank value |
+| Option                                    | Type             | Description                                                              |
+| ----------------------------------------- | ---------------- | ------------------------------------------------------------------------ |
+| --rules &lt;rules>, -r=&lt;rules>         | Array of String  | Rule, or group: all, logic, raw. Default: logic                          |
+| --format &lt;format>, -f=&lt;format>      | String           | Use a specific output format, text or json. Default: text                |
+| --show-rules, -sr                         | Flag             | Show rule name and value, if used text format                            |
+| --greater-than &lt;value>, -gt=&lt;value> | String or Number | Will show rules more than rank a, b, c, d, e, or rank value              |
+| --less-than &lt;value>, -lt=&lt;value>    | String or Number | Will show rules less than rank b, c, d, e, f, or rank value              |
+| --no-inline-config                        | Flag             | Disable the use of configuration comments (such as `/*eslint-disable*/`) |
 
 ### Command examples
 

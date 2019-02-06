@@ -13,16 +13,28 @@ function exec(command) {
 }
 
 
+function readFile(file) {
+  return readFileSync(file, 'utf-8');
+}
+
+
 function readJSON(file) {
-  return JSON.parse(readFileSync(file, 'utf-8'));
+  return JSON.parse(readFile(file));
+}
+
+
+function writeFile(file, data) {
+  writeFileSync(file, data, 'utf-8');
 }
 
 
 function writeJSON(file, data) {
-  return writeFileSync(file, JSON.stringify(data, null, '  '), 'utf-8');
+  writeFile(file, JSON.stringify(data, null, '  '));
 }
 
 
 exports.exec = exec;
+exports.readFile = readFile;
+exports.writeFile = writeFile;
 exports.readJSON = readJSON;
 exports.writeJSON = writeJSON;

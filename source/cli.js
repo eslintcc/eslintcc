@@ -11,14 +11,16 @@ const processArgs = getProcessArgs({
     format: 'Option',
     showRules: 'Flag',
     greaterThan: 'Option',
-    lessThan: 'Option'
+    lessThan: 'Option',
+    noInlineConfig: 'Flag'
   },
   aliases: {
     rules: 'r',
     format: 'f',
     showRules: ['show-rules', 'sr'],
     greaterThan: ['greater-than', 'gt'],
-    lessThan: ['less-than', 'lt']
+    lessThan: ['less-than', 'lt'],
+    noInlineConfig: ['no-inline-config', 'nlc']
   }
 });
 

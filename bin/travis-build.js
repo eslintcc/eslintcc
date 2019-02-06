@@ -1,12 +1,19 @@
 'use strict';
 
-const { exec, readJSON, writeJSON } = require('./lib');
+const { exec, readFile, writeFile, readJSON, writeJSON } = require('./lib');
+
+const npmjsRegistry = '//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n';
 
 
 exec('eslint . --ignore-pattern test/src');
 exec('nyc --reporter=lcovonly node test');
 exec('nyc report');
 exec('coveralls < coverage/lcov.info');
+
+if (process.env.TRAVIS_BRANCH !== 'master' || process.env.TRAVIS_PULL_REQUEST !== 'false') {
+  // Если это не master ветка, дальнейшие шаги не требуются
+  process.exit(0);
+}
 
 // Проверяем обновление версии ESLint
 exec('npm i eslint@latest semver@latest');
@@ -27,5 +34,6 @@ if (packageJSON.dependencies.eslint !== eslintVersion) {
   exec(`git commit -a -m "Обновление до eslint@${eslintVersion.slice(1)}"`);
   exec('git push origin-master');
   exec('git remote remove origin-master');
+  writeFile('.npmrc', npmjsRegistry + readFile('.npmrc'));
   exec('npm publish');
 }
