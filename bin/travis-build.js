@@ -1,6 +1,8 @@
 'use strict';
 
-const { exec, readJSON, writeJSON } = require('./lib');
+const { exec, readFile, writeFile, readJSON, writeJSON } = require('./lib');
+
+const npmjsRegistry = '//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n';
 
 
 exec('eslint . --ignore-pattern test/src');
@@ -32,5 +34,6 @@ if (packageJSON.dependencies.eslint !== eslintVersion) {
   exec(`git commit -a -m "Обновление до eslint@${eslintVersion.slice(1)}"`);
   exec('git push origin-master');
   exec('git remote remove origin-master');
+  writeFile('.npmrc', npmjsRegistry + readFile('.npmrc'));
   exec('npm publish');
 }
