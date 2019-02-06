@@ -110,6 +110,24 @@ class TestCLI extends Test {
     deepEqual({ 'complexity': 1, 'max-params': 7, 'max-statements': 1 }, report2);
   }
 
+  ['test: --no-inline-config']() {
+    const cmd1 = 'node source/cli.js test/src/complexity__inline_config_for_file.js --format json';
+    const messages1 = JSON.parse(execSync(cmd1, { encoding: 'utf-8' })).files[0].messages;
+    equal(0, messages1.length);
+    const cmd2 = 'node source/cli.js test/src/complexity__inline_config_for_file.js --format json --no-inline-config';
+    const messages2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages;
+    equal(1, messages2.length);
+
+    const cmd3 = 'node source/cli.js test/src/complexity__inline_config.js --format json';
+    const messages3 = JSON.parse(execSync(cmd3, { encoding: 'utf-8' })).files[0].messages;
+    equal(2, messages3.length);
+    deepEqual({ 'complexity': 1 }, messages3[0].complexityRules);
+    deepEqual({ 'max-params': 13, 'complexity': 1 }, messages3[1].complexityRules);
+    const cmd4 = 'node source/cli.js test/src/complexity__inline_config.js --format json --no-inline-config';
+    const messages4 = JSON.parse(execSync(cmd4, { encoding: 'utf-8' })).files[0].messages;
+    equal(4, messages4.length);
+  }
+
 }
 
 

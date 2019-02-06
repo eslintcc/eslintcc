@@ -287,6 +287,28 @@ class TestComplexity extends Test {
     equal('variable mo3, function myFunc7', messages[21].namePath);
   }
 
+  ['test: ~noInlineConfig']() {
+    const messages1 = new Complexity()
+      .executeOnFiles(['test/src/complexity__inline_config_for_file.js'])
+      .files[0].messages;
+    equal(0, messages1.length);
+    const messages2 = new Complexity({ noInlineConfig: true })
+      .executeOnFiles(['test/src/complexity__inline_config_for_file.js'])
+      .files[0].messages;
+    equal(1, messages2.length);
+
+    const messages3 = new Complexity()
+      .executeOnFiles(['test/src/complexity__inline_config.js'])
+      .files[0].messages;
+    equal(2, messages3.length);
+    deepEqual({ 'complexity': 1 }, messages3[0].complexityRules);
+    deepEqual({ 'max-params': 13, 'complexity': 1 }, messages3[1].complexityRules);
+    const messages4 = new Complexity({ noInlineConfig: true })
+      .executeOnFiles(['test/src/complexity__inline_config.js'])
+      .files[0].messages;
+    equal(4, messages4.length);
+  }
+
 }
 
 
