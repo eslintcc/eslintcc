@@ -202,6 +202,8 @@ class TestComplexity extends Test {
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
       'files': [{
+        'averageRank': 'A',
+        'averageRankValue': 0.2,
         'fileName': resolve('test/src/complexity__messages_json.js'),
         'messages': [{
           'id': '3:0:5:1',

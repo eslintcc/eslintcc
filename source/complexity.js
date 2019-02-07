@@ -191,12 +191,16 @@ class ComplexityFileReport {
     this.messagesTypesMap = { file: {}, function: {}, block: {} };
     this.messagesMap = {};
     this.messages = [];
+    this.averageRankValue = 0;
+    this.averageRank = null;
   }
 
   toJSON() {
     return {
       fileName: this.fileName,
-      messages: this.messages
+      messages: this.messages,
+      averageRankValue: this.averageRankValue,
+      averageRank: this.averageRank
     };
   }
 
@@ -257,6 +261,9 @@ class ComplexityReport {
         fileReport.pushMessage(message);
       }
     });
+    fileReport.messages.forEach(message => fileReport.averageRankValue += message.maxValue);
+    fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
+    fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;

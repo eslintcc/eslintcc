@@ -22,7 +22,7 @@ class TestCLI extends Test {
   ['test: greaterThan + lessThan + showRules']() {
     const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt A --lt F --sr';
     const report = execSync(cmd, { encoding: 'utf-8' });
-    equal(`test${sep}src${sep}complexity__messages_gtlt.js\n` +
+    equal(`\x1b[33;1mD\x1b[0m test${sep}src${sep}complexity__messages_gtlt.js\n` +
       '  \x1b[32;1mB\x1b[0m  9:0 function myFunc2 (max-params = 2)\n' +
       '  \x1b[33;1mC\x1b[0m 15:0 function myFunc3 (max-params = 3)', report.trim());
   }
@@ -32,6 +32,8 @@ class TestCLI extends Test {
     const report = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
       'files': [{
+        'averageRank': 'D',
+        'averageRankValue': 3.406,
         'fileName': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
           'id': '15:0:17:1',
@@ -57,6 +59,8 @@ class TestCLI extends Test {
     const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
       'files': [{
+        'averageRank': 'F',
+        'averageRankValue': 5.166,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'id': '3:0:5:1',
@@ -81,6 +85,8 @@ class TestCLI extends Test {
     const report2 = JSON.parse(execSync(cmd + ' --rules complexity', { encoding: 'utf-8' }));
     deepEqual({
       'files': [{
+        'averageRank': 'A',
+        'averageRankValue': 0.2,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'id': '3:0:5:1',
