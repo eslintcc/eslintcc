@@ -25,6 +25,7 @@
     "@ndk/env": "^0.0.3"
   },
   "devDependencies": {
+    "@nd-toolkit/ndk-project": "github:nd-toolkit/ndk-project",
     "semver": "^5.6.0",
     "@ndk/test": "^0.0.4"
   },
