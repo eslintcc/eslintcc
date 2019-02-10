@@ -101,7 +101,9 @@ class TestReportLogger extends Test {
       logger: report => {
         report = JSON.parse(report);
         deepEqual({
-          files: [{
+          'averageRank': 'B',
+          'averageRankValue': 1.006,
+          'files': [{
             'averageRank': 'B',
             'averageRankValue': 1.006,
             'fileName': resolve('test/src/logging__messages_json.js'),

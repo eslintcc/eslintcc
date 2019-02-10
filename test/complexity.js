@@ -201,6 +201,8 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
+      'averageRank': 'A',
+      'averageRankValue': 0.2,
       'files': [{
         'averageRank': 'A',
         'averageRankValue': 0.2,
@@ -309,6 +311,12 @@ class TestComplexity extends Test {
       .executeOnFiles(['test/src/complexity__inline_config.js'])
       .files[0].messages;
     equal(4, messages4.length);
+  }
+
+  ['test: ~averageRank']() {
+    const report = new Complexity().executeOnFiles(['test/src/average_rank']);
+    equal(3.416, report.averageRankValue);
+    equal('D', report.averageRank);
   }
 
 }

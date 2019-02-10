@@ -240,11 +240,15 @@ class ComplexityReport {
     this.options = { ranks, greaterThan, lessThan };
     this.events = new EventEmitter();
     this.files = [];
+    this.averageRankValue = 0;
+    this.averageRank = null;
   }
 
   toJSON() {
     return {
-      files: this.files
+      files: this.files,
+      averageRankValue: this.averageRankValue,
+      averageRank: this.averageRank
     };
   }
 
@@ -264,6 +268,7 @@ class ComplexityReport {
     fileReport.messages.forEach(message => fileReport.averageRankValue += message.maxValue);
     fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
     fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
+    this.averageRankValue += fileReport.averageRankValue;
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
@@ -280,6 +285,11 @@ class ComplexityReport {
     }
     this.files.push(fileReport);
     this.events.emit('verifyFile', fileReport);
+  }
+
+  finish() {
+    this.averageRankValue = Ranks.roundValue(this.averageRankValue / this.files.length);
+    this.averageRank = Ranks.getLabelByValue(this.averageRankValue);
   }
 
 }
@@ -334,6 +344,7 @@ class Complexity {
     engine.events.on('verifyFile', report.verifyFile.bind(report));
     report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));
     engine.executeOnFiles(patterns);
+    report.finish();
     this.events.emit('finish', report);
     return report;
   }
