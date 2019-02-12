@@ -22,11 +22,12 @@ class ReportLogger {
   constructor(complexity, {
     cwd = process.cwd(),
     format = 'text',
+    average = false,
     showRules = false,
     logger = console.log
   }) {
     this.complexity = complexity;
-    this.options = { cwd, format, showRules };
+    this.options = { cwd, format, average, showRules };
     this.logger = logger;
     this.colors = this.defaultColors;
     this.errorColor = this.defaultErrorColor;
@@ -70,6 +71,12 @@ class ReportLogger {
   finish(report) {
     if (this.options.format === 'json') {
       this.logger(JSON.stringify(report));
+    } else if (this.options.format === 'text' && this.options.average) {
+      let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
+      for (const label in report.ranksCount) {
+        avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+      }
+      this.logger(avgMsg + '\n');
     }
   }
 

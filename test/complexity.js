@@ -203,6 +203,14 @@ class TestComplexity extends Test {
     deepEqual({
       'averageRank': 'A',
       'averageRankValue': 0.2,
+      'ranksCount': {
+        'A': 1,
+        'B': 0,
+        'C': 0,
+        'D': 0,
+        'E': 0,
+        'F': 0
+      },
       'files': [{
         'averageRank': 'A',
         'averageRankValue': 0.2,

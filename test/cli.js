@@ -33,6 +33,14 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'D',
       'averageRankValue': 3.406,
+      'ranksCount': {
+        'A': 1,
+        'B': 1,
+        'C': 1,
+        'D': 0,
+        'E': 0,
+        'F': 2
+      },
       'files': [{
         'averageRank': 'D',
         'averageRankValue': 3.406,
@@ -62,6 +70,14 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'F',
       'averageRankValue': 5.166,
+      'ranksCount': {
+        'A': 0,
+        'B': 0,
+        'C': 0,
+        'D': 0,
+        'E': 0,
+        'F': 1
+      },
       'files': [{
         'averageRank': 'F',
         'averageRankValue': 5.166,
@@ -90,6 +106,14 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'A',
       'averageRankValue': 0.2,
+      'ranksCount': {
+        'A': 1,
+        'B': 0,
+        'C': 0,
+        'D': 0,
+        'E': 0,
+        'F': 0
+      },
       'files': [{
         'averageRank': 'A',
         'averageRankValue': 0.2,

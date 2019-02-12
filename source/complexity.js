@@ -242,13 +242,15 @@ class ComplexityReport {
     this.files = [];
     this.averageRankValue = 0;
     this.averageRank = null;
+    this.ranksCount = Ranks.rankLabels.reduce((prev, cur) => (prev[cur] = 0) || prev, {});
   }
 
   toJSON() {
     return {
       files: this.files,
       averageRankValue: this.averageRankValue,
-      averageRank: this.averageRank
+      averageRank: this.averageRank,
+      ranksCount: this.ranksCount
     };
   }
 
@@ -265,7 +267,10 @@ class ComplexityReport {
         fileReport.pushMessage(message);
       }
     });
-    fileReport.messages.forEach(message => fileReport.averageRankValue += message.maxValue);
+    fileReport.messages.forEach(message => {
+      fileReport.averageRankValue += message.maxValue;
+      this.ranksCount[message.maxLabel]++;
+    });
     fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
     fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
     this.averageRankValue += fileReport.averageRankValue;

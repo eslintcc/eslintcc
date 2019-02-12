@@ -9,6 +9,7 @@ const processArgs = getProcessArgs({
   types: {
     rules: 'Array',
     format: 'Option',
+    average: 'Flag',
     showRules: 'Flag',
     greaterThan: 'Option',
     lessThan: 'Option',
@@ -17,6 +18,7 @@ const processArgs = getProcessArgs({
   aliases: {
     rules: 'r',
     format: 'f',
+    average: 'a',
     showRules: ['show-rules', 'sr'],
     greaterThan: ['greater-than', 'gt'],
     lessThan: ['less-than', 'lt'],

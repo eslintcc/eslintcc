@@ -13,6 +13,10 @@ const rankLabelsMaxValue = {
 
 class Ranks {
 
+  static get rankLabels() {
+    return rankLabels;
+  }
+
   static roundValue(value) {
     return (value * 1000 ^ 0) / 1000;
   }
