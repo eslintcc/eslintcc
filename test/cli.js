@@ -22,7 +22,7 @@ class TestCLI extends Test {
   ['test: greaterThan + lessThan + showRules']() {
     const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt A --lt F --sr';
     const report = execSync(cmd, { encoding: 'utf-8' });
-    equal(`test${sep}src${sep}complexity__messages_gtlt.js\n` +
+    equal(`\x1b[33;1mD\x1b[0m test${sep}src${sep}complexity__messages_gtlt.js\n` +
       '  \x1b[32;1mB\x1b[0m  9:0 function myFunc2 (max-params = 2)\n' +
       '  \x1b[33;1mC\x1b[0m 15:0 function myFunc3 (max-params = 3)', report.trim());
   }
@@ -31,7 +31,19 @@ class TestCLI extends Test {
     const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt B --lt F --format json';
     const report = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
+      'averageRank': 'D',
+      'averageRankValue': 3.406,
+      'ranksCount': {
+        'A': 1,
+        'B': 1,
+        'C': 1,
+        'D': 0,
+        'E': 0,
+        'F': 2
+      },
       'files': [{
+        'averageRank': 'D',
+        'averageRankValue': 3.406,
         'fileName': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
           'id': '15:0:17:1',
@@ -56,7 +68,19 @@ class TestCLI extends Test {
     const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
     const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
+      'averageRank': 'F',
+      'averageRankValue': 5.166,
+      'ranksCount': {
+        'A': 0,
+        'B': 0,
+        'C': 0,
+        'D': 0,
+        'E': 0,
+        'F': 1
+      },
       'files': [{
+        'averageRank': 'F',
+        'averageRankValue': 5.166,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'id': '3:0:5:1',
@@ -80,7 +104,19 @@ class TestCLI extends Test {
     }, report1);
     const report2 = JSON.parse(execSync(cmd + ' --rules complexity', { encoding: 'utf-8' }));
     deepEqual({
+      'averageRank': 'A',
+      'averageRankValue': 0.2,
+      'ranksCount': {
+        'A': 1,
+        'B': 0,
+        'C': 0,
+        'D': 0,
+        'E': 0,
+        'F': 0
+      },
       'files': [{
+        'averageRank': 'A',
+        'averageRankValue': 0.2,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'id': '3:0:5:1',

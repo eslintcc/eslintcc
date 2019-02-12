@@ -13,6 +13,14 @@ const rankLabelsMaxValue = {
 
 class Ranks {
 
+  static get rankLabels() {
+    return rankLabels;
+  }
+
+  static roundValue(value) {
+    return (value * 1000 ^ 0) / 1000;
+  }
+
   static getLabelMaxValue(label) {
     label = String(label).toUpperCase();
     const maxValue = rankLabelsMaxValue[label] || Number(label);
@@ -40,13 +48,18 @@ class Ranks {
     };
   }
 
+  static getLabelByValue(value) {
+    value = Math.ceil(value) - 1;
+    value = value < 0 ? 0 : value;
+    return rankLabels[value] || rankLabels[rankLabels.length - 1];
+  }
+
   get defaultRanks() {
     // The maximum complexity score for rule, associated with the rank
     // 'complexity' corresponds https://radon.readthedocs.io/en/latest/api.html#radon.complexity.cc_rank.
     // The rest are calculated relative to the default score for the rule.
     // Example formula for calculating the score relations:
     //  [5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))
-
     return {
       'complexity': {
         A: 5,
@@ -133,7 +146,7 @@ class Ranks {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
         return {
-          rankValue: ((i + (value - prevMaxValue) / range) * 1000 ^ 0) / 1000,
+          rankValue: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
           rankLabel: rankLabel
         };
       }

@@ -16,7 +16,7 @@ class TestReportLogger extends Test {
     this.filename = `test${sep}src${sep}logging__messages.js`;
     this.step = 0;
     this.messages = {
-      0: this.filename,
+      0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2',
@@ -25,8 +25,23 @@ class TestReportLogger extends Test {
       6: '  \x1b[31;1mF\x1b[0m 35:0  function myFunc5',
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55'
     };
+    this.messagesAVG = {
+      0: `\u001b[33;1mD\u001b[0m test${sep}src${sep}average_rank${sep}avg1.js`,
+      1: '  \u001b[32;1mB\u001b[0m  3:0 function myFunc1',
+      2: '  \u001b[31;1mF\u001b[0m 11:0 function myFunc2',
+      3: `\u001b[33;1mD\u001b[0m test${sep}src${sep}average_rank${sep}avg2.js`,
+      4: '  \u001b[33;1mC\u001b[0m  3:0 function myFunc1',
+      5: '  \u001b[33;1mD\u001b[0m 11:0 function myFunc2',
+      6: '\nAverage rank: \u001b[33;1mD\u001b[0m (3.416)\n' +
+        '  \u001b[32;1mA\u001b[0m: 0\n' +
+        '  \u001b[32;1mB\u001b[0m: 1\n' +
+        '  \u001b[33;1mC\u001b[0m: 1\n' +
+        '  \u001b[33;1mD\u001b[0m: 1\n' +
+        '  \u001b[31;1mE\u001b[0m: 0\n' +
+        '  \u001b[31;1mF\u001b[0m: 1\n'
+    };
     this.messagesSR = {
-      0: this.filename,
+      0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc (complexity = 1)',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1 (max-params = 2)',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2 (max-params = 3)',
@@ -37,7 +52,7 @@ class TestReportLogger extends Test {
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55 (max-depth = 12)'
     };
     this.messagesFatal = {
-      0: `test${sep}src${sep}complexity__fatal.js`,
+      0: `\x1b[31;1mF\x1b[0m test${sep}src${sep}complexity__fatal.js`,
       1: '  \x1b[31;1mF\x1b[0m 4:3 Program:4:3 (fatal-error = 1)',
       2: "    \x1b[31;1mError\x1b[0m Parsing error: The keyword 'let' is reserved"
     };
@@ -72,6 +87,17 @@ class TestReportLogger extends Test {
     equal(20, this.step);
   }
 
+  ['test: text + average']() {
+    const complexity = new Complexity();
+    new ReportLogger(complexity, {
+      logger: msg => this.logger('messagesAVG', msg),
+      average: true
+    });
+    this.step = 0;
+    complexity.executeOnFiles(['./test/src/average_rank']);
+    equal(7, this.step);
+  }
+
   ['test: text + showRules']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
@@ -101,7 +127,19 @@ class TestReportLogger extends Test {
       logger: report => {
         report = JSON.parse(report);
         deepEqual({
-          files: [{
+          'averageRank': 'B',
+          'averageRankValue': 1.006,
+          'ranksCount': {
+            'A': 3,
+            'B': 2,
+            'C': 0,
+            'D': 0,
+            'E': 0,
+            'F': 0
+          },
+          'files': [{
+            'averageRank': 'B',
+            'averageRankValue': 1.006,
             'fileName': resolve('test/src/logging__messages_json.js'),
             'messages': [{
               'id': '3:0:5:1',

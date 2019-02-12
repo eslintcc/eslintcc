@@ -191,12 +191,16 @@ class ComplexityFileReport {
     this.messagesTypesMap = { file: {}, function: {}, block: {} };
     this.messagesMap = {};
     this.messages = [];
+    this.averageRankValue = 0;
+    this.averageRank = null;
   }
 
   toJSON() {
     return {
       fileName: this.fileName,
-      messages: this.messages
+      messages: this.messages,
+      averageRankValue: this.averageRankValue,
+      averageRank: this.averageRank
     };
   }
 
@@ -236,11 +240,17 @@ class ComplexityReport {
     this.options = { ranks, greaterThan, lessThan };
     this.events = new EventEmitter();
     this.files = [];
+    this.averageRankValue = 0;
+    this.averageRank = null;
+    this.ranksCount = Ranks.rankLabels.reduce((prev, cur) => (prev[cur] = 0) || prev, {});
   }
 
   toJSON() {
     return {
-      files: this.files
+      files: this.files,
+      averageRankValue: this.averageRankValue,
+      averageRank: this.averageRank,
+      ranksCount: this.ranksCount
     };
   }
 
@@ -257,6 +267,13 @@ class ComplexityReport {
         fileReport.pushMessage(message);
       }
     });
+    fileReport.messages.forEach(message => {
+      fileReport.averageRankValue += message.maxValue;
+      this.ranksCount[message.maxLabel]++;
+    });
+    fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
+    fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
+    this.averageRankValue += fileReport.averageRankValue;
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
@@ -273,6 +290,11 @@ class ComplexityReport {
     }
     this.files.push(fileReport);
     this.events.emit('verifyFile', fileReport);
+  }
+
+  finish() {
+    this.averageRankValue = Ranks.roundValue(this.averageRankValue / this.files.length);
+    this.averageRank = Ranks.getLabelByValue(this.averageRankValue);
   }
 
 }
@@ -327,6 +349,7 @@ class Complexity {
     engine.events.on('verifyFile', report.verifyFile.bind(report));
     report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));
     engine.executeOnFiles(patterns);
+    report.finish();
     this.events.emit('finish', report);
     return report;
   }

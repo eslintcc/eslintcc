@@ -26,6 +26,11 @@ class TestRank extends Test {
     equal(undefined, ranks.ranks.complexity_);
   }
 
+  ['test: .roundValue']() {
+    equal(0.123, Ranks.roundValue(0.1234));
+    equal(0.123, Ranks.roundValue(0.1239));
+  }
+
   ['test: .getLabel(Min/Max)Value']() {
     const minValues = ['A', 'B', 'C', 'D', 'E', 'F', 50, '10', 'G'].map(Ranks.getLabelMinValue);
     deepEqual([0, 1, 2, 3, 4, 5, 50, 10, null], minValues);
@@ -36,6 +41,18 @@ class TestRank extends Test {
   ['test: .getMaxValue']() {
     const maxValue = Ranks.getMaxValue();
     deepEqual({ rankValue: 6, rankLabel: 'F' }, maxValue);
+  }
+
+  ['test: .getLabelByValue']() {
+    equal('A', Ranks.getLabelByValue(0));
+    equal('A', Ranks.getLabelByValue(0.1234));
+    equal('B', Ranks.getLabelByValue(1.1234));
+    equal('B', Ranks.getLabelByValue(2));
+    equal('C', Ranks.getLabelByValue(2.1));
+    equal('D', Ranks.getLabelByValue(3.9));
+    equal('E', Ranks.getLabelByValue(4.2));
+    equal('F', Ranks.getLabelByValue(5.2));
+    equal('F', Ranks.getLabelByValue(50.2));
   }
 
   ['test: #getValue']() {

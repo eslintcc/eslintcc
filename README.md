@@ -137,6 +137,7 @@ Command line format:
 | ----------------------------------------- | ---------------- | ------------------------------------------------------------------------ |
 | --rules &lt;rules>, -r=&lt;rules>         | Array of String  | Rule, or group: all, logic, raw. Default: logic                          |
 | --format &lt;format>, -f=&lt;format>      | String           | Use a specific output format, text or json. Default: text                |
+| --average, -a                             | Flag             | Show the average complexity at the end of output, if used text format    |
 | --show-rules, -sr                         | Flag             | Show rule name and value, if used text format                            |
 | --greater-than &lt;value>, -gt=&lt;value> | String or Number | Will show rules more than rank a, b, c, d, e, or rank value              |
 | --less-than &lt;value>, -lt=&lt;value>    | String or Number | Will show rules less than rank b, c, d, e, f, or rank value              |
