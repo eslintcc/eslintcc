@@ -307,7 +307,9 @@ class Complexity {
     greaterThan = undefined,
     lessThan = undefined,
     ranks = null,
-    noInlineConfig = false
+    noInlineConfig = false,
+    maxRank = 'C',
+    maxAverageRank = 'B'
   } = {}) {
     this.options = {
       ranks: new Ranks(ranks),
