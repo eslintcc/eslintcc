@@ -13,7 +13,9 @@ const processArgs = getProcessArgs({
     showRules: 'Flag',
     greaterThan: 'Option',
     lessThan: 'Option',
-    noInlineConfig: 'Flag'
+    noInlineConfig: 'Flag',
+    maxRank: 'Option',
+    maxAverageRank: 'Option'
   },
   aliases: {
     rules: 'r',
@@ -22,7 +24,9 @@ const processArgs = getProcessArgs({
     showRules: ['show-rules', 'sr'],
     greaterThan: ['greater-than', 'gt'],
     lessThan: ['less-than', 'lt'],
-    noInlineConfig: ['no-inline-config', 'nlc']
+    noInlineConfig: ['no-inline-config', 'nlc'],
+    maxRank: ['max-rank', 'mr'],
+    maxAverageRank: ['max-average-rank', 'mar']
   }
 });
 
