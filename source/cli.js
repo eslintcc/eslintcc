@@ -35,7 +35,10 @@ if (processArgs.argv.length > 0) {
   const options = Object.assign({}, processArgs.flags, processArgs.options);
   const complexity = new Complexity(options);
   new ReportLogger(complexity, options);
-  complexity.executeOnFiles(processArgs.argv);
+  const report = complexity.executeOnFiles(processArgs.argv);
+  if (report.errors.maxRank > 0 || report.errors.maxAverageRank) {
+    process.exit(1);
+  }
 } else {
   console.log(require('./lib/help'));
 }
