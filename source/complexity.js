@@ -236,13 +236,20 @@ class ComplexityFileReport {
 
 class ComplexityReport {
 
-  constructor({ ranks, greaterThan, lessThan }) {
-    this.options = { ranks, greaterThan, lessThan };
+  constructor({ ranks, greaterThan, lessThan, maxRank, maxAverageRank }) {
+    this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
     this.events = new EventEmitter();
     this.files = [];
     this.averageRankValue = 0;
     this.averageRank = null;
     this.ranksCount = Ranks.rankLabels.reduce((prev, cur) => (prev[cur] = 0) || prev, {});
+    this.errors = {
+      maxRank: 0,
+      maxAverageRank: false
+    };
+    this._context = {
+      labelMinValueF: Ranks.getLabelMinValue('F')
+    };
   }
 
   toJSON() {
@@ -250,7 +257,8 @@ class ComplexityReport {
       files: this.files,
       averageRankValue: this.averageRankValue,
       averageRank: this.averageRank,
-      ranksCount: this.ranksCount
+      ranksCount: this.ranksCount,
+      errors: this.errors
     };
   }
 
@@ -288,6 +296,13 @@ class ComplexityReport {
         return true;
       });
     }
+    if (this.options.maxRank <= this._context.labelMinValueF) {
+      fileReport.messages.forEach(message => {
+        if (message.maxValue > this.options.maxRank) {
+          this.errors.maxRank++;
+        }
+      });
+    }
     this.files.push(fileReport);
     this.events.emit('verifyFile', fileReport);
   }
@@ -295,6 +310,9 @@ class ComplexityReport {
   finish() {
     this.averageRankValue = Ranks.roundValue(this.averageRankValue / this.files.length);
     this.averageRank = Ranks.getLabelByValue(this.averageRankValue);
+    if (this.averageRankValue > this.options.maxAverageRank) {
+      this.errors.maxAverageRank = true;
+    }
   }
 
 }
@@ -316,7 +334,9 @@ class Complexity {
       rules: rules,
       greaterThan: Ranks.getLabelMaxValue(greaterThan),
       lessThan: Ranks.getLabelMinValue(lessThan),
-      noInlineConfig: noInlineConfig
+      noInlineConfig: noInlineConfig,
+      maxRank: Ranks.getLabelMaxValue(maxRank),
+      maxAverageRank: Ranks.getLabelMaxValue(maxAverageRank)
     };
     this.events = new EventEmitter();
   }

@@ -71,12 +71,20 @@ class ReportLogger {
   finish(report) {
     if (this.options.format === 'json') {
       this.logger(JSON.stringify(report));
-    } else if (this.options.format === 'text' && this.options.average) {
-      let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
-      for (const label in report.ranksCount) {
-        avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+    } else if (this.options.format === 'text') {
+      if (this.options.average) {
+        let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
+        for (const label in report.ranksCount) {
+          avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+        }
+        this.logger(avgMsg + '\n');
       }
-      this.logger(avgMsg + '\n');
+      if (report.errors.maxRank > 0) {
+        console.error(`\n${this.errorColor}: maxRank - ${report.errors.maxRank}`);
+      }
+      if (report.errors.maxAverageRank) {
+        console.error(`\n${this.errorColor}: maxAverageRank`);
+      }
     }
   }
 
