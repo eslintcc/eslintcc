@@ -14,7 +14,7 @@ Options:
   --show-rules, -sr                           Flag                Show rule name and value, if used text format
   --greater-than <value>, -gt=<value>         String or Number    Will show rules more than rank a, b, c, d, e, or rank value
   --less-than <value>, -lt=<value>            String or Number    Will show rules less than rank b, c, d, e, f, or rank value
-  --no-inline-config                          Flag                Disable the use of configuration comments (such as /*eslint-disable*/)
+  --no-inline-config, -nlc                    Flag                Disable the use of configuration comments (such as /*eslint-disable*/)
   --max-rank <value>, -mr=<value>             String or Number    Maximum allowed complexity rank for a single message. Default: C
   --max-average-rank <value>, -mar=<value>    String or Number    Maximum allowed complexity rank for average value. Default: B
 
