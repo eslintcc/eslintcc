@@ -26,7 +26,9 @@ class PatchingESLint extends Test {
     equal('eslint:recommended', afterConfig.extends);
     equal(undefined, beforeConfig.plugins);
     equal(undefined, afterConfig.plugins);
-    deepEqual(['warn', 2, { 'SwitchCase': 1 }], beforeConfig.rules.indent);
+    equal('warn', beforeConfig.rules.indent[0]);
+    equal(2, beforeConfig.rules.indent[1]);
+    equal(1, beforeConfig.rules.indent[2].SwitchCase);
     deepEqual({}, afterConfig.rules);
   }
 
