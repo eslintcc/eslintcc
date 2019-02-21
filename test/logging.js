@@ -129,6 +129,10 @@ class TestReportLogger extends Test {
         deepEqual({
           'averageRank': 'B',
           'averageRankValue': 1.006,
+          'errors': {
+            'maxAverageRank': false,
+            'maxRank': 0
+          },
           'ranksCount': {
             'A': 3,
             'B': 2,

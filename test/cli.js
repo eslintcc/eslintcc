@@ -20,7 +20,7 @@ class TestCLI extends Test {
   }
 
   ['test: greaterThan + lessThan + showRules']() {
-    const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt A --lt F --sr';
+    const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt A --lt F --sr -mr=f -mar=f';
     const report = execSync(cmd, { encoding: 'utf-8' });
     equal(`\x1b[33;1mD\x1b[0m test${sep}src${sep}complexity__messages_gtlt.js\n` +
       '  \x1b[32;1mB\x1b[0m  9:0 function myFunc2 (max-params = 2)\n' +
@@ -33,6 +33,10 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'D',
       'averageRankValue': 3.406,
+      'errors': {
+        'maxAverageRank': true,
+        'maxRank': 2
+      },
       'ranksCount': {
         'A': 1,
         'B': 1,
@@ -70,6 +74,10 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'F',
       'averageRankValue': 5.166,
+      'errors': {
+        'maxAverageRank': true,
+        'maxRank': 1
+      },
       'ranksCount': {
         'A': 0,
         'B': 0,
@@ -106,6 +114,10 @@ class TestCLI extends Test {
     deepEqual({
       'averageRank': 'A',
       'averageRankValue': 0.2,
+      'errors': {
+        'maxAverageRank': false,
+        'maxRank': 0
+      },
       'ranksCount': {
         'A': 1,
         'B': 0,

@@ -1,6 +1,7 @@
 'use strict';
 
 const { relative } = require('path');
+const { Ranks } = require('./rank');
 
 class ReportLogger {
 
@@ -24,11 +25,13 @@ class ReportLogger {
     format = 'text',
     average = false,
     showRules = false,
-    logger = console.log
+    logger = console.log,
+    errLogger = console.error
   }) {
     this.complexity = complexity;
     this.options = { cwd, format, average, showRules };
     this.logger = logger;
+    this.errLogger = errLogger;
     this.colors = this.defaultColors;
     this.errorColor = this.defaultErrorColor;
     this.complexity.events
@@ -80,10 +83,16 @@ class ReportLogger {
         this.logger(avgMsg + '\n');
       }
       if (report.errors.maxRank > 0) {
-        console.error(`\n${this.errorColor}: maxRank - ${report.errors.maxRank}`);
+        let msg = `\n${this.errorColor}: Complexity of code above maximum allowable rank`;
+        msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxRank)]}`;
+        msg += ` (${report.options.maxRank}), messages - ${report.errors.maxRank}`;
+        this.errLogger(msg);
       }
       if (report.errors.maxAverageRank) {
-        console.error(`\n${this.errorColor}: maxAverageRank`);
+        let msg = `\n${this.errorColor}: Average complexity of code above maximum allowable average rank`;
+        msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxAverageRank)]}`;
+        msg += ` (${report.options.maxAverageRank})`;
+        this.errLogger(msg);
       }
     }
   }

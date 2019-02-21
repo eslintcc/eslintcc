@@ -247,9 +247,6 @@ class ComplexityReport {
       maxRank: 0,
       maxAverageRank: false
     };
-    this._context = {
-      labelMinValueF: Ranks.getLabelMinValue('F')
-    };
   }
 
   toJSON() {
@@ -278,6 +275,9 @@ class ComplexityReport {
     fileReport.messages.forEach(message => {
       fileReport.averageRankValue += message.maxValue;
       this.ranksCount[message.maxLabel]++;
+      if (message.maxValue > this.options.maxRank) {
+        this.errors.maxRank++;
+      }
     });
     fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
     fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
@@ -294,13 +294,6 @@ class ComplexityReport {
           return false;
         }
         return true;
-      });
-    }
-    if (this.options.maxRank <= this._context.labelMinValueF) {
-      fileReport.messages.forEach(message => {
-        if (message.maxValue > this.options.maxRank) {
-          this.errors.maxRank++;
-        }
       });
     }
     this.files.push(fileReport);
