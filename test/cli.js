@@ -1,6 +1,6 @@
 'use strict';
 
-const { equal, deepEqual } = require('assert').strict;
+const { equal, deepEqual, throws } = require('assert').strict;
 const { execSync } = require('child_process');
 const { sep, resolve } = require('path');
 
@@ -174,6 +174,13 @@ class TestCLI extends Test {
     const cmd4 = 'node source/cli.js test/src/complexity__inline_config.js --format json --no-inline-config';
     const messages4 = JSON.parse(execSync(cmd4, { encoding: 'utf-8' })).files[0].messages;
     equal(4, messages4.length);
+  }
+
+  ['test: exitWithError']() {
+    const cmd = 'node source/cli.js test/src/cli__exit_with_error.js';
+    throws(() => {
+      execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' });
+    });
   }
 
 }

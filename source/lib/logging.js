@@ -72,28 +72,32 @@ class ReportLogger {
   }
 
   finish(report) {
-    if (this.options.format === 'json') {
-      this.logger(JSON.stringify(report));
-    } else if (this.options.format === 'text') {
-      if (this.options.average) {
-        let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
-        for (const label in report.ranksCount) {
-          avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+    switch (this.options.format) {
+      case 'json':
+        this.logger(JSON.stringify(report));
+        break;
+      case 'text':
+      default:
+        if (this.options.average) {
+          let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
+          for (const label in report.ranksCount) {
+            avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+          }
+          this.logger(avgMsg + '\n');
         }
-        this.logger(avgMsg + '\n');
-      }
-      if (report.errors.maxRank > 0) {
-        let msg = `\n${this.errorColor}: Complexity of code above maximum allowable rank`;
-        msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxRank)]}`;
-        msg += ` (${report.options.maxRank}), messages - ${report.errors.maxRank}`;
-        this.errLogger(msg);
-      }
-      if (report.errors.maxAverageRank) {
-        let msg = `\n${this.errorColor}: Average complexity of code above maximum allowable average rank`;
-        msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxAverageRank)]}`;
-        msg += ` (${report.options.maxAverageRank})`;
-        this.errLogger(msg);
-      }
+        if (report.errors.maxRank > 0) {
+          let msg = `\n${this.errorColor}: Complexity of code above maximum allowable rank`;
+          msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxRank)]}`;
+          msg += ` (${report.options.maxRank}), messages - ${report.errors.maxRank}`;
+          this.errLogger(msg);
+        }
+        if (report.errors.maxAverageRank) {
+          let msg = `\n${this.errorColor}: Average complexity of code above maximum allowable average rank`;
+          msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxAverageRank)]}`;
+          msg += ` (${report.options.maxAverageRank})`;
+          this.errLogger(msg);
+        }
+        break;
     }
   }
 
