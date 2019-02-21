@@ -203,6 +203,10 @@ class TestComplexity extends Test {
     deepEqual({
       'averageRank': 'A',
       'averageRankValue': 0.2,
+      'errors': {
+        'maxAverageRank': false,
+        'maxRank': 0
+      },
       'ranksCount': {
         'A': 1,
         'B': 0,
