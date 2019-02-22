@@ -15,6 +15,7 @@ class TestReportLogger extends Test {
     super();
     this.filename = `test${sep}src${sep}logging__messages.js`;
     this.step = 0;
+    this.errStep = 0;
     this.messages = {
       0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc',
@@ -24,6 +25,10 @@ class TestReportLogger extends Test {
       5: '  \x1b[31;1mE\x1b[0m 29:0  function myFunc4',
       6: '  \x1b[31;1mF\x1b[0m 35:0  function myFunc5',
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55'
+    };
+    this.errMessages = {
+      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
+      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesAVG = {
       0: `\u001b[33;1mD\u001b[0m test${sep}src${sep}average_rank${sep}avg1.js`,
@@ -40,6 +45,10 @@ class TestReportLogger extends Test {
         '  \u001b[31;1mE\u001b[0m: 0\n' +
         '  \u001b[31;1mF\u001b[0m: 1\n'
     };
+    this.errMessagesAVG = {
+      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 2',
+      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+    };
     this.messagesSR = {
       0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc (complexity = 1)',
@@ -51,10 +60,18 @@ class TestReportLogger extends Test {
       7: '  \x1b[33;1mC\x1b[0m 41:0  function myFunc6 (complexity = 13)',
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55 (max-depth = 12)'
     };
+    this.errMessagesSR = {
+      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
+      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+    };
     this.messagesFatal = {
       0: `\x1b[31;1mF\x1b[0m test${sep}src${sep}complexity__fatal.js`,
       1: '  \x1b[31;1mF\x1b[0m 4:3 Program:4:3 (fatal-error = 1)',
       2: "    \x1b[31;1mError\x1b[0m Parsing error: The keyword 'let' is reserved"
+    };
+    this.errMessagesFatal = {
+      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1',
+      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
   }
 
@@ -69,6 +86,13 @@ class TestReportLogger extends Test {
     this.step++;
   }
 
+  errLogger(msgData, message) {
+    if (this.errStep in this[msgData]) {
+      equal(this[msgData][this.errStep], message);
+    }
+    this.errStep++;
+  }
+
   ['test: init']() {
     const complexity = new Complexity({});
     const reportLogger = new ReportLogger(complexity, {});
@@ -80,44 +104,56 @@ class TestReportLogger extends Test {
   ['test: text']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messages', msg)
+      logger: msg => this.logger('messages', msg),
+      errLogger: msg => this.errLogger('errMessages', msg)
     });
     this.step = 0;
+    this.errStep = 0;
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
     equal(20, this.step);
+    equal(2, this.errStep);
   }
 
   ['test: text + average']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
       logger: msg => this.logger('messagesAVG', msg),
+      errLogger: msg => this.errLogger('errMessagesAVG', msg),
       average: true
     });
     this.step = 0;
+    this.errStep = 0;
     complexity.executeOnFiles(['./test/src/average_rank']);
     equal(7, this.step);
+    equal(2, this.errStep);
   }
 
   ['test: text + showRules']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this.logger('messagesSR', msg),
+      errLogger: msg => this.errLogger('errMessagesSR', msg),
       showRules: true
     });
     this.step = 0;
+    this.errStep = 0;
     complexity.executeOnFiles(['./test/src/logging__messages.js']);
     equal(20, this.step);
+    equal(2, this.errStep);
   }
 
   ['test: text + messagesFatal']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this.logger('messagesFatal', msg),
+      errLogger: msg => this.errLogger('errMessagesFatal', msg),
       showRules: true
     });
     this.step = 0;
+    this.errStep = 0;
     complexity.executeOnFiles(['./test/src/complexity__fatal.js']);
     equal(3, this.step);
+    equal(2, this.errStep);
   }
 
   ['test: json']() {
