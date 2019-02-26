@@ -13,11 +13,10 @@ class TestReportLogger extends Test {
 
   constructor() {
     super();
-    this.filename = `test${sep}src${sep}logging__messages.js`;
     this.step = 0;
     this.errStep = 0;
     this.messages = {
-      0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
+      0: `\x1b[33;1mD\x1b[0m test${sep}src${sep}logging__messages.js`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2',
@@ -31,10 +30,10 @@ class TestReportLogger extends Test {
       1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesAVG = {
-      0: `\u001b[33;1mD\u001b[0m test${sep}src${sep}average_rank${sep}avg1.js`,
+      0: `\u001b[33;1mD\u001b[0m test${sep}src${sep}complexity__average_rank${sep}avg1.js`,
       1: '  \u001b[32;1mB\u001b[0m  3:0 function myFunc1',
       2: '  \u001b[31;1mF\u001b[0m 11:0 function myFunc2',
-      3: `\u001b[33;1mD\u001b[0m test${sep}src${sep}average_rank${sep}avg2.js`,
+      3: `\u001b[33;1mD\u001b[0m test${sep}src${sep}complexity__average_rank${sep}avg2.js`,
       4: '  \u001b[33;1mC\u001b[0m  3:0 function myFunc1',
       5: '  \u001b[33;1mD\u001b[0m 11:0 function myFunc2',
       6: '\nAverage rank: \u001b[33;1mD\u001b[0m (3.416)\n' +
@@ -49,8 +48,24 @@ class TestReportLogger extends Test {
       0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 2',
       1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
+    this.messagesMR = {
+      0: `\u001b[32;1mB\u001b[0m test${sep}src${sep}complexity__max_rank.js`,
+      1: '  \u001b[33;1mD\u001b[0m  3:0 function MyFunc',
+      2: '  \u001b[32;1mA\u001b[0m  9:0 function MyFunc1',
+      3: '  \u001b[32;1mA\u001b[0m 15:0 function MyFunc2'
+    };
+    this.errMessagesMR = {
+      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1'
+    };
+    this.messagesMAR = {
+      0: `\u001b[33;1mC\u001b[0m test${sep}src${sep}complexity__max_average_rank.js`,
+      1: '  \u001b[33;1mC\u001b[0m 3:0 function MyFunc',
+    };
+    this.errMessagesMAR = {
+      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+    };
     this.messagesSR = {
-      0: `\x1b[33;1mD\x1b[0m ${this.filename}`,
+      0: `\x1b[33;1mD\x1b[0m test${sep}src${sep}logging__messages.js`,
       1: '  \x1b[32;1mA\x1b[0m  3:0  function myFunc (complexity = 1)',
       2: '  \x1b[32;1mB\x1b[0m  9:0  function myFunc1 (max-params = 2)',
       3: '  \x1b[33;1mC\x1b[0m 16:0  function myFunc2 (max-params = 3)',
@@ -123,9 +138,35 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/average_rank']);
+    complexity.executeOnFiles(['./test/src/complexity__average_rank']);
     equal(7, this.step);
     equal(2, this.errStep);
+  }
+
+  ['test: text + max-rank']() {
+    const complexity = new Complexity();
+    new ReportLogger(complexity, {
+      logger: msg => this.logger('messagesMR', msg),
+      errLogger: msg => this.errLogger('errMessagesMR', msg)
+    });
+    this.step = 0;
+    this.errStep = 0;
+    complexity.executeOnFiles(['./test/src/complexity__max_rank.js']);
+    equal(5, this.step);
+    equal(1, this.errStep);
+  }
+
+  ['test: text + max-average-rank']() {
+    const complexity = new Complexity();
+    new ReportLogger(complexity, {
+      logger: msg => this.logger('messagesMAR', msg),
+      errLogger: msg => this.errLogger('errMessagesMAR', msg)
+    });
+    this.step = 0;
+    this.errStep = 0;
+    complexity.executeOnFiles(['./test/src/complexity__max_average_rank.js']);
+    equal(2, this.step);
+    equal(1, this.errStep);
   }
 
   ['test: text + showRules']() {
