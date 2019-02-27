@@ -1,7 +1,7 @@
 'use strict';
 
 const { equal, deepEqual, throws, doesNotThrow } = require('assert').strict;
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
 const { sep, resolve } = require('path');
 
 const { Test } = require('@ndk/test');
@@ -195,6 +195,21 @@ class TestCLI extends Test {
     throws(() => {
       execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' });
     });
+  }
+
+  ['test: exitWithError - stdout/stderr']() {
+    const child = spawnSync('node', ['source/cli.js', '-mr=f', '-mar=f', 'test/src/complexity__fatal.js'], {
+      encoding: 'utf-8',
+      shell: true
+    });
+    equal(1, child.status);
+    const stdout = `\u001b[31;1mF\u001b[0m test${sep}src${sep}complexity__fatal.js` +
+      '\n  \u001b[31;1mF\u001b[0m 4:3 Program:4:3' +
+      '\n    \u001b[31;1mError\u001b[0m Parsing error: The keyword \'let\' is reserved\n';
+    equal(stdout, child.stdout);
+    const stderr = '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank ' +
+      '\u001b[31;1mF\u001b[0m (Infinity), messages - 1\n';
+    equal(stderr, child.stderr);
   }
 
 }
