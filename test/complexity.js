@@ -369,7 +369,20 @@ class TestComplexity extends Test {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]);
+    equal(1, report.files[0].messages.length);
     deepEqual({ maxAverageRank: true, maxRank: 1 }, report.errors);
+  }
+
+  ['test: ~maxRank + ~maxAverageRank + ~greaterThan F (parse Error: Fatal)']() {
+    const file = 'test/src/complexity__fatal.js';
+    const complexity = new Complexity({
+      greaterThan: 'F',
+      maxRank: 'F',
+      maxAverageRank: 'F'
+    });
+    const report = complexity.executeOnFiles([file]);
+    equal(1, report.files[0].messages.length);
+    deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
   }
 
 }
