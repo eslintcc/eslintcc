@@ -1,6 +1,6 @@
 'use strict';
 
-const { equal, deepEqual, throws } = require('assert').strict;
+const { equal, deepEqual, throws, doesNotThrow } = require('assert').strict;
 const { execSync } = require('child_process');
 const { sep, resolve } = require('path');
 
@@ -179,6 +179,13 @@ class TestCLI extends Test {
   ['test: exitWithError']() {
     const cmd = 'node source/cli.js test/src/cli__exit_with_error.js';
     throws(() => {
+      execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' });
+    });
+  }
+
+  ['test: exitWithError -mr=f -mar=f']() {
+    const cmd = 'node source/cli.js -mr=f -mar=f test/src/cli__exit_with_error.js';
+    doesNotThrow(() => {
       execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' });
     });
   }
