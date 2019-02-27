@@ -338,6 +338,26 @@ class TestComplexity extends Test {
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
   }
 
+  ['test: ~maxRank + ~greaterThan']() {
+    const file = 'test/src/complexity__max_rank.js';
+    const complexity = new Complexity({ greaterThan: 'E' });
+    const report = complexity.executeOnFiles([file]);
+    equal(0, report.files[0].messages.length);
+    deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
+  }
+
+  ['test: ~maxRank + ~maxAverageRank + ~greaterThan (3.5)']() {
+    const file = 'test/src/complexity__max_average_rank_3_5.js';
+    const complexity = new Complexity({
+      greaterThan: 'E',
+      maxRank: 3.5,
+      maxAverageRank: 3.5
+    });
+    const report = complexity.executeOnFiles([file]);
+    equal(3, report.files[0].messages.length);
+    deepEqual({ maxAverageRank: false, maxRank: 6 }, report.errors);
+  }
+
   ['test: ~maxAverageRank']() {
     const file = 'test/src/complexity__max_average_rank.js';
     const complexity = new Complexity();
