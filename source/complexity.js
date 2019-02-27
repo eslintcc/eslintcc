@@ -178,6 +178,7 @@ class ComplexityFileReportMessage {
     this.maxRuleId = ruleId;
     this.maxValue = rankValue;
     this.maxLabel = rankLabel;
+    this.fatal = true;
   }
 
 }
@@ -275,7 +276,7 @@ class ComplexityReport {
     fileReport.messages.forEach(message => {
       fileReport.averageRankValue += message.maxValue;
       this.ranksCount[message.maxLabel]++;
-      if (message.maxValue > this.options.maxRank) {
+      if (message.maxValue > this.options.maxRank || message.fatal) {
         this.errors.maxRank++;
       }
     });
@@ -287,6 +288,9 @@ class ComplexityReport {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
       const lt = typeof lessThan === 'number' ? lessThan : Infinity;
       fileReport.messages = fileReport.messages.filter(message => {
+        if (message.fatal) {
+          return true;
+        }
         if (message.maxValue <= gt) {
           return false;
         }

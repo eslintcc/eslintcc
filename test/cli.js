@@ -190,6 +190,13 @@ class TestCLI extends Test {
     });
   }
 
+  ['test: exitWithError -mr=f -mar=f (parse Error: Fatal)']() {
+    const cmd = 'node source/cli.js -mr=f -mar=f test/src/complexity__fatal.js';
+    throws(() => {
+      execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' });
+    });
+  }
+
 }
 
 
