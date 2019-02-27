@@ -26,8 +26,8 @@ class TestReportLogger extends Test {
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55'
     };
     this.errMessages = {
-      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
-      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+      0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
+      1: '\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesAVG = {
       0: `\u001b[33;1mD\u001b[0m test${sep}src${sep}complexity__average_rank${sep}avg1.js`,
@@ -45,8 +45,8 @@ class TestReportLogger extends Test {
         '  \u001b[31;1mF\u001b[0m: 1\n'
     };
     this.errMessagesAVG = {
-      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 2',
-      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+      0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 2',
+      1: '\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesMR = {
       0: `\u001b[32;1mB\u001b[0m test${sep}src${sep}complexity__max_rank.js`,
@@ -55,14 +55,14 @@ class TestReportLogger extends Test {
       3: '  \u001b[32;1mA\u001b[0m 15:0 function MyFunc2'
     };
     this.errMessagesMR = {
-      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1'
+      0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1'
     };
     this.messagesMAR = {
       0: `\u001b[33;1mC\u001b[0m test${sep}src${sep}complexity__max_average_rank.js`,
       1: '  \u001b[33;1mC\u001b[0m 3:0 function MyFunc',
     };
     this.errMessagesMAR = {
-      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+      1: '\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesSR = {
       0: `\x1b[33;1mD\x1b[0m test${sep}src${sep}logging__messages.js`,
@@ -76,8 +76,8 @@ class TestReportLogger extends Test {
       19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55 (max-depth = 12)'
     };
     this.errMessagesSR = {
-      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
-      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+      0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
+      1: '\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
     this.messagesFatal = {
       0: `\x1b[31;1mF\x1b[0m test${sep}src${sep}complexity__fatal.js`,
@@ -85,8 +85,8 @@ class TestReportLogger extends Test {
       2: "    \x1b[31;1mError\x1b[0m Parsing error: The keyword 'let' is reserved"
     };
     this.errMessagesFatal = {
-      0: '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1',
-      1: '\n\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
+      0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1',
+      1: '\u001b[31;1mError\u001b[0m: Average complexity of code above maximum allowable average rank \u001b[32;1mB\u001b[0m (2)'
     };
   }
 

@@ -207,7 +207,7 @@ class TestCLI extends Test {
       '\n  \u001b[31;1mF\u001b[0m 4:3 Program:4:3' +
       '\n    \u001b[31;1mError\u001b[0m Parsing error: The keyword \'let\' is reserved\n';
     equal(stdout, child.stdout);
-    const stderr = '\n\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank ' +
+    const stderr = '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank ' +
       '\u001b[31;1mF\u001b[0m (Infinity), messages - 1\n';
     equal(stderr, child.stderr);
   }

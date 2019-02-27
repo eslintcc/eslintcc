@@ -86,13 +86,13 @@ class ReportLogger {
           this.logger(avgMsg + '\n');
         }
         if (report.errors.maxRank > 0) {
-          let msg = `\n${this.errorColor}: Complexity of code above maximum allowable rank`;
+          let msg = `${this.errorColor}: Complexity of code above maximum allowable rank`;
           msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxRank)]}`;
           msg += ` (${report.options.maxRank}), messages - ${report.errors.maxRank}`;
           this.errLogger(msg);
         }
         if (report.errors.maxAverageRank) {
-          let msg = `\n${this.errorColor}: Average complexity of code above maximum allowable average rank`;
+          let msg = `${this.errorColor}: Average complexity of code above maximum allowable average rank`;
           msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxAverageRank)]}`;
           msg += ` (${report.options.maxAverageRank})`;
           this.errLogger(msg);
