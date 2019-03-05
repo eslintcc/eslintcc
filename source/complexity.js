@@ -45,14 +45,26 @@ const ruleTypes = {
 patchingESLint();
 
 
-class ComplexityFileReportMessage {
+class MessageNode {
 
-  static getID(node) {
-    const { start, end } = node.loc;
+  constructor(node) {
+    this._node = node;
+  }
+
+  get loc() {
+    return this._node.loc;
+  }
+
+  getID() {
+    const { start, end } = this._node.loc;
     return `${start.line}:${start.column}:${end.line}:${end.column}`;
   }
 
-  static resolveNodeName(node, recursiveUp = false) {
+  getName() {
+    // ...
+  }
+
+  resolveNodeName(node, recursiveUp = false) {
     if (node === null) {
       return null;
     }
@@ -95,6 +107,11 @@ class ComplexityFileReportMessage {
     }
   }
 
+}
+
+
+class ComplexityFileReportMessage {
+
   static['resolveValue:complexity'](data) {
     return data.complexity;
   }
@@ -128,7 +145,7 @@ class ComplexityFileReportMessage {
     this.id = messageID;
     this.type = ruleType;
     this.loc = node.loc;
-    this.namePath = this.constructor.resolveNodeName(node);
+    this.namePath = node.resolveNodeName(node._node);
     this.complexityRules = {};
     this.complexityRanks = {};
     this.maxRuleValue = 0;
@@ -214,20 +231,20 @@ class ComplexityFileReport {
   }
 
   pushMessage({ ruleId, ruleType, node, data }) {
-    node = node || {
+    node = new MessageNode(node || {
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
       type: 'Program',
       parent: null
-    };
-    const messageID = ComplexityFileReportMessage.getID(node);
+    });
+    const messageID = node.getID();
     const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
     reportMessage.pushData(ruleId, data);
   }
 
   pushFatalMessage({ ruleId, ruleType, line, column, message }) {
     const loc = { start: { line, column }, end: { line, column } };
-    const node = { loc, type: 'Program', parent: null };
-    const messageID = ComplexityFileReportMessage.getID(node);
+    const node = new MessageNode({ loc, type: 'Program', parent: null });
+    const messageID = node.getID();
     const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
     reportMessage.pushFatalMessage(ruleId, message);
   }
