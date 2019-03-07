@@ -240,20 +240,26 @@ class TestComplexity extends Test {
     equal('F', messages[3].maxLabel);
     equal('F', messages[4].maxLabel);
     const complexityB = new Complexity({ greaterThan: 'B' });
-    const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const fileB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const messagesB = fileB.messages;
     equal('C', messagesB[0].maxLabel);
     equal('F', messagesB[1].maxLabel);
     equal('F', messagesB[2].maxLabel);
     equal(undefined, messagesB[3]);
+    equal(messagesB.length, fileB.messagesMap.size);
     const complexityE = new Complexity({ greaterThan: 'E' });
-    const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const fileE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const messagesE = fileE.messages;
     equal('F', messagesE[0].maxLabel);
     equal('F', messagesE[1].maxLabel);
     equal(undefined, messagesE[2]);
+    equal(messagesE.length, fileE.messagesMap.size);
     const complexityN = new Complexity({ greaterThan: 6 });
-    const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const fileN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const messagesN = fileN.messages;
     equal('F', messagesN[0].maxLabel);
     equal(undefined, messagesN[1]);
+    equal(messagesN.length, fileN.messagesMap.size);
   }
 
   ['test: ~lessThan']() {
