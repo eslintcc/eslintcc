@@ -140,12 +140,12 @@ class ComplexityFileReportMessage {
     return data.count;
   }
 
-  constructor({ messageID, ruleType, node }, { ranks }) {
+  constructor({ ruleType, node }, { ranks }) {
     this.options = { ranks };
-    this.id = messageID;
     this.type = ruleType;
     this.loc = node.loc;
-    this.namePath = node.resolveNodeName(node._node);
+    this.node = new MessageNode(node);
+    this.namePath = this.node.resolveNodeName(node);
     this.complexityRules = {};
     this.complexityRanks = {};
     this.maxRuleValue = 0;
@@ -156,7 +156,6 @@ class ComplexityFileReportMessage {
 
   toJSON() {
     const json = {
-      id: this.id,
       type: this.type,
       loc: this.loc,
       namePath: this.namePath,
@@ -206,8 +205,7 @@ class ComplexityFileReport {
   constructor(fileName, { ranks }) {
     this.fileName = fileName;
     this.ranks = ranks;
-    this.messagesTypesMap = { file: {}, function: {}, block: {} };
-    this.messagesMap = {};
+    this.messagesMap = new Map();
     this.messages = [];
     this.averageRankValue = 0;
     this.averageRank = null;
@@ -222,30 +220,27 @@ class ComplexityFileReport {
     };
   }
 
-  __pushMessage(messageID, ruleType, node) {
-    const message = new ComplexityFileReportMessage({ messageID, ruleType, node }, { ranks: this.ranks });
-    this.messagesTypesMap[ruleType][messageID] = message;
-    this.messagesMap[messageID] = message;
+  __pushMessage(ruleType, node) {
+    const message = new ComplexityFileReportMessage({ ruleType, node }, { ranks: this.ranks });
+    this.messagesMap.set(node, message);
     this.messages.push(message);
     return message;
   }
 
   pushMessage({ ruleId, ruleType, node, data }) {
-    node = new MessageNode(node || {
+    node = node || {
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
       type: 'Program',
       parent: null
-    });
-    const messageID = node.getID();
-    const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
+    };
+    const reportMessage = this.messagesMap.get(node) || this.__pushMessage(ruleType, node);
     reportMessage.pushData(ruleId, data);
   }
 
   pushFatalMessage({ ruleId, ruleType, line, column, message }) {
     const loc = { start: { line, column }, end: { line, column } };
-    const node = new MessageNode({ loc, type: 'Program', parent: null });
-    const messageID = node.getID();
-    const reportMessage = this.messagesMap[messageID] || this.__pushMessage(messageID, ruleType, node);
+    const node = { loc, type: 'Program', parent: null };
+    const reportMessage = this.__pushMessage(ruleType, node);
     reportMessage.pushFatalMessage(ruleId, message);
   }
 

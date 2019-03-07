@@ -223,7 +223,6 @@ class TestReportLogger extends Test {
             'averageRankValue': 1.006,
             'fileName': resolve('test/src/logging__messages_json.js'),
             'messages': [{
-              'id': '3:0:5:1',
               'type': 'function',
               'loc': {
                 'start': {
@@ -246,7 +245,6 @@ class TestReportLogger extends Test {
               'maxValue': 0.2,
               'maxLabel': 'A'
             }, {
-              'id': '9:0:11:1',
               'type': 'function',
               'loc': {
                 'start': {
@@ -272,7 +270,6 @@ class TestReportLogger extends Test {
               'maxValue': 2,
               'maxLabel': 'B'
             }, {
-              'id': '15:0:21:1',
               'type': 'function',
               'loc': {
                 'start': {
@@ -298,7 +295,6 @@ class TestReportLogger extends Test {
               'maxValue': 2,
               'maxLabel': 'B'
             }, {
-              'id': '16:2:20:3',
               'type': 'block',
               'loc': {
                 'start': {
@@ -321,7 +317,6 @@ class TestReportLogger extends Test {
               'maxValue': 0.5,
               'maxLabel': 'A'
             }, {
-              'id': '17:7:19:5',
               'type': 'function',
               'loc': {
                 'start': {
