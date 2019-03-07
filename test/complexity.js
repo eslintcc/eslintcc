@@ -33,6 +33,19 @@ class TestComplexity extends Test {
     };
   }
 
+  ['test: MessageNode #getName']() {
+    const complexity = new Complexity();
+    const report = complexity.executeOnFiles(['test/src/message_node__get_name.js']).files[0].messages;
+    equal('function func1', report[0].node.getName());
+    equal('function func2', report[1].node.getName());
+    equal('function anonymous (13:1-13:14)', report[2].node.getName());
+    equal('function anonymous (15:14-17:1)', report[3].node.getName());
+    equal('arrow function (20:14-32:1)', report[4].node.getName());
+    equal('IfStatement (21:2-23:3)', report[5].node.getName());
+    equal('SwitchStatement (24:2-31:3)', report[6].node.getName());
+    equal('function func5', report[7].node.getName());
+  }
+
   ['test: #getComplexityRules']() {
     const complexity = new Complexity();
     deepEqual(this.rules.logic, Object.keys(complexity.getComplexityRules()));

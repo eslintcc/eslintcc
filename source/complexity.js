@@ -48,20 +48,44 @@ patchingESLint();
 class MessageNode {
 
   constructor(node) {
-    this._node = node;
+    this.node = node;
   }
 
-  get loc() {
-    return this._node.loc;
-  }
-
-  getID() {
-    const { start, end } = this._node.loc;
-    return `${start.line}:${start.column}:${end.line}:${end.column}`;
+  get position() {
+    const { start, end } = this.node.loc;
+    return `${start.line}:${start.column}-${end.line}:${end.column}`;
   }
 
   getName() {
-    // ...
+    const node = this.node;
+    switch (node.type) {
+      case 'FunctionExpression':
+      case 'FunctionDeclaration':
+        if (node.id) {
+          return `function ${node.id.name}`;
+        } else {
+          return `function anonymous (${this.position})`;
+        }
+      case 'ArrowFunctionExpression':
+        return `arrow function (${this.position})`;
+
+
+      case 'MethodDefinition':
+        return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
+      case 'ClassDeclaration':
+        return nameWithParent('class ' + node.id.name);
+      case 'VariableDeclarator':
+        return nameWithParent('variable ' + node.id.name);
+      case 'Property':
+        if (node.method || node.value && !node.value.id && node.value.type === 'FunctionExpression') {
+          return nameWithParent('function ' + (node.key.name || node.key.raw));
+        }
+        return this.resolveNodeName(parent, true);
+
+
+      default:
+        return `${node.type} (${this.position})`;
+    }
   }
 
   resolveNodeName(node, recursiveUp = false) {
