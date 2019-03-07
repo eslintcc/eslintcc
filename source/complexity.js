@@ -304,9 +304,11 @@ class ComplexityReport {
           return true;
         }
         if (message.maxValue <= gt) {
+          fileReport.messagesMap.delete(message.node.node);
           return false;
         }
         if (message.maxValue > lt) {
+          fileReport.messagesMap.delete(message.node.node);
           return false;
         }
         return true;
