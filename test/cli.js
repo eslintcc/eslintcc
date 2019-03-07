@@ -50,7 +50,6 @@ class TestCLI extends Test {
         'averageRankValue': 3.406,
         'fileName': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
-          'id': '15:0:17:1',
           'type': 'function',
           'loc': { 'start': { 'line': 15, 'column': 0 }, 'end': { 'line': 17, 'column': 1 } },
           'namePath': 'function myFunc3',
@@ -91,7 +90,6 @@ class TestCLI extends Test {
         'averageRankValue': 5.166,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
-          'id': '3:0:5:1',
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'namePath': 'function myFunc',
@@ -131,7 +129,6 @@ class TestCLI extends Test {
         'averageRankValue': 0.2,
         'fileName': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
-          'id': '3:0:5:1',
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'namePath': 'function myFunc',

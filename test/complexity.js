@@ -170,7 +170,7 @@ class TestComplexity extends Test {
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
     deepEqual({ 'fatal-error-label': 'F', 'fatal-error-value': 6 }, report.complexityRanks);
     deepEqual({ 'fatal-error': 1 }, report.complexityRules);
-    equal('4:3:4:3', report.id);
+    equal('4:3-4:3', report.node.position);
     equal('F', report.maxLabel);
     equal('fatal-error', report.maxRuleId);
     equal(1, report.maxRuleValue);
@@ -185,7 +185,6 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = JSON.stringify(complexity.executeOnFiles([file]).files[0].messages[0]);
     deepEqual({
-      'id': '4:3:4:3',
       'type': 'file',
       'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
       'namePath': 'Program:4:3',
@@ -220,7 +219,6 @@ class TestComplexity extends Test {
         'averageRankValue': 0.2,
         'fileName': resolve('test/src/complexity__messages_json.js'),
         'messages': [{
-          'id': '3:0:5:1',
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'namePath': 'function myFunc',
