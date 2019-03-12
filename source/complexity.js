@@ -5,6 +5,10 @@ const EventEmitter = require('events');
 const { patchingESLint, PatchedCLIEngine } = require('./lib/eslint-patches');
 const { Ranks } = require('./lib/rank');
 
+const functionNodeTypes = ['FunctionExpression', 'FunctionDeclaration'];
+const nodeTypesNames = {
+  'ArrowFunctionExpression': 'arrow function'
+};
 const allComplexityRules = {
   'complexity': ['error', 0],
   'max-depth': ['error', 0],
@@ -56,78 +60,47 @@ class MessageNode {
     return `${start.line}:${start.column}-${end.line}:${end.column}`;
   }
 
-  getName() {
+  getFunctionName() {
     const node = this.node;
-    switch (node.type) {
-      case 'FunctionExpression':
-      case 'FunctionDeclaration':
-        if (node.id) {
-          return `function ${node.id.name}`;
-        } else {
+    if (node.id) {
+      return `function ${node.id.name}`;
+    } else {
+      const parent = node.parent;
+      switch (parent.type) {
+        case 'MethodDefinition':
+          return 'class ' + parent.parent.parent.id.name +
+            (parent.static ? '.' : '#') +
+            (parent.key.name || parent.key.raw);
+        case 'Property':
+          return `function ${parent.key.name || parent.key.raw}`;
+        case 'VariableDeclarator':
+          return `function ${parent.id.name}`;
+        default:
           return `function anonymous (${this.position})`;
-        }
-      case 'ArrowFunctionExpression':
-        return `arrow function (${this.position})`;
-
-
-      case 'MethodDefinition':
-        return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
-      case 'ClassDeclaration':
-        return nameWithParent('class ' + node.id.name);
-      case 'VariableDeclarator':
-        return nameWithParent('variable ' + node.id.name);
-      case 'Property':
-        if (node.method || node.value && !node.value.id && node.value.type === 'FunctionExpression') {
-          return nameWithParent('function ' + (node.key.name || node.key.raw));
-        }
-        return this.resolveNodeName(parent, true);
-
-
-      default:
-        return `${node.type} (${this.position})`;
+      }
     }
   }
 
-  resolveNodeName(node, recursiveUp = false) {
-    if (node === null) {
-      return null;
+  getNameInParentFunction() {
+    const node = this.node;
+    let name = `${nodeTypesNames[node.type] || node.type} (${this.position})`;
+    let parent = node.parent;
+    while (parent) {
+      if (functionNodeTypes.includes(parent.type)) {
+        name = new this.constructor(parent).getFunctionName() + ', ' + name;
+        break;
+      }
+      parent = parent.parent;
     }
-    const parent = node.parent;
-    const nameWithParent = (name, separator = ', ') => {
-      const parentName = this.resolveNodeName(parent, true);
-      return parentName ? (parentName + separator + name) : name;
-    };
-    switch (node.type) {
-      case 'FunctionExpression':
-      case 'FunctionDeclaration':
-        if (!node.id && (recursiveUp || node.loc.start.line === parent.loc.start.line)) {
-          return this.resolveNodeName(parent, true) || (recursiveUp ? '' : 'function anonymous');
-        } else {
-          return nameWithParent('function ' + ((node.id || {}).name || 'anonymous'));
-        }
-      case 'MethodDefinition':
-        return nameWithParent(node.key.name || node.key.raw, node.static ? '.' : '#');
-      case 'ClassDeclaration':
-        return nameWithParent('class ' + node.id.name);
-      case 'VariableDeclarator':
-        return nameWithParent('variable ' + node.id.name);
-      case 'Property':
-        if (node.method || node.value && !node.value.id && node.value.type === 'FunctionExpression') {
-          return nameWithParent('function ' + (node.key.name || node.key.raw));
-        }
-        return this.resolveNodeName(parent, true);
-      case 'ArrowFunctionExpression':
-        return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
-      default:
-        if (recursiveUp || parent && node.loc.start.line === parent.loc.start.line) {
-          return this.resolveNodeName(parent, true);
-        } else {
-          if (node.loc.start.line === node.loc.end.line) {
-            return nameWithParent(`${node.type}:${node.loc.start.line}:${node.loc.start.column}`);
-          } else {
-            return nameWithParent(`${node.type}:${node.loc.start.line}-${node.loc.end.line}`);
-          }
-        }
+    return name;
+  }
+
+  getName() {
+    const node = this.node;
+    if (functionNodeTypes.includes(node.type)) {
+      return this.getFunctionName();
+    } else {
+      return this.getNameInParentFunction();
     }
   }
 
@@ -169,7 +142,7 @@ class ComplexityFileReportMessage {
     this.type = ruleType;
     this.loc = node.loc;
     this.node = new MessageNode(node);
-    this.namePath = this.node.resolveNodeName(node);
+    this.namePath = this.node.getName();
     this.complexityRules = {};
     this.complexityRanks = {};
     this.maxRuleValue = 0;

@@ -201,7 +201,7 @@ class TestCLI extends Test {
     });
     equal(1, child.status);
     const stdout = `\u001b[31;1mF\u001b[0m test${sep}src${sep}complexity__fatal.js` +
-      '\n  \u001b[31;1mF\u001b[0m 4:3 Program:4:3' +
+      '\n  \u001b[31;1mF\u001b[0m 4:3 Program (4:3-4:3)' +
       '\n    \u001b[31;1mError\u001b[0m Parsing error: The keyword \'let\' is reserved\n';
     equal(stdout, child.stdout);
     const stderr = '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank ' +

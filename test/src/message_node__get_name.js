@@ -1,4 +1,5 @@
 'use strict';
+/* global define */
 
 function func1(a1) {
   console.log(a1);
@@ -50,6 +51,66 @@ new myClass1();
 
 
 const myObject1 = {
+  myMethod3() {},
   ['my method 3']() {}
 };
 myObject1['my method 3']();
+
+
+async function func6(a1) {
+  for (let a in a1) {
+    await a();
+  }
+  let y = x => {
+    if (x) {
+      console.log(x);
+    }
+  };
+  y();
+
+  function func6IN(a1) {
+    if (a1) {
+      console.log(a1);
+    }
+  }
+  func6IN();
+}
+func6();
+
+
+const arr1 = () => {
+  (arr2 => {
+    console.log(arr2);
+  })();
+};
+arr1();
+
+
+define(function() {
+  (function() {})();
+  if (arr1) {
+    if (arr1) {
+      console.log(1);
+    }
+  }
+});
+
+
+const myObject2 = {
+  mo_op: {
+    myMethod5() {}
+  }
+};
+myObject2.mo_op.myMethod5();
+
+
+const myFunc4 =
+  function() {};
+myFunc4();
+
+
+const myObject3 = {
+  myFunc5: function() {},
+  myFunc6: function myFunc7() {},
+};
+myObject3.myFunc5();
