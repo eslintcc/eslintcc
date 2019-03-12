@@ -23,7 +23,7 @@ class TestReportLogger extends Test {
       4: '  \x1b[33;1mD\x1b[0m 23:0  function myFunc3',
       5: '  \x1b[31;1mE\x1b[0m 29:0  function myFunc4',
       6: '  \x1b[31;1mF\x1b[0m 35:0  function myFunc5',
-      19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55'
+      19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement (53:24-55:25)'
     };
     this.errMessages = {
       0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
@@ -73,7 +73,7 @@ class TestReportLogger extends Test {
       5: '  \x1b[31;1mE\x1b[0m 29:0  function myFunc4 (max-params = 6)',
       6: '  \x1b[31;1mF\x1b[0m 35:0  function myFunc5 (max-params = 7)',
       7: '  \x1b[33;1mC\x1b[0m 41:0  function myFunc6 (complexity = 13)',
-      19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement:53-55 (max-depth = 12)'
+      19: '  \x1b[31;1mF\x1b[0m 53:24 function myFunc6, IfStatement (53:24-55:25) (max-depth = 12)'
     };
     this.errMessagesSR = {
       0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 11',
@@ -81,7 +81,7 @@ class TestReportLogger extends Test {
     };
     this.messagesFatal = {
       0: `\x1b[31;1mF\x1b[0m test${sep}src${sep}complexity__fatal.js`,
-      1: '  \x1b[31;1mF\x1b[0m 4:3 Program:4:3 (fatal-error = 1)',
+      1: '  \x1b[31;1mF\x1b[0m 4:3 Program (4:3-4:3) (fatal-error = 1)',
       2: "    \x1b[31;1mError\x1b[0m Parsing error: The keyword 'let' is reserved"
     };
     this.errMessagesFatal = {
@@ -306,7 +306,7 @@ class TestReportLogger extends Test {
                   'column': 3
                 }
               },
-              'namePath': 'function myFunc2, IfStatement:16-20',
+              'namePath': 'function myFunc2, IfStatement (16:2-20:3)',
               'complexityRules': {
                 'max-depth': 1
               },
@@ -328,7 +328,7 @@ class TestReportLogger extends Test {
                   'column': 5
                 }
               },
-              'namePath': 'function myFunc2, ArrowFunctionExpression:17-19',
+              'namePath': 'function myFunc2, arrow function (17:7-19:5)',
               'complexityRules': {
                 'max-nested-callbacks': 1,
                 'complexity': 1
