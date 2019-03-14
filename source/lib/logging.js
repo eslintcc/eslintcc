@@ -41,7 +41,7 @@ class ReportLogger {
 
   verifyFile(fileReport) {
     if (this.options.format === 'text' && fileReport.messages.length > 0) {
-      this.logger(`${this.colors[fileReport.averageRank]} ${relative(this.options.cwd, fileReport.fileName)}`);
+      this.logger(`${this.colors[fileReport.averageRank]} ${relative(this.options.cwd, fileReport.file)}`);
       let padStart = fileReport.messages[fileReport.messages.length - 1].loc.start.line;
       let padEnd = 0;
       for (const { loc: { start: { column } } } of fileReport.messages) {

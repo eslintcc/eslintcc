@@ -216,7 +216,7 @@ class TestComplexity extends Test {
       'files': [{
         'averageRank': 'A',
         'averageRankValue': 0.2,
-        'fileName': resolve('test/src/complexity__messages_json.js'),
+        'file': resolve('test/src/complexity__messages_json.js'),
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },

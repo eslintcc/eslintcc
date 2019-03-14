@@ -48,7 +48,7 @@ class TestCLI extends Test {
       'files': [{
         'averageRank': 'D',
         'averageRankValue': 3.406,
-        'fileName': resolve('test/src/complexity__messages_gtlt.js'),
+        'file': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 15, 'column': 0 }, 'end': { 'line': 17, 'column': 1 } },
@@ -85,7 +85,7 @@ class TestCLI extends Test {
       'files': [{
         'averageRank': 'F',
         'averageRankValue': 5.166,
-        'fileName': resolve('test/src/complexity__one_rule.js'),
+        'file': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
@@ -118,7 +118,7 @@ class TestCLI extends Test {
       'files': [{
         'averageRank': 'A',
         'averageRankValue': 0.2,
-        'fileName': resolve('test/src/complexity__one_rule.js'),
+        'file': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
