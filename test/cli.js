@@ -53,12 +53,9 @@ class TestCLI extends Test {
           'type': 'function',
           'loc': { 'start': { 'line': 15, 'column': 0 }, 'end': { 'line': 17, 'column': 1 } },
           'name': 'function myFunc3',
-          'complexityRules': { 'max-params': 3, 'complexity': 1 },
-          'complexityRanks': {
-            'max-params-value': 3,
-            'max-params-label': 'C',
-            'complexity-value': 0.2,
-            'complexity-label': 'A'
+          'rules': {
+            'max-params': { 'value': 3, 'rank': 3, 'label': 'C' },
+            'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
           'maxValue': 3,
           'maxLabel': 'C'
@@ -93,15 +90,9 @@ class TestCLI extends Test {
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'name': 'function myFunc',
-          'complexityRules': {
-            'max-params': 7,
-            'complexity': 1
-          },
-          'complexityRanks': {
-            'max-params-value': 5.166,
-            'max-params-label': 'F',
-            'complexity-value': 0.2,
-            'complexity-label': 'A'
+          'rules': {
+            'max-params': { 'value': 7, 'rank': 5.166, 'label': 'F' },
+            'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
           'maxValue': 5.166,
           'maxLabel': 'F'
@@ -132,12 +123,8 @@ class TestCLI extends Test {
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'name': 'function myFunc',
-          'complexityRules': {
-            'complexity': 1
-          },
-          'complexityRanks': {
-            'complexity-value': 0.2,
-            'complexity-label': 'A'
+          'rules': {
+            'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
           'maxValue': 0.2,
           'maxLabel': 'A'
@@ -149,10 +136,17 @@ class TestCLI extends Test {
   ['test: json + 2-rules']() {
     const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
     const cmd2 = cmd + ' --rules logic --rules max-statements';
-    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' })).files[0].messages[0].complexityRules;
-    deepEqual({ 'max-params': 7, 'complexity': 1 }, report1);
-    const report2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages[0].complexityRules;
-    deepEqual({ 'complexity': 1, 'max-params': 7, 'max-statements': 1 }, report2);
+    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' })).files[0].messages[0].rules;
+    deepEqual({
+      'max-params': { value: 7, rank: 5.166, label: 'F' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report1);
+    const report2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages[0].rules;
+    deepEqual({
+      'complexity': { value: 1, rank: 0.2, label: 'A' },
+      'max-params': { value: 7, rank: 5.166, label: 'F' },
+      'max-statements': { value: 1, rank: 0.333, label: 'A' }
+    }, report2);
   }
 
   ['test: --no-inline-config']() {
@@ -166,8 +160,13 @@ class TestCLI extends Test {
     const cmd3 = 'node source/cli.js test/src/complexity__inline_config.js --format json';
     const messages3 = JSON.parse(execSync(cmd3, { encoding: 'utf-8' })).files[0].messages;
     equal(2, messages3.length);
-    deepEqual({ 'complexity': 1 }, messages3[0].complexityRules);
-    deepEqual({ 'max-params': 13, 'complexity': 1 }, messages3[1].complexityRules);
+    deepEqual({
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, messages3[0].rules);
+    deepEqual({
+      'max-params': { value: 13, rank: 6.166, label: 'F' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, messages3[1].rules);
     const cmd4 = 'node source/cli.js test/src/complexity__inline_config.js --format json --no-inline-config';
     const messages4 = JSON.parse(execSync(cmd4, { encoding: 'utf-8' })).files[0].messages;
     equal(4, messages4.length);

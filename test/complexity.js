@@ -86,78 +86,42 @@ class TestComplexity extends Test {
 
     equal('function myFunc', report.files[0].messages[0].name);
     deepEqual({
-      'complexity-value': 0.2,
-      'complexity-label': 'A'
-    }, report.files[0].messages[0].complexityRanks);
-    deepEqual({
-      complexity: 1
-    }, report.files[0].messages[0].complexityRules);
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.files[0].messages[0].rules);
 
     equal('function myFunc1', report.files[0].messages[1].name);
     deepEqual({
-      'max-params-value': 2,
-      'max-params-label': 'B',
-      'complexity-value': 0.2,
-      'complexity-label': 'A'
-    }, report.files[0].messages[1].complexityRanks);
-    deepEqual({
-      'max-params': 2,
-      'complexity': 1
-    }, report.files[0].messages[1].complexityRules);
+      'max-params': { value: 2, rank: 2, label: 'B' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.files[0].messages[1].rules);
 
     equal('function myFunc2', report.files[0].messages[2].name);
     deepEqual({
-      'max-params-value': 3,
-      'max-params-label': 'C',
-      'complexity-value': 0.2,
-      'complexity-label': 'A'
-    }, report.files[0].messages[2].complexityRanks);
-    deepEqual({
-      'max-params': 3,
-      'complexity': 1
-    }, report.files[0].messages[2].complexityRules);
+      'max-params': { value: 3, rank: 3, label: 'C' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.files[0].messages[2].rules);
 
     equal('function myFunc3', report.files[0].messages[3].name);
     deepEqual({
-      'max-params-value': 3.5,
-      'max-params-label': 'D',
-      'complexity-value': 0.2,
-      'complexity-label': 'A'
-    }, report.files[0].messages[3].complexityRanks);
-    deepEqual({
-      'max-params': 4,
-      'complexity': 1
-    }, report.files[0].messages[3].complexityRules);
+      'max-params': { value: 4, rank: 3.5, label: 'D' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.files[0].messages[3].rules);
 
     equal('function myFunc7, IfStatement (48:2-72:3)', report.files[0].messages[8].name);
     deepEqual({
-      'max-depth-label': 'A',
-      'max-depth-value': 0.5
-    }, report.files[0].messages[8].complexityRanks);
-    deepEqual({
-      'max-depth': 1
-    }, report.files[0].messages[8].complexityRules);
+      'max-depth': { value: 1, rank: 0.5, label: 'A' }
+    }, report.files[0].messages[8].rules);
 
     equal('function myFunc7, IfStatement (59:24-61:25)', report.files[0].messages[19].name);
     deepEqual({
-      'max-depth-label': 'F',
-      'max-depth-value': 5.5
-    }, report.files[0].messages[19].complexityRanks);
-    deepEqual({
-      'max-depth': 12
-    }, report.files[0].messages[19].complexityRules);
+      'max-depth': { value: 12, rank: 5.5, label: 'F' }
+    }, report.files[0].messages[19].rules);
 
     equal('function myFunc8, arrow function (78:5-80:3)', report.files[0].messages[21].name);
     deepEqual({
-      'complexity-label': 'A',
-      'complexity-value': 0.2,
-      'max-nested-callbacks-label': 'A',
-      'max-nested-callbacks-value': 0.333
-    }, report.files[0].messages[21].complexityRanks);
-    deepEqual({
-      'complexity': 1,
-      'max-nested-callbacks': 1
-    }, report.files[0].messages[21].complexityRules);
+      'complexity': { value: 1, rank: 0.2, label: 'A' },
+      'max-nested-callbacks': { value: 1, rank: 0.333, label: 'A' }
+    }, report.files[0].messages[21].rules);
   }
 
   ['test: #executeOnFiles (complexity)']() {
@@ -165,11 +129,16 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
     equal('max-params', report.maxRuleId);
-    deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
+    deepEqual({
+      'max-params': { value: 7, rank: 5.166, label: 'F' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.rules);
     const onlyComplexity = new Complexity({ rules: 'complexity' });
     const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
     equal('complexity', onlyCReport.maxRuleId);
-    deepEqual({ 'complexity': 1 }, onlyCReport.complexityRules);
+    deepEqual({
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, onlyCReport.rules);
   }
 
   ['test: #executeOnFiles (raw rules)']() {
@@ -177,36 +146,30 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
     equal('max-params', report.maxRuleId);
-    deepEqual({ 'max-params': 7, 'complexity': 1 }, report.complexityRules);
+    deepEqual({
+      'max-params': { value: 7, rank: 5.166, label: 'F' },
+      'complexity': { value: 1, rank: 0.2, label: 'A' }
+    }, report.rules);
     const rawComplexity = new Complexity({ rules: 'raw' });
     const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages;
     equal('max-lines', rawReport[0].maxRuleId);
     deepEqual({
-      'max-lines': 13
-    }, rawReport[0].complexityRules);
-    deepEqual({
-      'max-lines-label': 'A',
-      'max-lines-value': 0.173
-    }, rawReport[0].complexityRanks);
+      'max-lines': { value: 13, rank: 0.173, label: 'A' }
+    }, rawReport[0].rules);
     equal('max-statements', rawReport[1].maxRuleId);
     deepEqual({
-      'max-lines-per-function': 8,
-      'max-statements': 4
-    }, rawReport[1].complexityRules);
-    deepEqual({
-      'max-lines-per-function-label': 'A',
-      'max-lines-per-function-value': 0.615,
-      'max-statements-label': 'B',
-      'max-statements-value': 1.5
-    }, rawReport[1].complexityRanks);
+      'max-lines-per-function': { value: 8, rank: 0.615, label: 'A' },
+      'max-statements': { value: 4, rank: 1.5, label: 'B' }
+    }, rawReport[1].rules);
   }
 
   ['test: #executeOnFiles (parse Error: Fatal)']() {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
-    deepEqual({ 'fatal-error-label': 'F', 'fatal-error-value': 6 }, report.complexityRanks);
-    deepEqual({ 'fatal-error': 1 }, report.complexityRules);
+    deepEqual({
+      'fatal-error': { value: 1, rank: 6, label: 'F' }
+    }, report.rules);
     equal('4:3-4:3', report.node.position);
     equal('F', report.maxLabel);
     equal('fatal-error', report.maxRuleId);
@@ -225,8 +188,7 @@ class TestComplexity extends Test {
       'type': 'file',
       'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
       'name': 'Program (4:3-4:3)',
-      'complexityRules': { 'fatal-error': 1 },
-      'complexityRanks': { 'fatal-error-value': 6, 'fatal-error-label': 'F' },
+      'rules': { 'fatal-error': { 'value': 1, 'rank': 6, 'label': 'F' } },
       'maxValue': 6,
       'maxLabel': 'F',
       'errorMessage': "Parsing error: The keyword 'let' is reserved"
@@ -259,8 +221,7 @@ class TestComplexity extends Test {
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'name': 'function myFunc',
-          'complexityRules': { 'complexity': 1 },
-          'complexityRanks': { 'complexity-value': 0.2, 'complexity-label': 'A' },
+          'rules': { 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' } },
           'maxValue': 0.2,
           'maxLabel': 'A'
         }]
@@ -358,8 +319,13 @@ class TestComplexity extends Test {
       .executeOnFiles(['test/src/complexity__inline_config.js'])
       .files[0].messages;
     equal(2, messages3.length);
-    deepEqual({ 'complexity': 1 }, messages3[0].complexityRules);
-    deepEqual({ 'max-params': 13, 'complexity': 1 }, messages3[1].complexityRules);
+    deepEqual({
+      'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
+    }, messages3[0].rules);
+    deepEqual({
+      'max-params': { 'value': 13, 'rank': 6.166, 'label': 'F' },
+      'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
+    }, messages3[1].rules);
     const messages4 = new Complexity({ noInlineConfig: true })
       .executeOnFiles(['test/src/complexity__inline_config.js'])
       .files[0].messages;
@@ -377,6 +343,9 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]);
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
+    equal(0.333, report.files[0].messages[6].maxValue);
+    equal(1.333, report.averageRankValue);
+    equal('B', report.averageRank);
   }
 
   ['test: ~maxRank + ~greaterThan']() {

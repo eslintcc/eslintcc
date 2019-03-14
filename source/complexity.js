@@ -139,12 +139,11 @@ class ComplexityFileReportMessage {
 
   constructor({ ruleType, node }, { ranks }) {
     this.options = { ranks };
-    this.type = ruleType;
-    this.loc = node.loc;
     this.node = new MessageNode(node);
+    this.loc = node.loc;
+    this.type = ruleType;
     this.name = this.node.getName();
-    this.complexityRules = {};
-    this.complexityRanks = {};
+    this.rules = {};
     this.maxRuleValue = 0;
     this.maxRuleId = null;
     this.maxValue = 0;
@@ -153,11 +152,10 @@ class ComplexityFileReportMessage {
 
   toJSON() {
     const json = {
-      type: this.type,
       loc: this.loc,
+      type: this.type,
       name: this.name,
-      complexityRules: this.complexityRules,
-      complexityRanks: this.complexityRanks,
+      rules: this.rules,
       maxValue: this.maxValue,
       maxLabel: this.maxLabel
     };
@@ -169,28 +167,24 @@ class ComplexityFileReportMessage {
 
   pushData(ruleId, data) {
     const value = this.constructor[`resolveValue:${ruleId}`](data);
-    const { rankValue, rankLabel } = this.options.ranks.getValue(ruleId, value);
-    this.complexityRules[ruleId] = value;
-    this.complexityRanks[`${ruleId}-value`] = rankValue;
-    this.complexityRanks[`${ruleId}-label`] = rankLabel;
-    if (rankValue > this.maxValue) {
+    const { rank, label } = this.options.ranks.getValue(ruleId, value);
+    this.rules[ruleId] = { value, rank, label };
+    if (rank > this.maxValue) {
       this.maxRuleValue = value;
       this.maxRuleId = ruleId;
-      this.maxValue = rankValue;
-      this.maxLabel = rankLabel;
+      this.maxValue = rank;
+      this.maxLabel = label;
     }
   }
 
   pushFatalMessage(ruleId, message) {
-    const { rankValue, rankLabel } = this.options.ranks.constructor.getMaxValue();
-    this.complexityRules[ruleId] = 1;
-    this.complexityRanks[`${ruleId}-value`] = rankValue;
-    this.complexityRanks[`${ruleId}-label`] = rankLabel;
+    const { rank, label } = this.options.ranks.constructor.getMaxValue();
+    this.rules[ruleId] = { value: 1, rank, label };
     this.errorMessage = message;
     this.maxRuleValue = 1;
     this.maxRuleId = ruleId;
-    this.maxValue = rankValue;
-    this.maxLabel = rankLabel;
+    this.maxValue = rank;
+    this.maxLabel = label;
     this.fatal = true;
   }
 
