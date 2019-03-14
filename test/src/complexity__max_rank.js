@@ -23,3 +23,13 @@ function MyFunc3(a) {
 }
 
 MyFunc3();
+
+function myFunc4(a1, a2) {
+  if (a1) {
+    a1(() => {
+      console.log(a2);
+    });
+  }
+}
+
+myFunc4();

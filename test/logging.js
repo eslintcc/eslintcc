@@ -52,7 +52,11 @@ class TestReportLogger extends Test {
       0: `\u001b[32;1mB\u001b[0m test${sep}src${sep}complexity__max_rank.js`,
       1: '  \u001b[33;1mD\u001b[0m  3:0 function MyFunc',
       2: '  \u001b[32;1mA\u001b[0m  9:0 function MyFunc1',
-      3: '  \u001b[32;1mA\u001b[0m 15:0 function MyFunc2'
+      3: '  \u001b[32;1mA\u001b[0m 15:0 function MyFunc2',
+      4: '  \u001b[32;1mA\u001b[0m 21:0 function MyFunc3',
+      5: '  \u001b[32;1mB\u001b[0m 27:0 function myFunc4',
+      6: '  \u001b[32;1mA\u001b[0m 28:2 function myFunc4, IfStatement (28:2-32:3)',
+      7: '  \u001b[32;1mA\u001b[0m 29:7 function myFunc4, arrow function (29:7-31:5)'
     };
     this.errMessagesMR = {
       0: '\u001b[31;1mError\u001b[0m: Complexity of code above maximum allowable rank \u001b[33;1mC\u001b[0m (3), messages - 1'
@@ -152,7 +156,7 @@ class TestReportLogger extends Test {
     this.step = 0;
     this.errStep = 0;
     complexity.executeOnFiles(['./test/src/complexity__max_rank.js']);
-    equal(5, this.step);
+    equal(8, this.step);
     equal(1, this.errStep);
   }
 
@@ -235,12 +239,8 @@ class TestReportLogger extends Test {
                 }
               },
               'name': 'function myFunc',
-              'complexityRules': {
-                'complexity': 1
-              },
-              'complexityRanks': {
-                'complexity-value': 0.2,
-                'complexity-label': 'A'
+              'rules': {
+                'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
               'maxValue': 0.2,
               'maxLabel': 'A'
@@ -257,15 +257,9 @@ class TestReportLogger extends Test {
                 }
               },
               'name': 'function myFunc1',
-              'complexityRules': {
-                'max-params': 2,
-                'complexity': 1
-              },
-              'complexityRanks': {
-                'max-params-value': 2,
-                'max-params-label': 'B',
-                'complexity-value': 0.2,
-                'complexity-label': 'A'
+              'rules': {
+                'max-params': { 'value': 2, 'rank': 2, 'label': 'B' },
+                'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
               'maxValue': 2,
               'maxLabel': 'B'
@@ -282,15 +276,9 @@ class TestReportLogger extends Test {
                 }
               },
               'name': 'function myFunc2',
-              'complexityRules': {
-                'max-params': 2,
-                'complexity': 2
-              },
-              'complexityRanks': {
-                'max-params-value': 2,
-                'max-params-label': 'B',
-                'complexity-value': 0.4,
-                'complexity-label': 'A'
+              'rules': {
+                'max-params': { 'value': 2, 'rank': 2, 'label': 'B' },
+                'complexity': { 'value': 2, 'rank': 0.4, 'label': 'A' }
               },
               'maxValue': 2,
               'maxLabel': 'B'
@@ -307,12 +295,8 @@ class TestReportLogger extends Test {
                 }
               },
               'name': 'function myFunc2, IfStatement (16:2-20:3)',
-              'complexityRules': {
-                'max-depth': 1
-              },
-              'complexityRanks': {
-                'max-depth-value': 0.5,
-                'max-depth-label': 'A'
+              'rules': {
+                'max-depth': { 'value': 1, 'rank': 0.5, 'label': 'A' }
               },
               'maxValue': 0.5,
               'maxLabel': 'A'
@@ -329,15 +313,9 @@ class TestReportLogger extends Test {
                 }
               },
               'name': 'function myFunc2, arrow function (17:7-19:5)',
-              'complexityRules': {
-                'max-nested-callbacks': 1,
-                'complexity': 1
-              },
-              'complexityRanks': {
-                'max-nested-callbacks-value': 0.333,
-                'max-nested-callbacks-label': 'A',
-                'complexity-value': 0.2,
-                'complexity-label': 'A'
+              'rules': {
+                'max-nested-callbacks': { 'value': 1, 'rank': 0.333, 'label': 'A' },
+                'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
               'maxValue': 0.333,
               'maxLabel': 'A'

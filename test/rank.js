@@ -40,7 +40,7 @@ class TestRank extends Test {
 
   ['test: .getMaxValue']() {
     const maxValue = Ranks.getMaxValue();
-    deepEqual({ rankValue: 6, rankLabel: 'F' }, maxValue);
+    deepEqual({ rank: 6, label: 'F' }, maxValue);
   }
 
   ['test: .getLabelByValue']() {
@@ -59,35 +59,35 @@ class TestRank extends Test {
     const ranks = new Ranks();
     const getValue = value => ranks.getValue('complexity', value);
     deepEqual([
-      { rankLabel: 'A', rankValue: 0 },
-      { rankLabel: 'A', rankValue: 0.5 },
-      { rankLabel: 'A', rankValue: 1 }
+      { label: 'A', rank: 0 },
+      { label: 'A', rank: 0.5 },
+      { label: 'A', rank: 1 }
     ], [0, 2.5, 5].map(getValue));
     deepEqual([
-      { rankLabel: 'B', rankValue: 1.2 },
-      { rankLabel: 'B', rankValue: 1.4 },
-      { rankLabel: 'B', rankValue: 2 }
+      { label: 'B', rank: 1.2 },
+      { label: 'B', rank: 1.4 },
+      { label: 'B', rank: 2 }
     ], [6, 7, 10].map(getValue));
     deepEqual([
-      { rankLabel: 'C', rankValue: 2.2 },
-      { rankLabel: 'C', rankValue: 2.5 },
-      { rankLabel: 'C', rankValue: 3 }
+      { label: 'C', rank: 2.2 },
+      { label: 'C', rank: 2.5 },
+      { label: 'C', rank: 3 }
     ], [12, 15, 20].map(getValue));
     deepEqual([
-      { rankLabel: 'D', rankValue: 3.3 },
-      { rankLabel: 'D', rankValue: 3.9 },
-      { rankLabel: 'D', rankValue: 4 }
+      { label: 'D', rank: 3.3 },
+      { label: 'D', rank: 3.9 },
+      { label: 'D', rank: 4 }
     ], [23, 29, 30].map(getValue));
     deepEqual([
-      { rankLabel: 'E', rankValue: 4.2 },
-      { rankLabel: 'E', rankValue: 4.5 },
-      { rankLabel: 'E', rankValue: 5 }
+      { label: 'E', rank: 4.2 },
+      { label: 'E', rank: 4.5 },
+      { label: 'E', rank: 5 }
     ], [32, 35, 40].map(getValue));
     deepEqual([
-      { rankLabel: 'F', rankValue: 5.025 },
-      { rankLabel: 'F', rankValue: 5.5 },
-      { rankLabel: 'F', rankValue: 6 },
-      { rankLabel: 'F', rankValue: 7.25 }
+      { label: 'F', rank: 5.025 },
+      { label: 'F', rank: 5.5 },
+      { label: 'F', rank: 6 },
+      { label: 'F', rank: 7.25 }
     ], [41, 60, 80, 130].map(getValue));
   }
 
@@ -95,9 +95,9 @@ class TestRank extends Test {
     const ranks = new Ranks();
     const getValue = value => ranks.getValue('max-nested-callbacks', value);
     deepEqual([
-      { rankLabel: 'A', rankValue: 0.333 },
-      { rankLabel: 'A', rankValue: 0.833 },
-      { rankLabel: 'B', rankValue: 1.7 }
+      { label: 'A', rank: 0.333 },
+      { label: 'A', rank: 0.833 },
+      { label: 'B', rank: 1.7 }
     ], [1, 2.5, 4.4].map(getValue));
   }
 }

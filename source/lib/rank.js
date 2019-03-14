@@ -43,8 +43,8 @@ class Ranks {
 
   static getMaxValue() {
     return {
-      rankValue: rankLabelsMaxValue['E'] + 1,
-      rankLabel: 'F'
+      rank: rankLabelsMaxValue['E'] + 1,
+      label: 'F'
     };
   }
 
@@ -140,14 +140,14 @@ class Ranks {
   getValue(ruleID, value) {
     const ranks = this.ranks[ruleID];
     for (let i = 0; i < rankLabels.length; i++) {
-      const rankLabel = rankLabels[i];
-      const rankMaxValue = ranks[rankLabel];
+      const label = rankLabels[i];
+      const rankMaxValue = ranks[label];
       if (value <= rankMaxValue) {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
         return {
-          rankValue: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
-          rankLabel: rankLabel
+          rank: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
+          label: label
         };
       }
     }
