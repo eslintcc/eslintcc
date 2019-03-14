@@ -193,8 +193,8 @@ class ComplexityFileReportMessage {
 
 class ComplexityFileReport {
 
-  constructor(fileName, { ranks }) {
-    this.fileName = fileName;
+  constructor(file, { ranks }) {
+    this.file = file;
     this.ranks = ranks;
     this.messagesMap = new Map();
     this.messages = [];
@@ -204,7 +204,7 @@ class ComplexityFileReport {
 
   toJSON() {
     return {
-      fileName: this.fileName,
+      file: this.file,
       messages: this.messages,
       averageRankValue: this.averageRankValue,
       averageRank: this.averageRank
@@ -263,8 +263,8 @@ class ComplexityReport {
     };
   }
 
-  verifyFile(fileName, messages) {
-    const fileReport = new ComplexityFileReport(fileName, this.options);
+  verifyFile(file, messages) {
+    const fileReport = new ComplexityFileReport(file, this.options);
     messages.forEach(message => {
       if (message.fatal) {
         message.ruleId = 'fatal-error';

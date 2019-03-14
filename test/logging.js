@@ -225,7 +225,7 @@ class TestReportLogger extends Test {
           'files': [{
             'averageRank': 'B',
             'averageRankValue': 1.006,
-            'fileName': resolve('test/src/logging__messages_json.js'),
+            'file': resolve('test/src/logging__messages_json.js'),
             'messages': [{
               'type': 'function',
               'loc': {
