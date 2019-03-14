@@ -52,7 +52,7 @@ class TestCLI extends Test {
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 15, 'column': 0 }, 'end': { 'line': 17, 'column': 1 } },
-          'namePath': 'function myFunc3',
+          'name': 'function myFunc3',
           'complexityRules': { 'max-params': 3, 'complexity': 1 },
           'complexityRanks': {
             'max-params-value': 3,
@@ -92,7 +92,7 @@ class TestCLI extends Test {
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
-          'namePath': 'function myFunc',
+          'name': 'function myFunc',
           'complexityRules': {
             'max-params': 7,
             'complexity': 1
@@ -131,7 +131,7 @@ class TestCLI extends Test {
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
-          'namePath': 'function myFunc',
+          'name': 'function myFunc',
           'complexityRules': {
             'complexity': 1
           },

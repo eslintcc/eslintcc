@@ -234,7 +234,7 @@ class TestReportLogger extends Test {
                   'column': 1
                 }
               },
-              'namePath': 'function myFunc',
+              'name': 'function myFunc',
               'complexityRules': {
                 'complexity': 1
               },
@@ -256,7 +256,7 @@ class TestReportLogger extends Test {
                   'column': 1
                 }
               },
-              'namePath': 'function myFunc1',
+              'name': 'function myFunc1',
               'complexityRules': {
                 'max-params': 2,
                 'complexity': 1
@@ -281,7 +281,7 @@ class TestReportLogger extends Test {
                   'column': 1
                 }
               },
-              'namePath': 'function myFunc2',
+              'name': 'function myFunc2',
               'complexityRules': {
                 'max-params': 2,
                 'complexity': 2
@@ -306,7 +306,7 @@ class TestReportLogger extends Test {
                   'column': 3
                 }
               },
-              'namePath': 'function myFunc2, IfStatement (16:2-20:3)',
+              'name': 'function myFunc2, IfStatement (16:2-20:3)',
               'complexityRules': {
                 'max-depth': 1
               },
@@ -328,7 +328,7 @@ class TestReportLogger extends Test {
                   'column': 5
                 }
               },
-              'namePath': 'function myFunc2, arrow function (17:7-19:5)',
+              'name': 'function myFunc2, arrow function (17:7-19:5)',
               'complexityRules': {
                 'max-nested-callbacks': 1,
                 'complexity': 1
