@@ -142,7 +142,7 @@ class ComplexityFileReportMessage {
     this.type = ruleType;
     this.loc = node.loc;
     this.node = new MessageNode(node);
-    this.namePath = this.node.getName();
+    this.name = this.node.getName();
     this.complexityRules = {};
     this.complexityRanks = {};
     this.maxRuleValue = 0;
@@ -155,7 +155,7 @@ class ComplexityFileReportMessage {
     const json = {
       type: this.type,
       loc: this.loc,
-      namePath: this.namePath,
+      name: this.name,
       complexityRules: this.complexityRules,
       complexityRanks: this.complexityRanks,
       maxValue: this.maxValue,

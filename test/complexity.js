@@ -84,7 +84,7 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
 
-    equal('function myFunc', report.files[0].messages[0].namePath);
+    equal('function myFunc', report.files[0].messages[0].name);
     deepEqual({
       'complexity-value': 0.2,
       'complexity-label': 'A'
@@ -93,7 +93,7 @@ class TestComplexity extends Test {
       complexity: 1
     }, report.files[0].messages[0].complexityRules);
 
-    equal('function myFunc1', report.files[0].messages[1].namePath);
+    equal('function myFunc1', report.files[0].messages[1].name);
     deepEqual({
       'max-params-value': 2,
       'max-params-label': 'B',
@@ -105,7 +105,7 @@ class TestComplexity extends Test {
       'complexity': 1
     }, report.files[0].messages[1].complexityRules);
 
-    equal('function myFunc2', report.files[0].messages[2].namePath);
+    equal('function myFunc2', report.files[0].messages[2].name);
     deepEqual({
       'max-params-value': 3,
       'max-params-label': 'C',
@@ -117,7 +117,7 @@ class TestComplexity extends Test {
       'complexity': 1
     }, report.files[0].messages[2].complexityRules);
 
-    equal('function myFunc3', report.files[0].messages[3].namePath);
+    equal('function myFunc3', report.files[0].messages[3].name);
     deepEqual({
       'max-params-value': 3.5,
       'max-params-label': 'D',
@@ -129,7 +129,7 @@ class TestComplexity extends Test {
       'complexity': 1
     }, report.files[0].messages[3].complexityRules);
 
-    equal('function myFunc7, IfStatement (48:2-72:3)', report.files[0].messages[8].namePath);
+    equal('function myFunc7, IfStatement (48:2-72:3)', report.files[0].messages[8].name);
     deepEqual({
       'max-depth-label': 'A',
       'max-depth-value': 0.5
@@ -138,7 +138,7 @@ class TestComplexity extends Test {
       'max-depth': 1
     }, report.files[0].messages[8].complexityRules);
 
-    equal('function myFunc7, IfStatement (59:24-61:25)', report.files[0].messages[19].namePath);
+    equal('function myFunc7, IfStatement (59:24-61:25)', report.files[0].messages[19].name);
     deepEqual({
       'max-depth-label': 'F',
       'max-depth-value': 5.5
@@ -147,7 +147,7 @@ class TestComplexity extends Test {
       'max-depth': 12
     }, report.files[0].messages[19].complexityRules);
 
-    equal('function myFunc8, arrow function (78:5-80:3)', report.files[0].messages[21].namePath);
+    equal('function myFunc8, arrow function (78:5-80:3)', report.files[0].messages[21].name);
     deepEqual({
       'complexity-label': 'A',
       'complexity-value': 0.2,
@@ -213,7 +213,7 @@ class TestComplexity extends Test {
     equal(1, report.maxRuleValue);
     equal(6, report.maxValue);
     equal("Parsing error: The keyword 'let' is reserved", report.errorMessage);
-    equal('Program (4:3-4:3)', report.namePath);
+    equal('Program (4:3-4:3)', report.name);
     equal('file', report.type);
   }
 
@@ -224,7 +224,7 @@ class TestComplexity extends Test {
     deepEqual({
       'type': 'file',
       'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
-      'namePath': 'Program (4:3-4:3)',
+      'name': 'Program (4:3-4:3)',
       'complexityRules': { 'fatal-error': 1 },
       'complexityRanks': { 'fatal-error-value': 6, 'fatal-error-label': 'F' },
       'maxValue': 6,
@@ -258,7 +258,7 @@ class TestComplexity extends Test {
         'messages': [{
           'type': 'function',
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
-          'namePath': 'function myFunc',
+          'name': 'function myFunc',
           'complexityRules': { 'complexity': 1 },
           'complexityRanks': { 'complexity-value': 0.2, 'complexity-label': 'A' },
           'maxValue': 0.2,
@@ -316,32 +316,32 @@ class TestComplexity extends Test {
     equal(undefined, messagesN[1]);
   }
 
-  ['test: ~namePath']() {
+  ['test: ~name']() {
     const messages = new Complexity()
       .executeOnFiles(['test/src/complexity__messages_node_name.js'])
       .files[0].messages;
-    equal('function myFunc1', messages[0].namePath);
-    equal('function myFunc2', messages[1].namePath);
-    equal('function anonymous (12:1-12:14)', messages[2].namePath);
-    equal('function anonymous (15:7-18:1)', messages[3].namePath);
-    equal('function myFunc3', messages[4].namePath);
-    equal('class myClass1#constructor', messages[5].namePath);
-    equal('class myClass1#myMethod1', messages[6].namePath);
-    equal('class myClass1#myProp1', messages[7].namePath);
-    equal('class myClass1.myMethod1', messages[8].namePath);
-    equal('class myClass1.myProp1', messages[9].namePath);
-    equal('class myClass1.\'my method 2\'', messages[10].namePath);
-    equal('function \'my method 3\'', messages[11].namePath);
-    equal('arrow function (38:13-42:1)', messages[12].namePath);
-    equal('arrow function (39:3-41:3)', messages[13].namePath);
-    equal('function anonymous (46:7-53:1)', messages[14].namePath);
-    equal('function anonymous (47:3-47:16)', messages[15].namePath);
-    equal('function anonymous (46:7-53:1), IfStatement (48:2-52:3)', messages[16].namePath);
-    equal('function anonymous (46:7-53:1), IfStatement (49:4-51:5)', messages[17].namePath);
-    equal('function myMethod5', messages[18].namePath);
-    equal('function myFunc4', messages[19].namePath);
-    equal('function myFunc5', messages[20].namePath);
-    equal('function myFunc7', messages[21].namePath);
+    equal('function myFunc1', messages[0].name);
+    equal('function myFunc2', messages[1].name);
+    equal('function anonymous (12:1-12:14)', messages[2].name);
+    equal('function anonymous (15:7-18:1)', messages[3].name);
+    equal('function myFunc3', messages[4].name);
+    equal('class myClass1#constructor', messages[5].name);
+    equal('class myClass1#myMethod1', messages[6].name);
+    equal('class myClass1#myProp1', messages[7].name);
+    equal('class myClass1.myMethod1', messages[8].name);
+    equal('class myClass1.myProp1', messages[9].name);
+    equal('class myClass1.\'my method 2\'', messages[10].name);
+    equal('function \'my method 3\'', messages[11].name);
+    equal('arrow function (38:13-42:1)', messages[12].name);
+    equal('arrow function (39:3-41:3)', messages[13].name);
+    equal('function anonymous (46:7-53:1)', messages[14].name);
+    equal('function anonymous (47:3-47:16)', messages[15].name);
+    equal('function anonymous (46:7-53:1), IfStatement (48:2-52:3)', messages[16].name);
+    equal('function anonymous (46:7-53:1), IfStatement (49:4-51:5)', messages[17].name);
+    equal('function myMethod5', messages[18].name);
+    equal('function myFunc4', messages[19].name);
+    equal('function myFunc5', messages[20].name);
+    equal('function myFunc7', messages[21].name);
   }
 
   ['test: ~noInlineConfig']() {

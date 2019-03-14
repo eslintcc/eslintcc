@@ -53,13 +53,13 @@ class ReportLogger {
         const {
           maxLabel,
           loc: { start: { line, column } },
-          namePath,
+          name,
           maxRuleId,
           maxRuleValue,
           errorMessage
         } = message;
         const locStart = `${String(line).padStart(padStart)}:${String(column).padEnd(padEnd)}`;
-        let text = `  ${this.colors[maxLabel]} ${locStart} ${namePath}`;
+        let text = `  ${this.colors[maxLabel]} ${locStart} ${name}`;
         if (this.options.showRules) {
           text += ` (${maxRuleId} = ${maxRuleValue})`;
         }
