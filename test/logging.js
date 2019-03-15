@@ -242,8 +242,7 @@ class TestReportLogger extends Test {
               'rules': {
                 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
-              'maxValue': 0.2,
-              'maxLabel': 'A'
+              'maxRule': 'complexity'
             }, {
               'type': 'function',
               'loc': {
@@ -261,8 +260,7 @@ class TestReportLogger extends Test {
                 'max-params': { 'value': 2, 'rank': 2, 'label': 'B' },
                 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
-              'maxValue': 2,
-              'maxLabel': 'B'
+              'maxRule': 'max-params'
             }, {
               'type': 'function',
               'loc': {
@@ -280,8 +278,7 @@ class TestReportLogger extends Test {
                 'max-params': { 'value': 2, 'rank': 2, 'label': 'B' },
                 'complexity': { 'value': 2, 'rank': 0.4, 'label': 'A' }
               },
-              'maxValue': 2,
-              'maxLabel': 'B'
+              'maxRule': 'max-params'
             }, {
               'type': 'block',
               'loc': {
@@ -298,8 +295,7 @@ class TestReportLogger extends Test {
               'rules': {
                 'max-depth': { 'value': 1, 'rank': 0.5, 'label': 'A' }
               },
-              'maxValue': 0.5,
-              'maxLabel': 'A'
+              'maxRule': 'max-depth'
             }, {
               'type': 'function',
               'loc': {
@@ -317,8 +313,7 @@ class TestReportLogger extends Test {
                 'max-nested-callbacks': { 'value': 1, 'rank': 0.333, 'label': 'A' },
                 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
               },
-              'maxValue': 0.333,
-              'maxLabel': 'A'
+              'maxRule': 'max-nested-callbacks'
             }]
           }]
         }, report);

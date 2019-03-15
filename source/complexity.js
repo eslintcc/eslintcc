@@ -144,10 +144,8 @@ class ComplexityFileReportMessage {
     this.type = ruleType;
     this.name = this.node.getName();
     this.rules = {};
-    this.maxRuleValue = 0;
-    this.maxRuleId = null;
-    this.maxValue = 0;
-    this.maxLabel = null;
+    this.maxRule = null;
+    this.max = { rank: 0 };
   }
 
   toJSON() {
@@ -156,8 +154,7 @@ class ComplexityFileReportMessage {
       type: this.type,
       name: this.name,
       rules: this.rules,
-      maxValue: this.maxValue,
-      maxLabel: this.maxLabel
+      maxRule: this.maxRule
     };
     if (this.errorMessage) {
       json.errorMessage = this.errorMessage;
@@ -169,22 +166,17 @@ class ComplexityFileReportMessage {
     const value = this.constructor[`resolveValue:${ruleId}`](data);
     const { rank, label } = this.options.ranks.getValue(ruleId, value);
     this.rules[ruleId] = { value, rank, label };
-    if (rank > this.maxValue) {
-      this.maxRuleValue = value;
-      this.maxRuleId = ruleId;
-      this.maxValue = rank;
-      this.maxLabel = label;
+    if (rank > this.max.rank) {
+      this.maxRule = ruleId;
+      this.max = this.rules[ruleId];
     }
   }
 
   pushFatalMessage(ruleId, message) {
     const { rank, label } = this.options.ranks.constructor.getMaxValue();
-    this.rules[ruleId] = { value: 1, rank, label };
+    this.maxRule = ruleId;
+    this.max = this.rules[ruleId] = { value: 1, rank, label };
     this.errorMessage = message;
-    this.maxRuleValue = 1;
-    this.maxRuleId = ruleId;
-    this.maxValue = rank;
-    this.maxLabel = label;
     this.fatal = true;
   }
 
@@ -277,9 +269,10 @@ class ComplexityReport {
       }
     });
     fileReport.messages.forEach(message => {
-      fileReport.averageRankValue += message.maxValue;
-      this.ranksCount[message.maxLabel]++;
-      if (message.maxValue > this.options.maxRank || message.fatal) {
+      const { rank, label } = message.max;
+      fileReport.averageRankValue += rank;
+      this.ranksCount[label]++;
+      if (rank > this.options.maxRank || message.fatal) {
         this.errors.maxRank++;
       }
     });
@@ -294,11 +287,12 @@ class ComplexityReport {
         if (message.fatal) {
           return true;
         }
-        if (message.maxValue <= gt) {
+        const { rank } = message.max;
+        if (rank <= gt) {
           fileReport.messagesMap.delete(message.node.node);
           return false;
         }
-        if (message.maxValue > lt) {
+        if (rank > lt) {
           fileReport.messagesMap.delete(message.node.node);
           return false;
         }
