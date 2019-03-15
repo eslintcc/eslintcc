@@ -79,8 +79,8 @@ class ReportLogger {
       default:
         if (this.options.average) {
           let avgMsg = `\nAverage rank: ${this.colors[report.average.label]} (${report.average.rank})`;
-          for (const label in report.ranksCount) {
-            avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
+          for (const label in report.ranks) {
+            avgMsg += `\n  ${this.colors[label]}: ${report.ranks[label]}`;
           }
           this.logger(avgMsg + '\n');
         }

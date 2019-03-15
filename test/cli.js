@@ -36,7 +36,7 @@ class TestCLI extends Test {
         'maxAverageRank': true,
         'maxRank': 2
       },
-      'ranksCount': {
+      'ranks': {
         'A': 1,
         'B': 1,
         'C': 1,
@@ -70,7 +70,7 @@ class TestCLI extends Test {
         'maxAverageRank': true,
         'maxRank': 1
       },
-      'ranksCount': {
+      'ranks': {
         'A': 0,
         'B': 0,
         'C': 0,
@@ -100,7 +100,7 @@ class TestCLI extends Test {
         'maxAverageRank': false,
         'maxRank': 0
       },
-      'ranksCount': {
+      'ranks': {
         'A': 1,
         'B': 0,
         'C': 0,
