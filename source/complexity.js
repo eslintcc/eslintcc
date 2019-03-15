@@ -232,7 +232,6 @@ class ComplexityReport {
 
   constructor({ ranks, greaterThan, lessThan, maxRank, maxAverageRank }) {
     this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
-    this.events = new EventEmitter();
     this.files = [];
     this.average = { rank: 0 };
     this.ranksCount = Ranks.createRanksCounters();
@@ -296,7 +295,7 @@ class ComplexityReport {
       });
     }
     this.files.push(fileReport);
-    this.events.emit('verifyFile', fileReport);
+    return fileReport;
   }
 
   finish() {
@@ -360,8 +359,9 @@ class Complexity {
       rules: this.getComplexityRules()
     });
     const report = new ComplexityReport(this.options);
-    engine.events.on('verifyFile', report.verifyFile.bind(report));
-    report.events.on('verifyFile', (...args) => this.events.emit('verifyFile', ...args));
+    engine.events.on('verifyFile', (...args) => {
+      this.events.emit('verifyFile', report.verifyFile(...args));
+    });
     engine.executeOnFiles(patterns);
     report.finish();
     this.events.emit('finish', report);
