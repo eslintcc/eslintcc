@@ -203,7 +203,7 @@ class TestComplexity extends Test {
         'maxAverageRank': false,
         'maxRank': 0
       },
-      'ranksCount': {
+      'ranks': {
         'A': 1,
         'B': 0,
         'C': 0,

@@ -234,7 +234,7 @@ class ComplexityReport {
     this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
     this.files = [];
     this.average = { rank: 0 };
-    this.ranksCount = Ranks.createRanksCounters();
+    this.ranks = Ranks.createRanksCounters();
     this.errors = {
       maxRank: 0,
       maxAverageRank: false
@@ -245,7 +245,7 @@ class ComplexityReport {
     return {
       files: this.files,
       average: this.average,
-      ranksCount: this.ranksCount,
+      ranks: this.ranks,
       errors: this.errors
     };
   }
@@ -266,7 +266,7 @@ class ComplexityReport {
     fileReport.messages.forEach(message => {
       const { rank, label } = message.max;
       fileReport.average.rank += rank;
-      this.ranksCount[label]++;
+      this.ranks[label]++;
       if (rank > this.options.maxRank || message.fatal) {
         this.errors.maxRank++;
       }

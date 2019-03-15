@@ -213,7 +213,7 @@ class TestReportLogger extends Test {
             'maxAverageRank': false,
             'maxRank': 0
           },
-          'ranksCount': {
+          'ranks': {
             'A': 3,
             'B': 2,
             'C': 0,
