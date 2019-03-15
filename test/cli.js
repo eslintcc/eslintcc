@@ -31,8 +31,7 @@ class TestCLI extends Test {
     const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt B --lt F --format json';
     const report = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
-      'averageRank': 'D',
-      'averageRankValue': 3.406,
+      'average': { 'rank': 3.406, 'label': 'D' },
       'errors': {
         'maxAverageRank': true,
         'maxRank': 2
@@ -46,8 +45,7 @@ class TestCLI extends Test {
         'F': 2
       },
       'files': [{
-        'averageRank': 'D',
-        'averageRankValue': 3.406,
+        'average': { 'rank': 3.406, 'label': 'D' },
         'file': resolve('test/src/complexity__messages_gtlt.js'),
         'messages': [{
           'type': 'function',
@@ -67,8 +65,7 @@ class TestCLI extends Test {
     const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
     const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     deepEqual({
-      'averageRank': 'F',
-      'averageRankValue': 5.166,
+      'average': { 'rank': 5.166, 'label': 'F' },
       'errors': {
         'maxAverageRank': true,
         'maxRank': 1
@@ -82,8 +79,7 @@ class TestCLI extends Test {
         'F': 1
       },
       'files': [{
-        'averageRank': 'F',
-        'averageRankValue': 5.166,
+        'average': { 'rank': 5.166, 'label': 'F' },
         'file': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'type': 'function',
@@ -99,8 +95,7 @@ class TestCLI extends Test {
     }, report1);
     const report2 = JSON.parse(execSync(cmd + ' --rules complexity', { encoding: 'utf-8' }));
     deepEqual({
-      'averageRank': 'A',
-      'averageRankValue': 0.2,
+      'average': { 'rank': 0.2, 'label': 'A' },
       'errors': {
         'maxAverageRank': false,
         'maxRank': 0
@@ -114,8 +109,7 @@ class TestCLI extends Test {
         'F': 0
       },
       'files': [{
-        'averageRank': 'A',
-        'averageRankValue': 0.2,
+        'average': { 'rank': 0.2, 'label': 'A' },
         'file': resolve('test/src/complexity__one_rule.js'),
         'messages': [{
           'type': 'function',

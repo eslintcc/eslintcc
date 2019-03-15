@@ -41,7 +41,7 @@ class ReportLogger {
 
   verifyFile(fileReport) {
     if (this.options.format === 'text' && fileReport.messages.length > 0) {
-      this.logger(`${this.colors[fileReport.averageRank]} ${relative(this.options.cwd, fileReport.file)}`);
+      this.logger(`${this.colors[fileReport.average.label]} ${relative(this.options.cwd, fileReport.file)}`);
       let padStart = fileReport.messages[fileReport.messages.length - 1].loc.start.line;
       let padEnd = 0;
       for (const { loc: { start: { column } } } of fileReport.messages) {
@@ -55,7 +55,7 @@ class ReportLogger {
           name,
           maxRule,
           max,
-          errorMessage
+          error
         } = message;
         const locStart = `${String(line).padStart(padStart)}:${String(column).padEnd(padEnd)}`;
         let text = `  ${this.colors[max.label]} ${locStart} ${name}`;
@@ -63,8 +63,8 @@ class ReportLogger {
           text += ` (${maxRule} = ${max.value})`;
         }
         this.logger(text);
-        if (errorMessage) {
-          this.logger(`    ${this.errorColor} ${errorMessage}`);
+        if (error) {
+          this.logger(`    ${this.errorColor} ${error}`);
         }
       }
     }
@@ -78,7 +78,7 @@ class ReportLogger {
       case 'text':
       default:
         if (this.options.average) {
-          let avgMsg = `\nAverage rank: ${this.colors[report.averageRank]} (${report.averageRankValue})`;
+          let avgMsg = `\nAverage rank: ${this.colors[report.average.label]} (${report.average.rank})`;
           for (const label in report.ranksCount) {
             avgMsg += `\n  ${this.colors[label]}: ${report.ranksCount[label]}`;
           }

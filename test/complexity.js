@@ -175,7 +175,7 @@ class TestComplexity extends Test {
     equal('F', report.max.label);
     equal(1, report.max.value);
     equal(6, report.max.rank);
-    equal("Parsing error: The keyword 'let' is reserved", report.errorMessage);
+    equal("Parsing error: The keyword 'let' is reserved", report.error);
     equal('Program (4:3-4:3)', report.name);
     equal('file', report.type);
   }
@@ -190,7 +190,7 @@ class TestComplexity extends Test {
       'name': 'Program (4:3-4:3)',
       'rules': { 'fatal-error': { 'value': 1, 'rank': 6, 'label': 'F' } },
       'maxRule': 'fatal-error',
-      'errorMessage': "Parsing error: The keyword 'let' is reserved"
+      'error': "Parsing error: The keyword 'let' is reserved"
     }, JSON.parse(report));
   }
 
@@ -198,8 +198,7 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
-      'averageRank': 'A',
-      'averageRankValue': 0.2,
+      'average': { 'rank': 0.2, 'label': 'A' },
       'errors': {
         'maxAverageRank': false,
         'maxRank': 0
@@ -213,8 +212,7 @@ class TestComplexity extends Test {
         'F': 0
       },
       'files': [{
-        'averageRank': 'A',
-        'averageRankValue': 0.2,
+        'average': { 'rank': 0.2, 'label': 'A' },
         'file': resolve('test/src/complexity__messages_json.js'),
         'messages': [{
           'type': 'function',
@@ -330,10 +328,10 @@ class TestComplexity extends Test {
     equal(4, messages4.length);
   }
 
-  ['test: ~averageRank']() {
+  ['test: ~average']() {
     const report = new Complexity().executeOnFiles(['test/src/complexity__average_rank']);
-    equal(3.416, report.averageRankValue);
-    equal('D', report.averageRank);
+    equal(3.416, report.average.rank);
+    equal('D', report.average.label);
   }
 
   ['test: ~maxRank']() {
@@ -342,8 +340,8 @@ class TestComplexity extends Test {
     const report = complexity.executeOnFiles([file]);
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
     equal(0.333, report.files[0].messages[6].max.rank);
-    equal(1.333, report.averageRankValue);
-    equal('B', report.averageRank);
+    equal(1.333, report.average.rank);
+    equal('B', report.average.label);
   }
 
   ['test: ~maxRank + ~greaterThan']() {

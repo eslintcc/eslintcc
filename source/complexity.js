@@ -156,8 +156,8 @@ class ComplexityFileReportMessage {
       rules: this.rules,
       maxRule: this.maxRule
     };
-    if (this.errorMessage) {
-      json.errorMessage = this.errorMessage;
+    if (this.error) {
+      json.error = this.error;
     }
     return json;
   }
@@ -176,7 +176,7 @@ class ComplexityFileReportMessage {
     const { rank, label } = this.options.ranks.constructor.getMaxValue();
     this.maxRule = ruleId;
     this.max = this.rules[ruleId] = { value: 1, rank, label };
-    this.errorMessage = message;
+    this.error = message;
     this.fatal = true;
   }
 
@@ -186,25 +186,23 @@ class ComplexityFileReportMessage {
 class ComplexityFileReport {
 
   constructor(file, { ranks }) {
+    this.options = { ranks };
     this.file = file;
-    this.ranks = ranks;
     this.messagesMap = new Map();
     this.messages = [];
-    this.averageRankValue = 0;
-    this.averageRank = null;
+    this.average = { rank: 0 };
   }
 
   toJSON() {
     return {
       file: this.file,
       messages: this.messages,
-      averageRankValue: this.averageRankValue,
-      averageRank: this.averageRank
+      average: this.average
     };
   }
 
   __pushMessage(ruleType, node) {
-    const message = new ComplexityFileReportMessage({ ruleType, node }, { ranks: this.ranks });
+    const message = new ComplexityFileReportMessage({ ruleType, node }, { ranks: this.options.ranks });
     this.messagesMap.set(node, message);
     this.messages.push(message);
     return message;
@@ -236,8 +234,7 @@ class ComplexityReport {
     this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
     this.events = new EventEmitter();
     this.files = [];
-    this.averageRankValue = 0;
-    this.averageRank = null;
+    this.average = { rank: 0 };
     this.ranksCount = Ranks.rankLabels.reduce((prev, cur) => (prev[cur] = 0) || prev, {});
     this.errors = {
       maxRank: 0,
@@ -248,8 +245,7 @@ class ComplexityReport {
   toJSON() {
     return {
       files: this.files,
-      averageRankValue: this.averageRankValue,
-      averageRank: this.averageRank,
+      average: this.average,
       ranksCount: this.ranksCount,
       errors: this.errors
     };
@@ -270,15 +266,15 @@ class ComplexityReport {
     });
     fileReport.messages.forEach(message => {
       const { rank, label } = message.max;
-      fileReport.averageRankValue += rank;
+      fileReport.average.rank += rank;
       this.ranksCount[label]++;
       if (rank > this.options.maxRank || message.fatal) {
         this.errors.maxRank++;
       }
     });
-    fileReport.averageRankValue = Ranks.roundValue(fileReport.averageRankValue / fileReport.messages.length);
-    fileReport.averageRank = Ranks.getLabelByValue(fileReport.averageRankValue);
-    this.averageRankValue += fileReport.averageRankValue;
+    fileReport.average.rank = Ranks.roundValue(fileReport.average.rank / fileReport.messages.length);
+    fileReport.average.label = Ranks.getLabelByValue(fileReport.average.rank);
+    this.average.rank += fileReport.average.rank;
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
@@ -304,9 +300,9 @@ class ComplexityReport {
   }
 
   finish() {
-    this.averageRankValue = Ranks.roundValue(this.averageRankValue / this.files.length);
-    this.averageRank = Ranks.getLabelByValue(this.averageRankValue);
-    if (this.averageRankValue > this.options.maxAverageRank) {
+    this.average.rank = Ranks.roundValue(this.average.rank / this.files.length);
+    this.average.label = Ranks.getLabelByValue(this.average.rank);
+    if (this.average.rank > this.options.maxAverageRank) {
       this.errors.maxAverageRank = true;
     }
   }
