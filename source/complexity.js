@@ -235,7 +235,7 @@ class ComplexityReport {
     this.events = new EventEmitter();
     this.files = [];
     this.average = { rank: 0 };
-    this.ranksCount = Ranks.rankLabels.reduce((prev, cur) => (prev[cur] = 0) || prev, {});
+    this.ranksCount = Ranks.createRanksCounters();
     this.errors = {
       maxRank: 0,
       maxAverageRank: false

@@ -13,8 +13,8 @@ const rankLabelsMaxValue = {
 
 class Ranks {
 
-  static get rankLabels() {
-    return rankLabels;
+  static createRanksCounters() {
+    return rankLabels.reduce((prev, curr) => (prev[curr] = 0) || prev, {});
   }
 
   static roundValue(value) {
