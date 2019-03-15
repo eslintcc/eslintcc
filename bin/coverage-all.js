@@ -1,6 +1,8 @@
 'use strict';
 
-const { exec } = require('./lib');
+const {
+  child_process: { exec }
+} = require('@nd-toolkit/ndk-project');
 
 
 exec('nyc --exclude=bin --exclude=coverage --exclude=!test node test');
