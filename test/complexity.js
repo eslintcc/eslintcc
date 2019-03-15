@@ -128,14 +128,14 @@ class TestComplexity extends Test {
     const file = 'test/src/complexity__one_rule.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
-    equal('max-params', report.maxRuleId);
+    equal('max-params', report.maxRule);
     deepEqual({
       'max-params': { value: 7, rank: 5.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, report.rules);
     const onlyComplexity = new Complexity({ rules: 'complexity' });
     const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
-    equal('complexity', onlyCReport.maxRuleId);
+    equal('complexity', onlyCReport.maxRule);
     deepEqual({
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, onlyCReport.rules);
@@ -145,18 +145,18 @@ class TestComplexity extends Test {
     const file = 'test/src/complexity__raw_rules.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]).files[0].messages[0];
-    equal('max-params', report.maxRuleId);
+    equal('max-params', report.maxRule);
     deepEqual({
       'max-params': { value: 7, rank: 5.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, report.rules);
     const rawComplexity = new Complexity({ rules: 'raw' });
     const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages;
-    equal('max-lines', rawReport[0].maxRuleId);
+    equal('max-lines', rawReport[0].maxRule);
     deepEqual({
       'max-lines': { value: 13, rank: 0.173, label: 'A' }
     }, rawReport[0].rules);
-    equal('max-statements', rawReport[1].maxRuleId);
+    equal('max-statements', rawReport[1].maxRule);
     deepEqual({
       'max-lines-per-function': { value: 8, rank: 0.615, label: 'A' },
       'max-statements': { value: 4, rank: 1.5, label: 'B' }
@@ -171,10 +171,10 @@ class TestComplexity extends Test {
       'fatal-error': { value: 1, rank: 6, label: 'F' }
     }, report.rules);
     equal('4:3-4:3', report.node.position);
-    equal('F', report.maxLabel);
-    equal('fatal-error', report.maxRuleId);
-    equal(1, report.maxRuleValue);
-    equal(6, report.maxValue);
+    equal('fatal-error', report.maxRule);
+    equal('F', report.max.label);
+    equal(1, report.max.value);
+    equal(6, report.max.rank);
     equal("Parsing error: The keyword 'let' is reserved", report.errorMessage);
     equal('Program (4:3-4:3)', report.name);
     equal('file', report.type);
@@ -189,8 +189,7 @@ class TestComplexity extends Test {
       'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
       'name': 'Program (4:3-4:3)',
       'rules': { 'fatal-error': { 'value': 1, 'rank': 6, 'label': 'F' } },
-      'maxValue': 6,
-      'maxLabel': 'F',
+      'maxRule': 'fatal-error',
       'errorMessage': "Parsing error: The keyword 'let' is reserved"
     }, JSON.parse(report));
   }
@@ -222,8 +221,7 @@ class TestComplexity extends Test {
           'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
           'name': 'function myFunc',
           'rules': { 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' } },
-          'maxValue': 0.2,
-          'maxLabel': 'A'
+          'maxRule': 'complexity'
         }]
       }]
     }, JSON.parse(JSON.stringify(report)));
@@ -232,30 +230,30 @@ class TestComplexity extends Test {
   ['test: ~greaterThan']() {
     const complexity = new Complexity();
     const messages = complexity.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messages[0].maxLabel);
-    equal('B', messages[1].maxLabel);
-    equal('C', messages[2].maxLabel);
-    equal('F', messages[3].maxLabel);
-    equal('F', messages[4].maxLabel);
+    equal('A', messages[0].max.label);
+    equal('B', messages[1].max.label);
+    equal('C', messages[2].max.label);
+    equal('F', messages[3].max.label);
+    equal('F', messages[4].max.label);
     const complexityB = new Complexity({ greaterThan: 'B' });
     const fileB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesB = fileB.messages;
-    equal('C', messagesB[0].maxLabel);
-    equal('F', messagesB[1].maxLabel);
-    equal('F', messagesB[2].maxLabel);
+    equal('C', messagesB[0].max.label);
+    equal('F', messagesB[1].max.label);
+    equal('F', messagesB[2].max.label);
     equal(undefined, messagesB[3]);
     equal(messagesB.length, fileB.messagesMap.size);
     const complexityE = new Complexity({ greaterThan: 'E' });
     const fileE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesE = fileE.messages;
-    equal('F', messagesE[0].maxLabel);
-    equal('F', messagesE[1].maxLabel);
+    equal('F', messagesE[0].max.label);
+    equal('F', messagesE[1].max.label);
     equal(undefined, messagesE[2]);
     equal(messagesE.length, fileE.messagesMap.size);
     const complexityN = new Complexity({ greaterThan: 6 });
     const fileN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesN = fileN.messages;
-    equal('F', messagesN[0].maxLabel);
+    equal('F', messagesN[0].max.label);
     equal(undefined, messagesN[1]);
     equal(messagesN.length, fileN.messagesMap.size);
   }
@@ -263,17 +261,17 @@ class TestComplexity extends Test {
   ['test: ~lessThan']() {
     const complexityB = new Complexity({ lessThan: 'B' });
     const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesB[0].maxLabel);
+    equal('A', messagesB[0].max.label);
     equal(undefined, messagesB[1]);
     const complexityE = new Complexity({ lessThan: 'E' });
     const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesE[0].maxLabel);
-    equal('B', messagesE[1].maxLabel);
-    equal('C', messagesE[2].maxLabel);
+    equal('A', messagesE[0].max.label);
+    equal('B', messagesE[1].max.label);
+    equal('C', messagesE[2].max.label);
     equal(undefined, messagesE[3]);
     const complexityN = new Complexity({ lessThan: 0.5 });
     const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesN[0].maxLabel);
+    equal('A', messagesN[0].max.label);
     equal(undefined, messagesN[1]);
   }
 
@@ -343,7 +341,7 @@ class TestComplexity extends Test {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]);
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
-    equal(0.333, report.files[0].messages[6].maxValue);
+    equal(0.333, report.files[0].messages[6].max.rank);
     equal(1.333, report.averageRankValue);
     equal('B', report.averageRank);
   }

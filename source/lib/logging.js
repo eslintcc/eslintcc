@@ -51,17 +51,16 @@ class ReportLogger {
       padEnd = String(padEnd).length;
       for (const message of fileReport.messages) {
         const {
-          maxLabel,
           loc: { start: { line, column } },
           name,
-          maxRuleId,
-          maxRuleValue,
+          maxRule,
+          max,
           errorMessage
         } = message;
         const locStart = `${String(line).padStart(padStart)}:${String(column).padEnd(padEnd)}`;
-        let text = `  ${this.colors[maxLabel]} ${locStart} ${name}`;
+        let text = `  ${this.colors[max.label]} ${locStart} ${name}`;
         if (this.options.showRules) {
-          text += ` (${maxRuleId} = ${maxRuleValue})`;
+          text += ` (${maxRule} = ${max.value})`;
         }
         this.logger(text);
         if (errorMessage) {

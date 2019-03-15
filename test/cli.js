@@ -57,8 +57,7 @@ class TestCLI extends Test {
             'max-params': { 'value': 3, 'rank': 3, 'label': 'C' },
             'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
-          'maxValue': 3,
-          'maxLabel': 'C'
+          'maxRule': 'max-params'
         }]
       }]
     }, report);
@@ -94,8 +93,7 @@ class TestCLI extends Test {
             'max-params': { 'value': 7, 'rank': 5.166, 'label': 'F' },
             'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
-          'maxValue': 5.166,
-          'maxLabel': 'F'
+          'maxRule': 'max-params'
         }]
       }]
     }, report1);
@@ -126,8 +124,7 @@ class TestCLI extends Test {
           'rules': {
             'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
           },
-          'maxValue': 0.2,
-          'maxLabel': 'A'
+          'maxRule': 'complexity'
         }]
       }]
     }, report2);
