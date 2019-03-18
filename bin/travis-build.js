@@ -1,7 +1,7 @@
 'use strict';
 
 const {
-  child_process: { exec },
+  child_process: { exec, execAndGetOutput },
   fs: { readFile, writeFile, readFileJSON, writeFileJSON }
 } = require('@nd-toolkit/ndk-project');
 
@@ -26,7 +26,7 @@ const { lt, inc } = require('semver');
 const packageJSON = readFileJSON('package.json');
 
 // Проверяем версию для публикации
-if (lt(exec('npm view eslintcc version'), packageJSON.version)) {
+if (lt(execAndGetOutput('npm view eslintcc version'), packageJSON.version)) {
   exec('npm publish');
 }
 
