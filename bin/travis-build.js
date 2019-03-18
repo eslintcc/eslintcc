@@ -19,16 +19,26 @@ if (process.env.TRAVIS_BRANCH !== 'master' || process.env.TRAVIS_PULL_REQUEST !=
   process.exit(0);
 }
 
-// Проверяем обновление версии ESLint
-exec('npm i eslint@latest semver@latest');
+writeFile('.npmrc', npmjsRegistry + readFile('.npmrc'));
+exec('npm i semver@latest');
+
+const { lt, inc } = require('semver');
 const packageJSON = readFileJSON('package.json');
-const eslintVersion = '^' + readFileJSON('node_modules/eslint/package.json').version;
-const semver = '^' + readFileJSON('node_modules/semver/package.json').version;
-if (packageJSON.dependencies.eslint !== eslintVersion) {
+
+// Проверяем версию для публикации
+if (lt(exec('npm view eslintcc version'), packageJSON.version)) {
+  exec('npm publish');
+}
+
+// Проверяем обновление версии ESLint
+exec('npm i eslint@latest');
+const eslintVersion = readFileJSON('node_modules/eslint/package.json').version;
+const semverVersion = readFileJSON('node_modules/semver/package.json').version;
+if (lt(packageJSON.dependencies.eslint, eslintVersion)) {
   // Обновление и тестирование с новым ESLint
   packageJSON.dependencies.eslint = eslintVersion;
-  packageJSON.devDependencies.semver = semver;
-  packageJSON.version = require('semver').inc(packageJSON.version, 'patch');
+  packageJSON.devDependencies.semver = semverVersion;
+  packageJSON.version = inc(packageJSON.version, 'patch');
   writeFileJSON('package.json', packageJSON);
   exec('node test');
   exec('git config user.email igor.github.bot@gmail.com');
@@ -38,6 +48,5 @@ if (packageJSON.dependencies.eslint !== eslintVersion) {
   exec(`git commit -a -m "Обновление до eslint@${eslintVersion.slice(1)}"`);
   exec('git push origin-master');
   exec('git remote remove origin-master');
-  writeFile('.npmrc', npmjsRegistry + readFile('.npmrc'));
   exec('npm publish');
 }
