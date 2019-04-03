@@ -28,8 +28,15 @@ class TestCLI extends Test {
   }
 
   ['test: greaterThan + lessThan + json']() {
-    const cmd = 'node source/cli.js test/src/complexity__messages_gtlt.js --gt B --lt F --format json';
-    const report = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
+    const child = spawnSync('node', [
+      'source/cli.js',
+      'test/src/complexity__messages_gtlt.js',
+      '--gt', 'B',
+      '--lt', 'F',
+      '--format', 'json'
+    ], { encoding: 'utf-8', shell: true });
+    equal(1, child.status);
+    const report = JSON.parse(child.stdout);
     deepEqual({
       'average': { 'rank': 3.406, 'label': 'D' },
       'errors': {
@@ -62,8 +69,13 @@ class TestCLI extends Test {
   }
 
   ['test: json + rules']() {
-    const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
-    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
+    const child1 = spawnSync('node', [
+      'source/cli.js',
+      'test/src/complexity__one_rule.js',
+      '--format', 'json'
+    ], { encoding: 'utf-8', shell: true });
+    equal(1, child1.status);
+    const report1 = JSON.parse(child1.stdout);
     deepEqual({
       'average': { 'rank': 5.166, 'label': 'F' },
       'errors': {
@@ -93,7 +105,14 @@ class TestCLI extends Test {
         }]
       }]
     }, report1);
-    const report2 = JSON.parse(execSync(cmd + ' --rules complexity', { encoding: 'utf-8' }));
+    const child2 = spawnSync('node', [
+      'source/cli.js',
+      'test/src/complexity__one_rule.js',
+      '--format', 'json',
+      '--rules', 'complexity'
+    ], { encoding: 'utf-8', shell: true });
+    equal(0, child2.status);
+    const report2 = JSON.parse(child2.stdout);
     deepEqual({
       'average': { 'rank': 0.2, 'label': 'A' },
       'errors': {
@@ -125,14 +144,20 @@ class TestCLI extends Test {
   }
 
   ['test: json + 2-rules']() {
-    const cmd = 'node source/cli.js test/src/complexity__one_rule.js --format json';
-    const cmd2 = cmd + ' --rules logic --rules max-statements';
-    const report1 = JSON.parse(execSync(cmd, { encoding: 'utf-8' })).files[0].messages[0].rules;
+    const args1 = ['source/cli.js', 'test/src/complexity__one_rule.js', '--format', 'json'];
+    const args2 = args1.concat('--rules', 'logic', '--rules', 'max-statements');
+    const child1 = spawnSync('node', args1, { encoding: 'utf-8', shell: true });
+    equal(1, child1.status);
+    const report1 = JSON.parse(child1.stdout)
+      .files[0].messages[0].rules;
     deepEqual({
       'max-params': { value: 7, rank: 5.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, report1);
-    const report2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages[0].rules;
+    const child2 = spawnSync('node', args2, { encoding: 'utf-8', shell: true });
+    const report2 = JSON.parse(child2.stdout)
+      .files[0].messages[0].rules;
+    equal(1, child2.status);
     deepEqual({
       'complexity': { value: 1, rank: 0.2, label: 'A' },
       'max-params': { value: 7, rank: 5.166, label: 'F' },
@@ -141,15 +166,21 @@ class TestCLI extends Test {
   }
 
   ['test: --no-inline-config']() {
-    const cmd1 = 'node source/cli.js test/src/complexity__inline_config_for_file.js --format json';
-    const messages1 = JSON.parse(execSync(cmd1, { encoding: 'utf-8' })).files[0].messages;
+    const args1 = ['source/cli.js', 'test/src/complexity__inline_config_for_file.js', '--format', 'json'];
+    const args2 = args1.concat('--no-inline-config');
+    const child1 = spawnSync('node', args1, { encoding: 'utf-8', shell: true });
+    equal(0, child1.status);
+    const messages1 = JSON.parse(child1.stdout).files[0].messages;
     equal(0, messages1.length);
-    const cmd2 = 'node source/cli.js test/src/complexity__inline_config_for_file.js --format json --no-inline-config';
-    const messages2 = JSON.parse(execSync(cmd2, { encoding: 'utf-8' })).files[0].messages;
+    const child2 = spawnSync('node', args2, { encoding: 'utf-8', shell: true });
+    equal(1, child2.status);
+    const messages2 = JSON.parse(child2.stdout).files[0].messages;
     equal(1, messages2.length);
 
-    const cmd3 = 'node source/cli.js test/src/complexity__inline_config.js --format json';
-    const messages3 = JSON.parse(execSync(cmd3, { encoding: 'utf-8' })).files[0].messages;
+    const args3 = ['source/cli.js', 'test/src/complexity__inline_config.js', '--format', 'json'];
+    const child3 = spawnSync('node', args3, { encoding: 'utf-8', shell: true });
+    equal(1, child3.status);
+    const messages3 = JSON.parse(child3.stdout).files[0].messages;
     equal(2, messages3.length);
     deepEqual({
       'complexity': { value: 1, rank: 0.2, label: 'A' }
@@ -158,8 +189,10 @@ class TestCLI extends Test {
       'max-params': { value: 13, rank: 6.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, messages3[1].rules);
-    const cmd4 = 'node source/cli.js test/src/complexity__inline_config.js --format json --no-inline-config';
-    const messages4 = JSON.parse(execSync(cmd4, { encoding: 'utf-8' })).files[0].messages;
+    const args4 = args3.concat('--no-inline-config');
+    const child4 = spawnSync('node', args4, { encoding: 'utf-8', shell: true });
+    equal(1, child3.status);
+    const messages4 = JSON.parse(child4.stdout).files[0].messages;
     equal(4, messages4.length);
   }
 

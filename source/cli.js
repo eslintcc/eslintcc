@@ -34,10 +34,10 @@ const processArgs = getProcessArgs({
 if (processArgs.argv.length > 0) {
   const options = Object.assign({}, processArgs.flags, processArgs.options);
   const complexity = new Complexity(options);
-  const logger = new ReportLogger(complexity, options);
+  new ReportLogger(complexity, options);
   const report = complexity.executeOnFiles(processArgs.argv);
   const exitWithError = report.errors.maxRank > 0 || report.errors.maxAverageRank;
-  if (exitWithError && ['text'].includes(logger.options.format)) {
+  if (exitWithError) {
     process.exit(1);
   }
 } else {
