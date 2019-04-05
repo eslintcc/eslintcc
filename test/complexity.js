@@ -402,7 +402,7 @@ class TestComplexity extends Test {
       maxRule: 'max-lines',
       name: 'Program (1:0-1:0)',
       rules: {
-        'max-lines': { label: 'A', rank: 0.106, value: 8 }
+        'max-lines': { label: 'A', rank: 0.093, value: 7 }
       },
       type: 'file'
     }], JSON.parse(JSON.stringify(report)));
