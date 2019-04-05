@@ -76,7 +76,7 @@ class MessageNode {
 }
 
 
-class ComplexityMessageReport {
+class MessageReport {
 
   static['resolveValue:complexity'](data) {
     return data.complexity;
@@ -152,7 +152,7 @@ class ComplexityMessageReport {
 }
 
 
-class ComplexityFileReport {
+class FileReport {
 
   constructor(file, { ranks }) {
     this.options = { ranks };
@@ -171,7 +171,7 @@ class ComplexityFileReport {
   }
 
   __pushMessage(ruleType, node) {
-    const message = new ComplexityMessageReport({ ruleType, node }, { ranks: this.options.ranks });
+    const message = new MessageReport({ ruleType, node }, { ranks: this.options.ranks });
     this.messagesMap.set(node, message);
     this.messages.push(message);
     return message;
@@ -220,7 +220,7 @@ class ComplexityReport {
   }
 
   verifyFile(file, messages) {
-    const fileReport = new ComplexityFileReport(file, this.options);
+    const fileReport = new FileReport(file, this.options);
     messages.forEach(message => {
       if (message.fatal) {
         message.ruleId = 'fatal-error';
