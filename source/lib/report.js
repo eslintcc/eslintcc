@@ -200,26 +200,21 @@ class ReportGenerator {
         this.pushMessage(fileReport, message);
       }
     });
-    fileReport.messages.forEach(message => {
-      const { rank, label } = message[maxSymbol];
-      fileReport.average.rank += rank;
-      report.ranks[label]++;
-      if (rank > this.options.maxRank || message[fatalSymbol]) {
-        report.errors.maxRank++;
-      }
-    });
-    fileReport.average.rank = Ranks.roundValue(fileReport.average.rank / fileReport.messages.length);
-    fileReport.average.label = Ranks.getLabelByValue(fileReport.average.rank);
-    report.average.rank += fileReport.average.rank;
+    const messagesLength = fileReport.messages.length;
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
       const lt = typeof lessThan === 'number' ? lessThan : Infinity;
       fileReport.messages = fileReport.messages.filter(message => {
+        const { rank, label } = message[maxSymbol];
+        fileReport.average.rank += rank;
+        report.ranks[label]++;
+        if (rank > this.options.maxRank || message[fatalSymbol]) {
+          report.errors.maxRank++;
+        }
         if (message[fatalSymbol]) {
           return true;
         }
-        const { rank } = message[maxSymbol];
         if (rank <= gt) {
           fileReport[messagesMapSymbol].delete(message[nodeSymbol].node);
           return false;
@@ -230,7 +225,19 @@ class ReportGenerator {
         }
         return true;
       });
+    } else {
+      fileReport.messages.forEach(message => {
+        const { rank, label } = message[maxSymbol];
+        fileReport.average.rank += rank;
+        report.ranks[label]++;
+        if (rank > this.options.maxRank || message[fatalSymbol]) {
+          report.errors.maxRank++;
+        }
+      });
     }
+    fileReport.average.rank = Ranks.roundValue(fileReport.average.rank / messagesLength);
+    fileReport.average.label = Ranks.getLabelByValue(fileReport.average.rank);
+    report.average.rank += fileReport.average.rank;
     report.files.push(fileReport);
     return fileReport;
   }
