@@ -6,6 +6,7 @@ const { resolve } = require('path');
 const { Test } = require('@ndk/test');
 
 const { Complexity } = require('../');
+const { nodeSymbol, messagesMapSymbol } = require('../source/lib/report');
 
 
 class TestComplexity extends Test {
@@ -36,37 +37,37 @@ class TestComplexity extends Test {
   ['test: MessageNode #getName']() {
     const complexity = new Complexity();
     const report = complexity.executeOnFiles(['test/src/message_node__get_name.js']).files[0].messages;
-    equal('function func1', report[0].node.getName());
-    equal('function func2', report[1].node.getName());
-    equal('function anonymous (14:1-14:14)', report[2].node.getName());
-    equal('function func3', report[3].node.getName());
-    equal('arrow function (21:14-33:1)', report[4].node.getName());
-    equal('IfStatement (22:2-24:3)', report[5].node.getName());
-    equal('SwitchStatement (25:2-32:3)', report[6].node.getName());
-    equal('function func5', report[7].node.getName());
-    equal('class myClass1#constructor', report[8].node.getName());
-    equal('class myClass1#myMethod1', report[9].node.getName());
-    equal('class myClass1#myProp1', report[10].node.getName());
-    equal('class myClass1.myMethod1', report[11].node.getName());
-    equal('class myClass1.myProp1', report[12].node.getName());
-    equal("class myClass1.'my method 2'", report[13].node.getName());
-    equal('function myMethod3', report[14].node.getName());
-    equal("function 'my method 3'", report[15].node.getName());
-    equal('function func6', report[16].node.getName());
-    equal('function func6, ForInStatement (61:2-63:3)', report[17].node.getName());
-    equal('function func6, arrow function (64:10-68:3)', report[18].node.getName());
-    equal('function func6IN', report[20].node.getName());
-    equal('function func6IN, IfStatement (72:4-74:5)', report[21].node.getName());
-    equal('arrow function (81:13-85:1)', report[22].node.getName());
-    equal('arrow function (82:3-84:3)', report[23].node.getName());
-    equal('function anonymous (89:7-96:1)', report[24].node.getName());
-    equal('function anonymous (90:3-90:16)', report[25].node.getName());
-    equal('function anonymous (89:7-96:1), IfStatement (91:2-95:3)', report[26].node.getName());
-    equal('function anonymous (89:7-96:1), IfStatement (92:4-94:5)', report[27].node.getName());
-    equal('function myMethod5', report[28].node.getName());
-    equal('function myFunc4', report[29].node.getName());
-    equal('function myFunc5', report[30].node.getName());
-    equal('function myFunc7', report[31].node.getName());
+    equal('function func1', report[0][nodeSymbol].getName());
+    equal('function func2', report[1][nodeSymbol].getName());
+    equal('function anonymous (14:1-14:14)', report[2][nodeSymbol].getName());
+    equal('function func3', report[3][nodeSymbol].getName());
+    equal('arrow function (21:14-33:1)', report[4][nodeSymbol].getName());
+    equal('IfStatement (22:2-24:3)', report[5][nodeSymbol].getName());
+    equal('SwitchStatement (25:2-32:3)', report[6][nodeSymbol].getName());
+    equal('function func5', report[7][nodeSymbol].getName());
+    equal('class myClass1#constructor', report[8][nodeSymbol].getName());
+    equal('class myClass1#myMethod1', report[9][nodeSymbol].getName());
+    equal('class myClass1#myProp1', report[10][nodeSymbol].getName());
+    equal('class myClass1.myMethod1', report[11][nodeSymbol].getName());
+    equal('class myClass1.myProp1', report[12][nodeSymbol].getName());
+    equal("class myClass1.'my method 2'", report[13][nodeSymbol].getName());
+    equal('function myMethod3', report[14][nodeSymbol].getName());
+    equal("function 'my method 3'", report[15][nodeSymbol].getName());
+    equal('function func6', report[16][nodeSymbol].getName());
+    equal('function func6, ForInStatement (61:2-63:3)', report[17][nodeSymbol].getName());
+    equal('function func6, arrow function (64:10-68:3)', report[18][nodeSymbol].getName());
+    equal('function func6IN', report[20][nodeSymbol].getName());
+    equal('function func6IN, IfStatement (72:4-74:5)', report[21][nodeSymbol].getName());
+    equal('arrow function (81:13-85:1)', report[22][nodeSymbol].getName());
+    equal('arrow function (82:3-84:3)', report[23][nodeSymbol].getName());
+    equal('function anonymous (89:7-96:1)', report[24][nodeSymbol].getName());
+    equal('function anonymous (90:3-90:16)', report[25][nodeSymbol].getName());
+    equal('function anonymous (89:7-96:1), IfStatement (91:2-95:3)', report[26][nodeSymbol].getName());
+    equal('function anonymous (89:7-96:1), IfStatement (92:4-94:5)', report[27][nodeSymbol].getName());
+    equal('function myMethod5', report[28][nodeSymbol].getName());
+    equal('function myFunc4', report[29][nodeSymbol].getName());
+    equal('function myFunc5', report[30][nodeSymbol].getName());
+    equal('function myFunc7', report[31][nodeSymbol].getName());
     equal(undefined, report[32]);
   }
 
@@ -170,11 +171,11 @@ class TestComplexity extends Test {
     deepEqual({
       'fatal-error': { value: 1, rank: 6, label: 'F' }
     }, report.rules);
-    equal('4:3-4:3', report.node.position);
+    equal('4:3-4:3', report[nodeSymbol].position);
     equal('fatal-error', report.maxRule);
-    equal('F', report.max.label);
-    equal(1, report.max.value);
-    equal(6, report.max.rank);
+    equal('F', report.rules[report.maxRule].label);
+    equal(1, report.rules[report.maxRule].value);
+    equal(6, report.rules[report.maxRule].rank);
     equal("Parsing error: The keyword 'let' is reserved", report.error);
     equal('Program (4:3-4:3)', report.name);
     equal('file', report.type);
@@ -228,48 +229,48 @@ class TestComplexity extends Test {
   ['test: ~greaterThan']() {
     const complexity = new Complexity();
     const messages = complexity.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messages[0].max.label);
-    equal('B', messages[1].max.label);
-    equal('C', messages[2].max.label);
-    equal('F', messages[3].max.label);
-    equal('F', messages[4].max.label);
+    equal('A', messages[0].rules[messages[0].maxRule].label);
+    equal('B', messages[1].rules[messages[1].maxRule].label);
+    equal('C', messages[2].rules[messages[2].maxRule].label);
+    equal('F', messages[3].rules[messages[3].maxRule].label);
+    equal('F', messages[4].rules[messages[4].maxRule].label);
     const complexityB = new Complexity({ greaterThan: 'B' });
     const fileB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesB = fileB.messages;
-    equal('C', messagesB[0].max.label);
-    equal('F', messagesB[1].max.label);
-    equal('F', messagesB[2].max.label);
+    equal('C', messagesB[0].rules[messagesB[0].maxRule].label);
+    equal('F', messagesB[1].rules[messagesB[1].maxRule].label);
+    equal('F', messagesB[2].rules[messagesB[2].maxRule].label);
     equal(undefined, messagesB[3]);
-    equal(messagesB.length, fileB.messagesMap.size);
+    equal(messagesB.length, fileB[messagesMapSymbol].size);
     const complexityE = new Complexity({ greaterThan: 'E' });
     const fileE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesE = fileE.messages;
-    equal('F', messagesE[0].max.label);
-    equal('F', messagesE[1].max.label);
+    equal('F', messagesE[0].rules[messagesE[0].maxRule].label);
+    equal('F', messagesE[1].rules[messagesE[1].maxRule].label);
     equal(undefined, messagesE[2]);
-    equal(messagesE.length, fileE.messagesMap.size);
+    equal(messagesE.length, fileE[messagesMapSymbol].size);
     const complexityN = new Complexity({ greaterThan: 6 });
     const fileN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
     const messagesN = fileN.messages;
-    equal('F', messagesN[0].max.label);
+    equal('F', messagesN[0].rules[messagesN[0].maxRule].label);
     equal(undefined, messagesN[1]);
-    equal(messagesN.length, fileN.messagesMap.size);
+    equal(messagesN.length, fileN[messagesMapSymbol].size);
   }
 
   ['test: ~lessThan']() {
     const complexityB = new Complexity({ lessThan: 'B' });
     const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesB[0].max.label);
+    equal('A', messagesB[0].rules[messagesB[0].maxRule].label);
     equal(undefined, messagesB[1]);
     const complexityE = new Complexity({ lessThan: 'E' });
     const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesE[0].max.label);
-    equal('B', messagesE[1].max.label);
-    equal('C', messagesE[2].max.label);
+    equal('A', messagesE[0].rules[messagesE[0].maxRule].label);
+    equal('B', messagesE[1].rules[messagesE[1].maxRule].label);
+    equal('C', messagesE[2].rules[messagesE[2].maxRule].label);
     equal(undefined, messagesE[3]);
     const complexityN = new Complexity({ lessThan: 0.5 });
     const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
-    equal('A', messagesN[0].max.label);
+    equal('A', messagesN[0].rules[messagesN[0].maxRule].label);
     equal(undefined, messagesN[1]);
   }
 
@@ -338,8 +339,9 @@ class TestComplexity extends Test {
     const file = 'test/src/complexity__max_rank.js';
     const complexity = new Complexity();
     const report = complexity.executeOnFiles([file]);
+    const message = report.files[0].messages[6];
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
-    equal(0.333, report.files[0].messages[6].max.rank);
+    equal(0.333, message.rules[message.maxRule].rank);
     equal(1.333, report.average.rank);
     equal('B', report.average.label);
   }

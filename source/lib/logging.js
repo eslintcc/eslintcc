@@ -54,9 +54,10 @@ class ReportLogger {
           loc: { start: { line, column } },
           name,
           maxRule,
-          max,
+          rules,
           error
         } = message;
+        const max = rules[maxRule];
         const locStart = `${String(line).padStart(padStart)}:${String(column).padEnd(padEnd)}`;
         let text = `  ${this.colors[max.label]} ${locStart} ${name}`;
         if (this.options.showRules) {
@@ -86,14 +87,14 @@ class ReportLogger {
         }
         if (report.errors.maxRank > 0) {
           let msg = `${this.errorColor}: Complexity of code above maximum allowable rank`;
-          msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxRank)]}`;
-          msg += ` (${report.options.maxRank}), messages - ${report.errors.maxRank}`;
+          msg += ` ${this.colors[Ranks.getLabelByValue(this.complexity.options.maxRank)]}`;
+          msg += ` (${this.complexity.options.maxRank}), messages - ${report.errors.maxRank}`;
           this.errLogger(msg);
         }
         if (report.errors.maxAverageRank) {
           let msg = `${this.errorColor}: Average complexity of code above maximum allowable average rank`;
-          msg += ` ${this.colors[Ranks.getLabelByValue(report.options.maxAverageRank)]}`;
-          msg += ` (${report.options.maxAverageRank})`;
+          msg += ` ${this.colors[Ranks.getLabelByValue(this.complexity.options.maxAverageRank)]}`;
+          msg += ` (${this.complexity.options.maxAverageRank})`;
           this.errLogger(msg);
         }
         break;

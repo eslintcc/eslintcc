@@ -16,6 +16,10 @@ const ruleTypes = {
   'max-params': 'function',
   'max-statements': 'function'
 };
+const messagesMapSymbol = Symbol('messagesMapSymbol');
+const nodeSymbol = Symbol('nodeSymbol');
+const maxSymbol = Symbol('maxSymbol');
+const fatalSymbol = Symbol('fatalSymbol');
 
 
 class MessageNode {
@@ -77,6 +81,42 @@ class MessageNode {
 
 
 class MessageReport {
+  constructor({ ruleType, node }) {
+    this[nodeSymbol] = new MessageNode(node);
+    this[maxSymbol] = { rank: 0 };
+    this.loc = node.loc;
+    this.type = ruleType;
+    this.name = this[nodeSymbol].getName();
+    this.rules = {};
+    this.maxRule = null;
+  }
+}
+
+
+class FileReport {
+  constructor(file) {
+    this[messagesMapSymbol] = new Map();
+    this.file = file;
+    this.messages = [];
+    this.average = { rank: 0 };
+  }
+}
+
+
+class ComplexityReport {
+  constructor() {
+    this.files = [];
+    this.average = { rank: 0 };
+    this.ranks = Ranks.createRanksCounters();
+    this.errors = {
+      maxRank: 0,
+      maxAverageRank: false
+    };
+  }
+}
+
+
+class ReportGenerator {
 
   static['resolveValue:complexity'](data) {
     return data.complexity;
@@ -106,176 +146,110 @@ class MessageReport {
     return data.count;
   }
 
-  constructor({ ruleType, node }, { ranks }) {
-    this.options = { ranks };
-    this.node = new MessageNode(node);
-    this.loc = node.loc;
-    this.type = ruleType;
-    this.name = this.node.getName();
-    this.rules = {};
-    this.maxRule = null;
-    this.max = { rank: 0 };
-  }
-
-  toJSON() {
-    const json = {
-      loc: this.loc,
-      type: this.type,
-      name: this.name,
-      rules: this.rules,
-      maxRule: this.maxRule
-    };
-    if (this.error) {
-      json.error = this.error;
-    }
-    return json;
-  }
-
-  pushData(ruleId, data) {
-    const value = this.constructor[`resolveValue:${ruleId}`](data);
-    const { rank, label } = this.options.ranks.getValue(ruleId, value);
-    this.rules[ruleId] = { value, rank, label };
-    if (rank > this.max.rank) {
-      this.maxRule = ruleId;
-      this.max = this.rules[ruleId];
-    }
-  }
-
-  pushFatalMessage(ruleId, message) {
-    const { rank, label } = this.options.ranks.constructor.getMaxValue();
-    this.maxRule = ruleId;
-    this.max = this.rules[ruleId] = { value: 1, rank, label };
-    this.error = message;
-    this.fatal = true;
-  }
-
-}
-
-
-class FileReport {
-
-  constructor(file, { ranks }) {
-    this.options = { ranks };
-    this.file = file;
-    this.messagesMap = new Map();
-    this.messages = [];
-    this.average = { rank: 0 };
-  }
-
-  toJSON() {
-    return {
-      file: this.file,
-      messages: this.messages,
-      average: this.average
-    };
-  }
-
-  __pushMessage(ruleType, node) {
-    const message = new MessageReport({ ruleType, node }, { ranks: this.options.ranks });
-    this.messagesMap.set(node, message);
-    this.messages.push(message);
+  static pushNewMessage(fileReport, { ruleType, node }) {
+    const message = new MessageReport({ ruleType, node });
+    fileReport[messagesMapSymbol].set(node, message);
+    fileReport.messages.push(message);
     return message;
   }
 
-  pushMessage({ ruleId, ruleType, node, data }) {
+  constructor({ ranks, greaterThan, lessThan, maxRank, maxAverageRank }) {
+    this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
+    this.report = new ComplexityReport();
+  }
+
+  pushMessage(fileReport, { ruleId, ruleType, node, data }) {
     node = node || {
       loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
       type: 'Program',
       parent: null
     };
-    const reportMessage = this.messagesMap.get(node) || this.__pushMessage(ruleType, node);
-    reportMessage.pushData(ruleId, data);
+    const reportMessage = fileReport[messagesMapSymbol].get(node) ||
+      this.constructor.pushNewMessage(fileReport, { ruleType, node });
+    const value = this.constructor[`resolveValue:${ruleId}`](data);
+    const { rank, label } = this.options.ranks.getValue(ruleId, value);
+    reportMessage.rules[ruleId] = { value, rank, label };
+    if (rank > reportMessage[maxSymbol].rank) {
+      reportMessage.maxRule = ruleId;
+      reportMessage[maxSymbol] = reportMessage.rules[ruleId];
+    }
   }
 
-  pushFatalMessage({ ruleId, ruleType, line, column, message }) {
+  pushFatalMessage(fileReport, { ruleId, ruleType, line, column, message }) {
     const loc = { start: { line, column }, end: { line, column } };
     const node = { loc, type: 'Program', parent: null };
-    const reportMessage = this.__pushMessage(ruleType, node);
-    reportMessage.pushFatalMessage(ruleId, message);
-  }
-
-}
-
-
-class ComplexityReport {
-
-  constructor({ ranks, greaterThan, lessThan, maxRank, maxAverageRank }) {
-    this.options = { ranks, greaterThan, lessThan, maxRank, maxAverageRank };
-    this.files = [];
-    this.average = { rank: 0 };
-    this.ranks = Ranks.createRanksCounters();
-    this.errors = {
-      maxRank: 0,
-      maxAverageRank: false
-    };
-  }
-
-  toJSON() {
-    return {
-      files: this.files,
-      average: this.average,
-      ranks: this.ranks,
-      errors: this.errors
-    };
+    const reportMessage = this.constructor.pushNewMessage(fileReport, { ruleType, node });
+    const { rank, label } = this.options.ranks.constructor.getMaxValue();
+    reportMessage.maxRule = ruleId;
+    reportMessage.error = message;
+    reportMessage[maxSymbol] = reportMessage.rules[ruleId] = { value: 1, rank, label };
+    reportMessage[fatalSymbol] = true;
   }
 
   verifyFile(file, messages) {
-    const fileReport = new FileReport(file, this.options);
+    const report = this.report;
+    const fileReport = new FileReport(file);
     messages.forEach(message => {
       if (message.fatal) {
         message.ruleId = 'fatal-error';
         message.ruleType = 'file';
-        fileReport.pushFatalMessage(message);
+        this.pushFatalMessage(fileReport, message);
       } else {
         message = message.message;
         message.ruleType = ruleTypes[message.ruleId];
-        fileReport.pushMessage(message);
+        this.pushMessage(fileReport, message);
       }
     });
     fileReport.messages.forEach(message => {
-      const { rank, label } = message.max;
+      const { rank, label } = message[maxSymbol];
       fileReport.average.rank += rank;
-      this.ranks[label]++;
-      if (rank > this.options.maxRank || message.fatal) {
-        this.errors.maxRank++;
+      report.ranks[label]++;
+      if (rank > this.options.maxRank || message[fatalSymbol]) {
+        report.errors.maxRank++;
       }
     });
     fileReport.average.rank = Ranks.roundValue(fileReport.average.rank / fileReport.messages.length);
     fileReport.average.label = Ranks.getLabelByValue(fileReport.average.rank);
-    this.average.rank += fileReport.average.rank;
+    report.average.rank += fileReport.average.rank;
     const { greaterThan, lessThan } = this.options;
     if (typeof greaterThan === 'number' || typeof lessThan === 'number') {
       const gt = typeof greaterThan === 'number' ? greaterThan : -Infinity;
       const lt = typeof lessThan === 'number' ? lessThan : Infinity;
       fileReport.messages = fileReport.messages.filter(message => {
-        if (message.fatal) {
+        if (message[fatalSymbol]) {
           return true;
         }
-        const { rank } = message.max;
+        const { rank } = message[maxSymbol];
         if (rank <= gt) {
-          fileReport.messagesMap.delete(message.node.node);
+          fileReport[messagesMapSymbol].delete(message[nodeSymbol].node);
           return false;
         }
         if (rank > lt) {
-          fileReport.messagesMap.delete(message.node.node);
+          fileReport[messagesMapSymbol].delete(message[nodeSymbol].node);
           return false;
         }
         return true;
       });
     }
-    this.files.push(fileReport);
+    report.files.push(fileReport);
     return fileReport;
   }
 
   finish() {
-    this.average.rank = Ranks.roundValue(this.average.rank / this.files.length);
-    this.average.label = Ranks.getLabelByValue(this.average.rank);
-    if (this.average.rank > this.options.maxAverageRank) {
-      this.errors.maxAverageRank = true;
+    const report = this.report;
+    const average = report.average;
+    average.rank = Ranks.roundValue(average.rank / report.files.length);
+    average.label = Ranks.getLabelByValue(average.rank);
+    if (average.rank > this.options.maxAverageRank) {
+      report.errors.maxAverageRank = true;
     }
   }
 
 }
 
 
-exports.ComplexityReport = ComplexityReport;
+exports.messagesMapSymbol = messagesMapSymbol;
+exports.nodeSymbol = nodeSymbol;
+exports.maxSymbol = maxSymbol;
+exports.fatalSymbol = fatalSymbol;
+exports.ReportGenerator = ReportGenerator;
