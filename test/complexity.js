@@ -393,6 +393,21 @@ class TestComplexity extends Test {
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
   }
 
+  ['test: *case: file-in-script-style']() {
+    const file = 'test/src/complexity__script.js';
+    const complexity = new Complexity({ rules: 'all' });
+    const report = complexity.executeOnFiles([file]).files[0].messages;
+    deepEqual([{
+      loc: { end: { column: 0, line: 1 }, start: { column: 0, line: 1 } },
+      maxRule: 'max-lines',
+      name: 'Program (1:0-1:0)',
+      rules: {
+        'max-lines': { label: 'A', rank: 0.106, value: 8 }
+      },
+      type: 'file'
+    }], JSON.parse(JSON.stringify(report)));
+  }
+
 }
 
 
