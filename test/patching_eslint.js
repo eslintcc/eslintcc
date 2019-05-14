@@ -18,7 +18,7 @@ class PatchingESLint extends Test {
   ['test: purify config']() {
     const cmd = 'node ./test/src/patching_eslint__config';
     const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
-    const afterConfig = new PatchedCLIEngine().getConfigForFile('.');
+    const afterConfig = new PatchedCLIEngine().getConfigForFile('source');
     deepEqual(afterConfig.env, beforeConfig.env);
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
     deepEqual(afterConfig.parser, beforeConfig.parser);
