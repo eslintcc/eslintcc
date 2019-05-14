@@ -3,6 +3,7 @@
 const EventEmitter = require('events');
 
 const { CLIEngine } = require('eslint');
+const { getCLIEngineInternalSlots } = require('eslint/lib/cli-engine');
 const { createEmptyConfig } = require('eslint/lib/config/config-ops');
 
 // Config validator to patched config object
@@ -124,8 +125,9 @@ class PatchedCLIEngine extends CLIEngine {
   constructor(options) {
     super(options);
     this.events = new EventEmitter();
-    this.originalLinterVerify = this.linter.verify.bind(this.linter);
-    this.linter.verify = this.patchingLinterVerify.bind(this);
+    const slots = getCLIEngineInternalSlots(this);
+    this.originalLinterVerify = slots.linter.verify.bind(slots.linter);
+    slots.linter.verify = this.patchingLinterVerify.bind(this);
   }
 
   patchingLinterVerify(source, config, options) {
