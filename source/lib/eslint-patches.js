@@ -44,7 +44,7 @@ function __purifyESLintConfigRules() {
   ConfigArrayFactory.prototype._normalizeConfigData = function() {
     __purifyConfig.apply(null, arguments);
     return _normalizeConfigData.apply(this, arguments);
-  }
+  };
 }
 
 
