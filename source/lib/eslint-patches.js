@@ -3,11 +3,8 @@
 const EventEmitter = require('events');
 
 const { CLIEngine } = require('eslint');
-const { getCLIEngineInternalSlots } = require('eslint/lib/cli-engine');
-const { createEmptyConfig } = require('eslint/lib/config/config-ops');
-
-// Config validator to patched config object
-const validator = require('eslint/lib/config/config-validator');
+const { getCLIEngineInternalSlots } = require('eslint/lib/cli-engine/cli-engine');
+const { ConfigArrayFactory } = require('eslint/lib/cli-engine/config-array-factory');
 
 // Rules to patched
 const complexity = require('eslint/lib/rules/complexity');
@@ -23,37 +20,31 @@ const maxStatements = require('eslint/lib/rules/max-statements');
 /**
  * Clear all options that affect the rules
  */
-function __purifyConfig(config) {
-  const empty = createEmptyConfig();
-  config.globals = empty.globals;
-  config.rules = empty.rules;
-  config.plugins = empty.plugins;
-  if (config.overrides) {
-    for (let override of config.overrides) {
-      override.globals = empty.globals;
-      override.rules = empty.rules;
-      override.plugins = empty.plugins;
+function __purifyConfig(config, filePath) {
+  if (filePath) {
+    delete config.extends;
+    delete config.plugins;
+    delete config.processor;
+    delete config.globals;
+    delete config.rules;
+    delete config.env;
+    if (config.overrides) {
+      config.overrides.forEach(config => __purifyConfig(config, filePath));
     }
   }
-  return config;
 }
 
 
 /**
- * To implement the hook, the rule validation function is used,
- *  because you must remove "extends" and other rules options before calling the "applyExtends" function.
- *
- * Why hook: In ESLint there is no possibility to legally loading the options of parsing the source code
- *  with the support of the hierarchy of configuration files.
- * And without options of parsing, the complexity analysis will not work.
- *
- * Reason: Using the "rules", "plugins" and "extends" options from the analyzed project
- *  will lead to the fact that there are errors when loading the dependency modules
- *  that are not installed locally for "eslintcc".
+ * Since we only need complexity rules,
+ *  we need to clear all plugins and extra rules from the configuration
  */
 function __purifyESLintConfigRules() {
-  const originValidate = validator.validate.bind(validator);
-  validator.validate = (config, ...args) => originValidate(__purifyConfig(config), ...args);
+  const _normalizeConfigData = ConfigArrayFactory.prototype._normalizeConfigData;
+  ConfigArrayFactory.prototype._normalizeConfigData = function() {
+    __purifyConfig.apply(null, arguments);
+    return _normalizeConfigData.apply(this, arguments);
+  }
 }
 
 
