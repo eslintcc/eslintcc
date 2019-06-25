@@ -1,0 +1,20 @@
+{
+  "extends": "unexists_dependency_extends",
+  "plugins": [
+    "unexists_dependency_plugins"
+  ],
+  "rules": {
+    "no-console": "error"
+  },
+  "overrides": [{
+    "files": [
+      "overrides.js"
+    ],
+    "plugins": [
+      "unexists_dependency_plugins"
+    ],
+    "rules": {
+      "no-console": "warn"
+    }
+  }]
+}
