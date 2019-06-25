@@ -8,7 +8,7 @@ const {
 const npmjsRegistry = '//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n';
 
 
-exec('eslint . --ignore-pattern test/src');
+exec('eslint . --ignore-pattern test/src --max-warnings 0');
 exec('node source/cli source --greater-than C --show-rules --average');
 exec('nyc --reporter=lcovonly node test');
 exec('nyc report');
