@@ -18,7 +18,7 @@ class PatchingESLint extends Test {
   ['test: purify config']() {
     const cmd = 'node ./test/src/patching_eslint__config';
     const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
-    const afterConfig = new PatchedCLIEngine().getConfigForFile('source');
+    const afterConfig = new PatchedCLIEngine().getConfigForFile('source/complexity.js');
     deepEqual(afterConfig.env, beforeConfig.env);
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
     deepEqual(afterConfig.parser, beforeConfig.parser);
@@ -38,7 +38,7 @@ class PatchingESLint extends Test {
       .results[0].messages[0].message;
     equal('complexity', message.ruleId);
     equal('FunctionDeclaration', message.node.type);
-    deepEqual({ complexity: 1, name: "Function 'myFunc'" }, message.data);
+    deepEqual({ complexity: 1, max: 0, name: "Function 'myFunc'" }, message.data);
   }
 
 }
