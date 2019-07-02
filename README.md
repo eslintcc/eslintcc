@@ -35,8 +35,6 @@ console.log(JSON.stringify(report, null, '\t'));
 **Note:** ESLintCC ignores all plugins and rules, specified in configuration files,
     and uses to generate a report only [complexity rules][eslint_rule].
   So there is no need to install plugins dependencies for use ESLintCC.
-  But, if using a [shareable configuration package][share_conf],
-    you use must also be installed locally or globally to work with a locally or globally installed ESLintCC.
 
 ## Configuration
 
