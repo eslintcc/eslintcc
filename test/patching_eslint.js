@@ -17,36 +17,34 @@ class PatchingESLint extends Test {
 
   ['test: load config']() {
     const file = 'test/src/patching_eslint__load_config/index.js';
-    const config = new PatchedCLIEngine().getConfigForFile(file);
-    equal(undefined, config.extends);
-    equal(undefined, config.processor);
-    deepEqual({}, config.env);
-    deepEqual({}, config.globals);
-    deepEqual([], config.plugins);
-    deepEqual({}, config.rules);
+    const rules = { 'no-console': ['error'] };
+    const config = new PatchedCLIEngine({ rules }).getConfigForFile(file);
+    deepEqual({ ecmaVersion: 2017 }, config.parserOptions);
+    deepEqual(rules, config.rules);
   }
 
   ['test: load config overrides']() {
     const file = 'test/src/patching_eslint__load_config/overrides.js';
     const config = new PatchedCLIEngine().getConfigForFile(file);
-    equal(undefined, config.extends);
-    equal(undefined, config.processor);
-    deepEqual({}, config.env);
-    deepEqual({}, config.globals);
-    deepEqual([], config.plugins);
+    deepEqual({ ecmaVersion: 2017 }, config.parserOptions);
     deepEqual({}, config.rules);
   }
 
-  ['test: purify config']() {
+  ['test: load config extends']() {
+    const file = 'test/src/patching_eslint__load_config_extends/index.js';
+    const config = new PatchedCLIEngine().getConfigForFile(file);
+    deepEqual({ ecmaVersion: 2018 }, config.parserOptions);
+    deepEqual({}, config.rules);
+  }
+
+  ['test: normal and purifying config']() {
     const cmd = 'node ./test/src/patching_eslint__config';
     const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
     const afterConfig = new PatchedCLIEngine().getConfigForFile('source/complexity.js');
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
     deepEqual(afterConfig.parser, beforeConfig.parser);
-    deepEqual({ es6: true, node: true }, beforeConfig.env);
-    deepEqual({}, afterConfig.env);
-    deepEqual([], beforeConfig.plugins);
-    deepEqual([], afterConfig.plugins);
+    deepEqual(afterConfig.env, beforeConfig.env);
+    deepEqual(afterConfig.plugins, beforeConfig.plugins);
     equal('warn', beforeConfig.rules.indent[0]);
     equal(2, beforeConfig.rules.indent[1]);
     equal(1, beforeConfig.rules.indent[2].SwitchCase);

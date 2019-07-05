@@ -32,9 +32,8 @@ const report = complexity.executeOnFiles(['yourfile.js']);
 console.log(JSON.stringify(report, null, '\t'));
 ```
 
-**Note:** ESLintCC ignores all plugins and rules, specified in configuration files,
+**Note:** ESLintCC ignores all rules, specified in configuration files,
     and uses to generate a report only [complexity rules][eslint_rule].
-  So there is no need to install plugins dependencies for use ESLintCC.
 
 ## Configuration
 

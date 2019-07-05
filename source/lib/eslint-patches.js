@@ -18,16 +18,11 @@ const maxStatements = require('eslint/lib/rules/max-statements');
 
 
 /**
- * Clear all options that affect the rules
+ * Clear rules option
  */
 function __purifyConfig(config, filePath) {
   if (filePath) {
-    delete config.extends;
-    delete config.plugins;
-    delete config.processor;
-    delete config.globals;
     delete config.rules;
-    delete config.env;
     if (config.overrides) {
       config.overrides.forEach(config => __purifyConfig(config, filePath));
     }
@@ -37,7 +32,7 @@ function __purifyConfig(config, filePath) {
 
 /**
  * Since we only need complexity rules,
- *  we need to clear all plugins and extra rules from the configuration
+ *  we need to clear extra rules from the configuration
  */
 function __purifyESLintConfigRules() {
   const _normalizeConfigData = ConfigArrayFactory.prototype._normalizeConfigData;
