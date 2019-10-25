@@ -2,7 +2,7 @@
 
 const {
   child_process: { exec }
-} = require('@nd-toolkit/ndk-project');
+} = require('./lib');
 
 
 exec('nyc --exclude=bin --exclude=coverage --exclude=!test node test');

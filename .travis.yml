@@ -2,8 +2,5 @@ language:       node_js
 node_js:        node
 cache:
   directories:  [node_modules]
-before_install: npm install -g nyc coveralls
-install:
-  - npm install
-  - npm update @nd-toolkit/ndk-project
+install:        npm install
 script:         node ./bin/travis-build

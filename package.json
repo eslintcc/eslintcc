@@ -22,12 +22,13 @@
   ],
   "dependencies": {
     "eslint": "6.5.1",
-    "@ndk/env": "^0.0.3"
+    "@ndk/env": "0.0.3"
   },
   "devDependencies": {
-    "@nd-toolkit/ndk-project": "github:nd-toolkit/ndk-project",
     "semver": "6.3.0",
-    "@ndk/test": "^0.0.4"
+    "nyc": "14.1.1",
+    "coveralls": "3.0.7",
+    "@ndk/test": "0.0.4"
   },
   "scripts": {
     "test": "node bin/test",

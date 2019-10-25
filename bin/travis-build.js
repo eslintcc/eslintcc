@@ -3,7 +3,7 @@
 const {
   child_process: { exec, execAndGetOutput },
   fs: { readFile, writeFile, readFileJSON, writeFileJSON }
-} = require('@nd-toolkit/ndk-project');
+} = require('./lib');
 
 const npmjsRegistry = '//registry.npmjs.org/:_authToken=${NPM_TOKEN}\n';
 
@@ -38,6 +38,14 @@ if (lt(packageJSON.dependencies.eslint, eslintVersion)) {
   // Обновление и тестирование с новым ESLint
   packageJSON.dependencies.eslint = eslintVersion;
   packageJSON.devDependencies.semver = semverVersion;
+  // Обновим прочие зависимости
+  exec('npm i nyc@latest');
+  exec('npm i coveralls@latest');
+  const nycVersion = readFileJSON('node_modules/nyc/package.json').version;
+  const coverallsVersion = readFileJSON('node_modules/coveralls/package.json').version;
+  packageJSON.devDependencies.nyc = nycVersion;
+  packageJSON.devDependencies.coveralls = coverallsVersion;
+  // Обновим версию ESLintCC
   packageJSON.version = inc(packageJSON.version, 'patch');
   writeFileJSON('package.json', packageJSON);
   exec('node test');
