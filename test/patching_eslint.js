@@ -37,6 +37,12 @@ class PatchingESLint extends Test {
     deepEqual({}, config.rules);
   }
 
+  ['test: load config with option "reportUnusedDisableDirectives"']() {
+    const file = 'test/src/patching_eslint__load_config_unused-directives/index.js';
+    const config = new PatchedCLIEngine().getConfigForFile(file);
+    equal(true, config.reportUnusedDisableDirectives);
+  }
+
   ['test: normal and purifying config']() {
     const cmd = 'node ./test/src/patching_eslint__config';
     const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));

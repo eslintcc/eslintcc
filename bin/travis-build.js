@@ -12,6 +12,7 @@ exec('eslint . --ignore-pattern test/src --max-warnings 0');
 exec('node source/cli source --greater-than C --show-rules --average');
 exec('nyc --reporter=lcovonly node test');
 exec('nyc report');
+exec('nyc check-coverage');
 exec('coveralls < coverage/lcov.info');
 
 if (process.env.TRAVIS_BRANCH !== 'master' || process.env.TRAVIS_PULL_REQUEST !== 'false') {
