@@ -21,7 +21,7 @@ const maxStatements = require('eslint/lib/rules/max-statements');
  * Clear rules option
  */
 function __purifyConfig(config, filePath) {
-  if (filePath) {
+  if (filePath && filePath.name !== 'CLIOptions') {
     delete config.rules;
     if (config.overrides) {
       config.overrides.forEach(config => __purifyConfig(config, filePath));
@@ -36,7 +36,7 @@ function __purifyConfig(config, filePath) {
  */
 function __purifyESLintConfigRules() {
   const _normalizeConfigData = ConfigArrayFactory.prototype._normalizeConfigData;
-  ConfigArrayFactory.prototype._normalizeConfigData = function() {
+  ConfigArrayFactory.prototype._normalizeConfigData = function () {
     __purifyConfig.apply(null, arguments);
     return _normalizeConfigData.apply(this, arguments);
   };
