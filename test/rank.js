@@ -2,7 +2,7 @@
 
 const { equal, deepEqual } = require('assert').strict;
 
-const { Test } = require('@ndk/test');
+const { Test } = require('../build/@nodutilus-test');
 
 const { Ranks } = require('../source/lib/rank');
 
@@ -104,4 +104,3 @@ class TestRank extends Test {
 
 
 module.exports = TestRank;
-TestRank.runIsMainModule();

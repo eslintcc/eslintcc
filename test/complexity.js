@@ -3,7 +3,7 @@
 const { equal, deepEqual } = require('assert').strict;
 const { resolve } = require('path');
 
-const { Test } = require('@ndk/test');
+const { Test } = require('../build/@nodutilus-test');
 
 const { Complexity } = require('../');
 const { nodeSymbol, messagesMapSymbol } = require('../source/lib/report');
@@ -155,7 +155,7 @@ class TestComplexity extends Test {
     const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages;
     equal('max-lines', rawReport[0].maxRule);
     deepEqual({
-      'max-lines': { value: 13, rank: 0.173, label: 'A' }
+      'max-lines': { value: 12, rank: 0.16, label: 'A' }
     }, rawReport[0].rules);
     equal('max-statements', rawReport[1].maxRule);
     deepEqual({
@@ -402,7 +402,7 @@ class TestComplexity extends Test {
       maxRule: 'max-lines',
       name: 'Program (1:0-1:0)',
       rules: {
-        'max-lines': { label: 'A', rank: 0.093, value: 7 }
+        'max-lines': { label: 'A', rank: 0.08, value: 6 }
       },
       type: 'file'
     }], JSON.parse(JSON.stringify(report)));
@@ -412,4 +412,3 @@ class TestComplexity extends Test {
 
 
 module.exports = TestComplexity;
-TestComplexity.runIsMainModule();

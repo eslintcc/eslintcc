@@ -1,21 +1,15 @@
 'use strict';
-const { createTest } = require('@ndk/test');
+const { Test } = require('../build/@nodutilus-test');
 
 
-const AllTests = createTest('All tests', {
-
-  ['test: patching_eslint']: require('./patching_eslint'),
-
-  ['test: rank']: require('./rank'),
-
-  ['test: complexity']: require('./complexity'),
-
-  ['test: logging']: require('./logging'),
-
-  ['test: cli']: require('./cli')
-
-});
+class AllTests extends Test { }
 
 
-module.exports = AllTests;
-AllTests.runIsMainModule();
+AllTests['test: patching_eslint'] = require('./patching_eslint');
+AllTests['test: rank'] = require('./rank');
+AllTests['test: complexity'] = require('./complexity');
+AllTests['test: logging'] = require('./logging');
+AllTests['test: cli'] = require('./cli');
+
+
+Test.runOnCI(new AllTests());

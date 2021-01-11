@@ -4,7 +4,7 @@ const { equal, deepEqual, throws, doesNotThrow } = require('assert').strict;
 const { execSync, spawnSync } = require('child_process');
 const { sep, resolve } = require('path');
 
-const { Test } = require('@ndk/test');
+const { Test } = require('../build/@nodutilus-test');
 
 
 class TestCLI extends Test {
@@ -236,4 +236,3 @@ class TestCLI extends Test {
 
 
 module.exports = TestCLI;
-TestCLI.runIsMainModule();

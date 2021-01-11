@@ -3,11 +3,13 @@
 const { equal, deepEqual } = require('assert').strict;
 const { sep, resolve } = require('path');
 
-const { Test } = require('@ndk/test');
+const { Test } = require('../build/@nodutilus-test');
 
 const { ReportLogger } = require('../source/lib/logging');
 const { Complexity } = require('../');
 
+const logger = Symbol('logger');
+const errLogger = Symbol('errLogger');
 
 class TestReportLogger extends Test {
 
@@ -98,14 +100,14 @@ class TestReportLogger extends Test {
     return 'ReportLogger';
   }
 
-  logger(msgData, message) {
+  [logger](msgData, message) {
     if (this.step in this[msgData]) {
       equal(this[msgData][this.step], message);
     }
     this.step++;
   }
 
-  errLogger(msgData, message) {
+  [errLogger](msgData, message) {
     if (this.errStep in this[msgData]) {
       equal(this[msgData][this.errStep], message);
     }
@@ -123,8 +125,8 @@ class TestReportLogger extends Test {
   ['test: text']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messages', msg),
-      errLogger: msg => this.errLogger('errMessages', msg)
+      logger: msg => this[logger]('messages', msg),
+      errLogger: msg => this[errLogger]('errMessages', msg)
     });
     this.step = 0;
     this.errStep = 0;
@@ -136,8 +138,8 @@ class TestReportLogger extends Test {
   ['test: text + average']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messagesAVG', msg),
-      errLogger: msg => this.errLogger('errMessagesAVG', msg),
+      logger: msg => this[logger]('messagesAVG', msg),
+      errLogger: msg => this[errLogger]('errMessagesAVG', msg),
       average: true
     });
     this.step = 0;
@@ -150,8 +152,8 @@ class TestReportLogger extends Test {
   ['test: text + max-rank']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messagesMR', msg),
-      errLogger: msg => this.errLogger('errMessagesMR', msg)
+      logger: msg => this[logger]('messagesMR', msg),
+      errLogger: msg => this[errLogger]('errMessagesMR', msg)
     });
     this.step = 0;
     this.errStep = 0;
@@ -163,8 +165,8 @@ class TestReportLogger extends Test {
   ['test: text + max-average-rank']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messagesMAR', msg),
-      errLogger: msg => this.errLogger('errMessagesMAR', msg)
+      logger: msg => this[logger]('messagesMAR', msg),
+      errLogger: msg => this[errLogger]('errMessagesMAR', msg)
     });
     this.step = 0;
     this.errStep = 0;
@@ -176,8 +178,8 @@ class TestReportLogger extends Test {
   ['test: text + showRules']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messagesSR', msg),
-      errLogger: msg => this.errLogger('errMessagesSR', msg),
+      logger: msg => this[logger]('messagesSR', msg),
+      errLogger: msg => this[errLogger]('errMessagesSR', msg),
       showRules: true
     });
     this.step = 0;
@@ -190,8 +192,8 @@ class TestReportLogger extends Test {
   ['test: text + messagesFatal']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
-      logger: msg => this.logger('messagesFatal', msg),
-      errLogger: msg => this.errLogger('errMessagesFatal', msg),
+      logger: msg => this[logger]('messagesFatal', msg),
+      errLogger: msg => this[errLogger]('errMessagesFatal', msg),
       showRules: true
     });
     this.step = 0;
@@ -324,4 +326,3 @@ class TestReportLogger extends Test {
 
 
 module.exports = TestReportLogger;
-TestReportLogger.runIsMainModule();

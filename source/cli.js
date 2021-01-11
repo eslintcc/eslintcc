@@ -1,6 +1,6 @@
 'use strict';
 
-const { getProcessArgs } = require('@ndk/env/args');
+const { getProcessArgs } = require('./lib/args');
 
 const { Complexity } = require('./complexity');
 const { ReportLogger } = require('./lib/logging');
