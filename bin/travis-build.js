@@ -59,5 +59,5 @@ if (lt(packageJSON.dependencies.eslint, eslintVersion)) {
   exec(`git commit -m "Обновление до eslint@${eslintVersion}"`);
   exec('git push origin-master');
   exec('git remote remove origin-master');
-  exec('npm publish');
+  // exec('npm publish');
 }
