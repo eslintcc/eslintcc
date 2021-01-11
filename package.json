@@ -45,8 +45,11 @@
     "statements": 100,
     "exclude": [
       "bin",
+      "build",
       "coverage",
-      "test"
+      "test",
+      "rollup.config.js",
+      "source/lib/args.js"
     ]
   }
 }
