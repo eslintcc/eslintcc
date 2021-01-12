@@ -21,7 +21,7 @@
     "eslintcc"
   ],
   "dependencies": {
-    "eslint": "7.17.0"
+    "eslint": "7.11.0"
   },
   "devDependencies": {
     "semver": "7.3.4",

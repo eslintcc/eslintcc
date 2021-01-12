@@ -1,0 +1,12 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "anonymous_class.mjs"
+      ],
+      "parserOptions": {
+        "sourceType": "module"
+      }
+    }
+  ]
+}

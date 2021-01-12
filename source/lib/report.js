@@ -41,7 +41,12 @@ class MessageNode {
       const parent = node.parent;
       switch (parent.type) {
         case 'MethodDefinition':
-          return 'class ' + parent.parent.parent.id.name +
+          if (parent.parent.parent.id) {
+            return 'class ' + parent.parent.parent.id.name +
+              (parent.static ? '.' : '#') +
+              (parent.key.name || parent.key.raw);
+          }
+          return 'class <anonymous>' +
             (parent.static ? '.' : '#') +
             (parent.key.name || parent.key.raw);
         case 'Property':
@@ -49,7 +54,7 @@ class MessageNode {
         case 'VariableDeclarator':
           return `function ${parent.id.name}`;
         default:
-          return `function anonymous (${this.position})`;
+          return `function <anonymous> (${this.position})`;
       }
     }
   }
