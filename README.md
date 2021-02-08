@@ -21,6 +21,10 @@ Locally:
     $ npm install eslintcc
     $ ./node_modules/.bin/eslintcc yourfile.js
 
+NPX (you can do it without installing):
+
+    $ npx eslintcc yourfile.js
+
 Integration in JavaScript application:
 
 ```js
@@ -47,13 +51,20 @@ However, you can disable them locally in the file.
 **Features:**
 
 1.  You can configurate [parserOptions][eslint_parser_options]
-    and [parser][eslint_parser] for specify the JavaScript language support. `.eslintrc.json`:
+    or [parser][eslint_parser] for specify the JavaScript language support. `.eslintrc.json`:
 
 ```json
 {
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2021,
+    "sourceType": "module"
   }
+}
+```
+
+```json
+{
+  "parser": "@typescript-eslint/parser"
 }
 ```
 
@@ -86,6 +97,96 @@ function myFunc2(a, b) {
 /* eslint-disable-next-line max-params */
 function myFunc(a, b, c, d, e) {
   //...
+}
+```
+
+## Customize parser
+
+Examples of [ESLint Parser][eslint_parser] configuration
+
+### Babel parser
+
+Using Babel you can support experimental syntax.
+For example private fields and methods for classes.
+
+> See package [@babel/eslint-parser](https://www.npmjs.com/package/@babel/eslint-parser)
+
+package.json
+
+```json
+{
+  "devDependencies": {
+    "@babel/eslint-parser": "latest",
+    "@babel/plugin-proposal-class-properties": "latest",
+    "@babel/plugin-proposal-private-methods": "latest"
+  }
+}
+```
+
+.eslintrc.json
+
+```json
+{
+  "parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "babelOptions": {
+      "configFile": "./babel.config.json"
+    }
+  }
+}
+```
+
+.babel.config.json
+
+```json
+{
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-private-methods"
+  ]
+}
+```
+
+### TypeScript parser
+
+> See package [@typescript-eslint/parser](https://www.npmjs.com/package/@typescript-eslint/parser)
+
+This parser is used you can add a code complexity score to your TypeScript project.
+In this case, the same standard ESLint rules are used for calculating complexity,
+  [described in "Complexity ranks" section](#complexity-ranks).
+
+package.json
+
+```json
+{
+  "devDependencies": {
+    "typescript": "latest",
+    "@typescript-eslint/parser": "latest",
+    "@typescript-eslint/eslint-plugin": "latest"
+  }
+}
+```
+
+.eslintrc.json
+
+```json
+{
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+      ]
+    }
+  ]
 }
 ```
 
@@ -148,11 +249,36 @@ Command line format:
 
 Output as JSON and show rules more than rank **E**:
 
-    $ eslintcc -f=json -gt=e file.js
+    $ npx eslintcc -f=json -gt=e file.js
 
 Use only 2 rules and show rule name:
 
-    $ eslintcc --rules complexity --rules max-depth --show-rules file.js
+    $ npx eslintcc --rules complexity --rules max-depth --show-rules file.js
+
+### Output examples
+
+> Based on the test files from the directory: [./test/src/](./test/src/)
+
+      $ npx eslintcc --show-rules ./test/src/complexity__max_rank.js
+      B test/src/complexity__max_rank.js
+        D  3:0 function MyFunc (max-params = 4)
+        A  9:0 function MyFunc1 (max-params = 1)
+        A 15:0 function MyFunc2 (max-params = 1)
+        A 21:0 function MyFunc3 (max-params = 1)
+        B 27:0 function myFunc4 (max-params = 2)
+        A 28:2 function myFunc4, IfStatement (28:2-32:3) (max-depth = 1)
+        A 29:7 function myFunc4, arrow function (29:7-31:5) (max-nested-callbacks = 1)
+      Error: Complexity of code above maximum allowable rank C (3), messages - 1
+
+
+      $ npx eslintcc --format json ./test/src/complexity__max_average_rank.js
+      {"files":[{"file":"/development/github/eslintcc/test/src/complexity__max_average_rank.js","messages":[{"loc":{"start":{"line":3,"column":0},"end":{"line":5,"column":1}},"type":"function","name":"function MyFunc","rules":{"max-params":{"value":3,"rank":3,"label":"C"},"complexity":{"value":1,"rank":0.2,"label":"A"}},"maxRule":"max-params"}],"average":{"rank":3,"label":"C"}}],"average":{"rank":3,"label":"C"},"ranks":{"A":0,"B":0,"C":1,"D":0,"E":0,"F":0},"errors":{"maxRank":0,"maxAverageRank":true}}
+
+
+      $ npx eslintcc --show-rules ./test/src/custom_parser/typescript-eslint-parser.ts
+      A test/src/custom_parser/typescript-eslint-parser.ts
+        A 6:7 function test (max-params = 1)
+        A 7:2 function test, IfStatement (7:2-11:3) (max-depth = 1)
 
 [npm_img]: https://img.shields.io/npm/v/eslintcc.svg
 
@@ -167,8 +293,6 @@ Use only 2 rules and show rule name:
 [coverage_url]: https://coveralls.io/github/eslintcc/eslintcc?branch=master
 
 [eslint_npm]: https://www.npmjs.com/package/eslint
-
-[share_conf]: https://eslint.org/docs/user-guide/configuring#using-a-shareable-configuration-package
 
 [eslint_rule]: https://eslint.org/docs/rules/complexity
 
@@ -186,12 +310,12 @@ Use only 2 rules and show rule name:
 
 [eslint_usage]: https://github.com/eslint/eslint#installation-and-usage
 
-[eslint_config]: https://eslint.org/docs/user-guide/configuring
+[eslint_config]: https://eslint.org/docs/user-guide/configuring/
 
-[eslint_parser_options]: https://eslint.org/docs/user-guide/configuring#specifying-parser-options
+[eslint_parser_options]: https://eslint.org/docs/user-guide/configuring/language-options#specifying-parser-options
 
-[eslint_parser]: https://eslint.org/docs/user-guide/configuring#specifying-parser
+[eslint_parser]: https://eslint.org/docs/user-guide/configuring/plugins#specifying-parser
 
-[eslint_disabling_comments]: https://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments
+[eslint_disabling_comments]: https://eslint.org/docs/user-guide/configuring/rules#disabling-rules
 
 [radon_cc_rank]: https://radon.readthedocs.io/en/latest/api.html#radon.complexity.cc_rank

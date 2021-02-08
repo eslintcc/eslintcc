@@ -1,0 +1,29 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "babel-eslint-parser.mjs"
+      ],
+      "parser": "@babel/eslint-parser",
+      "parserOptions": {
+        "sourceType": "module",
+        "babelOptions": {
+          "configFile": "./test/src/custom_parser/babel.config.json"
+        }
+      }
+    },
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "plugins": [
+        "@typescript-eslint"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+      ]
+    }
+  ]
+}

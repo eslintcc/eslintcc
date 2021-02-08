@@ -11,6 +11,6 @@ AllTests['test: complexity'] = require('./complexity');
 AllTests['test: logging'] = require('./logging');
 AllTests['test: cli'] = require('./cli');
 AllTests['test: code_parts'] = require('./code_parts');
-
+AllTests['test: custom_parser'] = require('./custom_parser');
 
 Test.runOnCI(new AllTests());

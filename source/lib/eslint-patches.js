@@ -4,7 +4,6 @@ const EventEmitter = require('events');
 
 const { CLIEngine } = require('eslint');
 const { getCLIEngineInternalSlots } = require('eslint/lib/cli-engine/cli-engine');
-const { ConfigArrayFactory } = require('eslint/lib/cli-engine/config-array-factory');
 
 // Rules to patched
 const complexity = require('eslint/lib/rules/complexity');
@@ -18,29 +17,17 @@ const maxStatements = require('eslint/lib/rules/max-statements');
 
 
 /**
- * Clear rules option
- */
-function __purifyConfig(config, filePath) {
-  if (filePath && filePath.name !== 'CLIOptions') {
-    delete config.rules;
-    if (config.overrides) {
-      config.overrides.forEach(config => __purifyConfig(config, filePath));
-    }
-  }
-}
-
-
-/**
+ * Clear rules option.
  * Since we only need complexity rules,
  *  we need to clear extra rules from the configuration
  */
-function __purifyESLintConfigRules() {
-  const _normalizeConfigData = ConfigArrayFactory.prototype._normalizeConfigData;
-  ConfigArrayFactory.prototype._normalizeConfigData = function () {
-    __purifyConfig.apply(null, arguments);
-    return _normalizeConfigData.apply(this, arguments);
-  };
+function __purifyConfig(config) {
+  const { name } = config;
+  if (name !== 'CLIOptions') {
+    delete config.rules;
+  }
 }
+
 
 
 /**
@@ -98,7 +85,6 @@ function __patchComplexityRules() {
  * Run all ESLint behavior patches
  */
 function patchingESLint() {
-  __purifyESLintConfigRules();
   __patchComplexityRules();
 }
 
@@ -112,12 +98,26 @@ class PatchedCLIEngine extends CLIEngine {
     super(options);
     this.events = new EventEmitter();
     const slots = getCLIEngineInternalSlots(this);
-    this.originalLinterVerify = slots.linter.verify.bind(slots.linter);
-    slots.linter.verify = this.patchingLinterVerify.bind(this);
+    // Redefine of validator to intercept the results of the validation rules
+    this._originalGetConfigArrayForFile = slots.configArrayFactory
+      .getConfigArrayForFile.bind(slots.configArrayFactory);
+    slots.configArrayFactory.getConfigArrayForFile = this._getConfigArrayForFile.bind(this);
+    // Redefine of config-loader to clear extra rules from configuration file
+    this._originalLinterVerify = slots.linter
+      .verify.bind(slots.linter);
+    slots.linter.verify = this._patchingLinterVerify.bind(this);
   }
 
-  patchingLinterVerify(source, config, options) {
-    const messages = this.originalLinterVerify(source, config, options);
+  _getConfigArrayForFile(...args) {
+    const configArray = this._originalGetConfigArrayForFile(...args);
+    for (const config of configArray) {
+      __purifyConfig(config);
+    }
+    return configArray;
+  }
+
+  _patchingLinterVerify(source, config, options) {
+    const messages = this._originalLinterVerify(source, config, options);
     this.events.emit('verifyFile', options.filename, messages);
     return messages;
   }

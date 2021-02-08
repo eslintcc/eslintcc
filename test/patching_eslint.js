@@ -1,10 +1,8 @@
 'use strict';
 
 const { equal, deepEqual } = require('assert').strict;
-const { execSync } = require('child_process');
-
 const { Test } = require('../build/@nodutilus-test');
-
+const { CLIEngine } = require('eslint');
 const { PatchedCLIEngine } = require('../source/lib/eslint-patches.js');
 require('../');
 
@@ -25,7 +23,9 @@ class PatchingESLint extends Test {
 
   ['test: load config overrides']() {
     const file = 'test/src/patching_eslint__load_config/overrides.js';
+    const configOrigin = new CLIEngine().getConfigForFile(file);
     const config = new PatchedCLIEngine().getConfigForFile(file);
+    deepEqual(['warn'], configOrigin.rules['no-console']);
     deepEqual({ ecmaVersion: 2017 }, config.parserOptions);
     deepEqual({}, config.rules);
   }
@@ -44,8 +44,7 @@ class PatchingESLint extends Test {
   }
 
   ['test: normal and purifying config']() {
-    const cmd = 'node ./test/src/patching_eslint__config';
-    const beforeConfig = JSON.parse(execSync(cmd, { encoding: 'utf-8' }));
+    const beforeConfig = new CLIEngine().getConfigForFile('source/complexity.js');
     const afterConfig = new PatchedCLIEngine().getConfigForFile('source/complexity.js');
     deepEqual(afterConfig.parserOptions, beforeConfig.parserOptions);
     deepEqual(afterConfig.parser, beforeConfig.parser);
@@ -64,6 +63,14 @@ class PatchingESLint extends Test {
     equal('complexity', message.ruleId);
     equal('FunctionDeclaration', message.node.type);
     deepEqual({ complexity: 1, max: 0, name: "Function 'myFunc'" }, message.data);
+  }
+
+  ['test: executeOnFiles - no extra rules']() {
+    const file = new PatchedCLIEngine()
+      .executeOnFiles(['./test/src/patching_eslint__no_extra_rules.js'])
+      .results[0];
+
+    equal(0, file.messages.length);
   }
 
 }
