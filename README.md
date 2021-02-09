@@ -257,7 +257,8 @@ Use only 2 rules and show rule name:
 
 ### Output examples
 
-> Based on the test files from the directory: [./test/src/](./test/src/)
+> Based on the test files from the directory:
+> [./test/src/](https://github.com/eslintcc/eslintcc/blob/master/test/src)
 
       $ npx eslintcc --show-rules ./test/src/complexity__max_rank.js
       B test/src/complexity__max_rank.js
