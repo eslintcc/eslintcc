@@ -34,41 +34,43 @@ class TestComplexity extends Test {
     };
   }
 
-  ['test: MessageNode #getName']() {
+  async ['test: MessageNode #getName']() {
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles(['test/src/message_node__get_name.js']).files[0].messages;
-    equal('function func1', report[0][nodeSymbol].getName());
-    equal('function func2', report[1][nodeSymbol].getName());
-    equal('function <anonymous> (14:1-14:14)', report[2][nodeSymbol].getName());
-    equal('function func3', report[3][nodeSymbol].getName());
-    equal('arrow function (21:14-33:1)', report[4][nodeSymbol].getName());
-    equal('IfStatement (22:2-24:3)', report[5][nodeSymbol].getName());
-    equal('SwitchStatement (25:2-32:3)', report[6][nodeSymbol].getName());
-    equal('function func5', report[7][nodeSymbol].getName());
-    equal('class myClass1#constructor', report[8][nodeSymbol].getName());
-    equal('class myClass1#myMethod1', report[9][nodeSymbol].getName());
-    equal('class myClass1#myProp1', report[10][nodeSymbol].getName());
-    equal('class myClass1.myMethod1', report[11][nodeSymbol].getName());
-    equal('class myClass1.myProp1', report[12][nodeSymbol].getName());
-    equal("class myClass1.'my method 2'", report[13][nodeSymbol].getName());
-    equal('function myMethod3', report[14][nodeSymbol].getName());
-    equal("function 'my method 3'", report[15][nodeSymbol].getName());
-    equal('function func6', report[16][nodeSymbol].getName());
-    equal('function func6, ForInStatement (61:2-63:3)', report[17][nodeSymbol].getName());
-    equal('function func6, arrow function (64:10-68:3)', report[18][nodeSymbol].getName());
-    equal('function func6IN', report[20][nodeSymbol].getName());
-    equal('function func6IN, IfStatement (72:4-74:5)', report[21][nodeSymbol].getName());
-    equal('arrow function (81:13-85:1)', report[22][nodeSymbol].getName());
-    equal('arrow function (82:3-84:3)', report[23][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1)', report[24][nodeSymbol].getName());
-    equal('function <anonymous> (90:3-90:16)', report[25][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1), IfStatement (91:2-95:3)', report[26][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1), IfStatement (92:4-94:5)', report[27][nodeSymbol].getName());
-    equal('function myMethod5', report[28][nodeSymbol].getName());
-    equal('function myFunc4', report[29][nodeSymbol].getName());
-    equal('function myFunc5', report[30][nodeSymbol].getName());
-    equal('function myFunc7', report[31][nodeSymbol].getName());
-    equal(undefined, report[32]);
+    const report = await complexity.lintFiles(['test/src/message_node__get_name.js']);
+    const messages = report.files[0].messages;
+
+    equal('function func1', messages[0][nodeSymbol].getName());
+    equal('function func2', messages[1][nodeSymbol].getName());
+    equal('function <anonymous> (14:1-14:14)', messages[2][nodeSymbol].getName());
+    equal('function func3', messages[3][nodeSymbol].getName());
+    equal('arrow function (21:14-33:1)', messages[4][nodeSymbol].getName());
+    equal('IfStatement (22:2-24:3)', messages[5][nodeSymbol].getName());
+    equal('SwitchStatement (25:2-32:3)', messages[6][nodeSymbol].getName());
+    equal('function func5', messages[7][nodeSymbol].getName());
+    equal('class myClass1#constructor', messages[8][nodeSymbol].getName());
+    equal('class myClass1#myMethod1', messages[9][nodeSymbol].getName());
+    equal('class myClass1#myProp1', messages[10][nodeSymbol].getName());
+    equal('class myClass1.myMethod1', messages[11][nodeSymbol].getName());
+    equal('class myClass1.myProp1', messages[12][nodeSymbol].getName());
+    equal("class myClass1.'my method 2'", messages[13][nodeSymbol].getName());
+    equal('function myMethod3', messages[14][nodeSymbol].getName());
+    equal("function 'my method 3'", messages[15][nodeSymbol].getName());
+    equal('function func6', messages[16][nodeSymbol].getName());
+    equal('function func6, ForInStatement (61:2-63:3)', messages[17][nodeSymbol].getName());
+    equal('function func6, arrow function (64:10-68:3)', messages[18][nodeSymbol].getName());
+    equal('function func6IN', messages[20][nodeSymbol].getName());
+    equal('function func6IN, IfStatement (72:4-74:5)', messages[21][nodeSymbol].getName());
+    equal('arrow function (81:13-85:1)', messages[22][nodeSymbol].getName());
+    equal('arrow function (82:3-84:3)', messages[23][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1)', messages[24][nodeSymbol].getName());
+    equal('function <anonymous> (90:3-90:16)', messages[25][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1), IfStatement (91:2-95:3)', messages[26][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1), IfStatement (92:4-94:5)', messages[27][nodeSymbol].getName());
+    equal('function myMethod5', messages[28][nodeSymbol].getName());
+    equal('function myFunc4', messages[29][nodeSymbol].getName());
+    equal('function myFunc5', messages[30][nodeSymbol].getName());
+    equal('function myFunc7', messages[31][nodeSymbol].getName());
+    equal(undefined, messages[32]);
   }
 
   ['test: #getComplexityRules']() {

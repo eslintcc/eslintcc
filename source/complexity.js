@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 
-const { patchingESLint, PatchedCLIEngine } = require('./lib/eslint-patches');
+const { patchingESLint, PatchedESLint } = require('./lib/eslint-patches');
 const { Ranks } = require('./lib/rank');
 const { ReportGenerator } = require('./lib/report');
 
@@ -81,16 +81,16 @@ class Complexity {
     }
   }
 
-  executeOnFiles(patterns) {
-    const engine = new PatchedCLIEngine({
+  async lintFiles(patterns) {
+    const engine = new PatchedESLint({
       allowInlineConfig: !this.options.noInlineConfig,
-      rules: this.getComplexityRules()
+      overrideConfig: { rules: this.getComplexityRules() }
     });
     const generator = new ReportGenerator(this.options);
     engine.events.on('verifyFile', (...args) => {
       this.events.emit('verifyFile', generator.verifyFile(...args));
     });
-    engine.executeOnFiles(patterns);
+    await engine.lintFiles(patterns);
     generator.finish();
     this.events.emit('finish', generator.report);
     return generator.report;

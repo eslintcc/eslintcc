@@ -1,33 +1,27 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { ESLint, Linter } = require('eslint');
 
-const { CLIEngine } = require('eslint');
-const { getCLIEngineInternalSlots } = require('eslint/lib/cli-engine/cli-engine');
+// Linter.prototype.verify = (originalVerify => function patchingLinterVerify(source, config, options) {
+//   const messages = originalVerify.apply(this, [source, config, options]);
+
+//   this.events.emit('verifyFile', options.filename, messages);
+
+//   return messages;
+// })(Linter.prototype.verify);
+
 
 // Rules to patched
-const complexity = require('eslint/lib/rules/complexity');
-const maxDepth = require('eslint/lib/rules/max-depth');
-const maxLen = require('eslint/lib/rules/max-len');
-const maxLines = require('eslint/lib/rules/max-lines');
-const maxLinesPerFunction = require('eslint/lib/rules/max-lines-per-function');
-const maxNestedCallbacks = require('eslint/lib/rules/max-nested-callbacks');
-const maxParams = require('eslint/lib/rules/max-params');
-const maxStatements = require('eslint/lib/rules/max-statements');
-
-
-/**
- * Clear rules option.
- * Since we only need complexity rules,
- *  we need to clear extra rules from the configuration
- */
-function __purifyConfig(config) {
-  const { name } = config;
-  if (name !== 'CLIOptions') {
-    delete config.rules;
-  }
-}
-
+const esLintRules = new Linter().getRules();
+const complexity = esLintRules.get('complexity');
+const maxDepth = esLintRules.get('max-depth');
+const maxLen = esLintRules.get('max-len');
+const maxLines = esLintRules.get('max-lines');
+const maxLinesPerFunction = esLintRules.get('max-lines-per-function');
+const maxNestedCallbacks = esLintRules.get('max-nested-callbacks');
+const maxParams = esLintRules.get('max-params');
+const maxStatements = esLintRules.get('max-statements');
 
 
 /**
@@ -90,31 +84,21 @@ function patchingESLint() {
 
 
 /**
- * Extend the class "CLIEngine" introducing the logic of message interception and work with the event model
+ * Extend the class "ESLint" introducing the logic of message interception and work with the event model
  */
-class PatchedCLIEngine extends CLIEngine {
+class PatchedESLint extends ESLint {
 
   constructor(options) {
     super(options);
     this.events = new EventEmitter();
-    const slots = getCLIEngineInternalSlots(this);
+
     // Redefine of validator to intercept the results of the validation rules
-    this._originalGetConfigArrayForFile = slots.configArrayFactory
-      .getConfigArrayForFile.bind(slots.configArrayFactory);
-    slots.configArrayFactory.getConfigArrayForFile = this._getConfigArrayForFile.bind(this);
-    // Redefine of config-loader to clear extra rules from configuration file
-    this._originalLinterVerify = slots.linter
-      .verify.bind(slots.linter);
-    slots.linter.verify = this._patchingLinterVerify.bind(this);
+    // this._originalLinterVerify = slots.linter
+    //   .verify.bind(slots.linter);
+    // slots.linter.verify = this._patchingLinterVerify.bind(this);
   }
 
-  _getConfigArrayForFile(...args) {
-    const configArray = this._originalGetConfigArrayForFile(...args);
-    for (const config of configArray) {
-      __purifyConfig(config);
-    }
-    return configArray;
-  }
+
 
   _patchingLinterVerify(source, config, options) {
     const messages = this._originalLinterVerify(source, config, options);
@@ -126,4 +110,4 @@ class PatchedCLIEngine extends CLIEngine {
 
 
 exports.patchingESLint = patchingESLint;
-exports.PatchedCLIEngine = PatchedCLIEngine;
+exports.PatchedESLint = PatchedESLint;
