@@ -330,12 +330,12 @@ This method lints the files that match the glob patterns and then returns the re
 
 **Parameters**
 
--   patterns _(string | string\[])_
-      The lint target files. This can contain any of file paths, directory paths, and glob patterns.
+-   patterns _(string | string\[])_ -
+    The lint target files. This can contain any of file paths, directory paths, and glob patterns.
 
 **Return Value**
 
-_Promise&lt;ComplexityResult>_
+_Promise&lt;ComplexityResult>_ -
 The promise that will be fulfilled with an ComplexityResult object.
 
 Example:
