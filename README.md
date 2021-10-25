@@ -306,9 +306,10 @@ Class options equivalent to the command line (see [Command line options](#comman
 Additional options available in API mode:
 
 -   **options.ranks**, _Default: null_ -
-Allows you to set an arbitrary comparison of ranks and max counters of indicators of the corresponding rules.
+    Allows you to set an arbitrary comparison of ranks and max counters of indicators of the corresponding rules.
 
 Example:
+
 ```js
 const complexity = new Complexity({
   ranks: {
@@ -318,11 +319,55 @@ const complexity = new Complexity({
 })
 ```
 
-
 -   **options.eslintOptions**, _Default: {}_ -
     This option allows you to configure the internal `ESLint class`.
     It's allows you to set additional options described in the documentation:
     [ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
+
+#### complexity.lintFiles(patterns)
+
+This method lints the files that match the glob patterns and then returns the results.
+
+**Parameters**
+
+-   patterns _(string | string\[])_
+      The lint target files. This can contain any of file paths, directory paths, and glob patterns.
+
+**Return Value**
+
+_Promise&lt;ComplexityResult\[]>_
+The promise that will be fulfilled with an array of ComplexityResult objects.
+
+Example:
+
+```js
+{
+  'average': { 'rank': 0.2, 'label': 'A' },
+  'errors': {
+    'maxAverageRank': false,
+    'maxRank': 0
+  },
+  'ranks': {
+    'A': 1,
+    'B': 0,
+    'C': 0,
+    'D': 0,
+    'E': 0,
+    'F': 0
+  },
+  'files': [{
+    'average': { 'rank': 0.2, 'label': 'A' },
+    'file': ...absolute path to file...,
+    'messages': [{
+      'type': 'function',
+      'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
+      'name': 'function myFunc',
+      'rules': { 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' } },
+      'maxRule': 'complexity'
+    }]
+  }]
+}
+```
 
 #### Usage API Example
 
