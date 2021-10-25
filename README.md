@@ -394,9 +394,9 @@ console.log(JSON.stringify(report, null, '\t'));
 
 [npm_url]: https://www.npmjs.com/package/eslintcc
 
-[build_img]: https://travis-ci.com/eslintcc/eslintcc.svg?branch=master
+[build_img]: https://app.travis-ci.com/eslintcc/eslintcc.svg?branch=master
 
-[build_url]: https://travis-ci.com/eslintcc/eslintcc
+[build_url]: https://app.travis-ci.com/eslintcc/eslintcc
 
 [coverage_img]: https://coveralls.io/repos/github/eslintcc/eslintcc/badge.svg?branch=master
 
