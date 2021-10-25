@@ -1,6 +1,6 @@
 {
   "name": "eslintcc",
-  "version": "0.6.14",
+  "version": "0.7.0",
   "homepage": "https://eslintcc.github.io",
   "description": "ESLintCC is a ECMAScript/JavaScript tool that computes complexity of code by using ESLint",
   "keywords": [
@@ -13,6 +13,9 @@
   "repository": "github:eslintcc/eslintcc",
   "license": "MIT",
   "main": "./source/complexity.js",
+  "exports": {
+    ".": "./source/complexity.js"
+  },
   "bin": {
     "eslintcc": "eslintcc"
   },

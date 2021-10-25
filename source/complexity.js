@@ -46,7 +46,8 @@ class Complexity {
     ranks = null,
     noInlineConfig = false,
     maxRank = 'C',
-    maxAverageRank = 'B'
+    maxAverageRank = 'B',
+    eslintOptions = {}
   } = {}) {
     this.options = {
       ranks: new Ranks(ranks),
@@ -57,6 +58,7 @@ class Complexity {
       maxRank: Ranks.getLabelMaxValue(maxRank),
       maxAverageRank: Ranks.getLabelMaxValue(maxAverageRank)
     };
+    this.eslintOptions = eslintOptions;
     this.events = new EventEmitter();
   }
 
@@ -82,10 +84,19 @@ class Complexity {
   }
 
   async lintFiles(patterns) {
-    const engine = new PatchedESLint({
-      allowInlineConfig: !this.options.noInlineConfig,
-      overrideConfig: { rules: this.getComplexityRules() }
-    });
+    const eslintOptions = Object.assign({}, this.eslintOptions, {});
+    if (this.options.noInlineConfig) {
+      eslintOptions.allowInlineConfig = false;
+    }
+    if (eslintOptions.overrideConfig && eslintOptions.overrideConfig.rules) {
+      eslintOptions.overrideConfig.rules = Object.assign({},
+        eslintOptions.overrideConfig.rules,
+        this.getComplexityRules());
+    } else {
+      eslintOptions.overrideConfig = Object.assign(eslintOptions.overrideConfig || {},
+        { rules: this.getComplexityRules() });
+    }
+    const engine = new PatchedESLint(eslintOptions);
     const generator = new ReportGenerator(this.options);
     engine.events.on('verifyFile', (...args) => {
       this.events.emit('verifyFile', generator.verifyFile(...args));

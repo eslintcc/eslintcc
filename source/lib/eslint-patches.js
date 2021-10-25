@@ -3,15 +3,6 @@
 const EventEmitter = require('events');
 const { ESLint, Linter } = require('eslint');
 
-// Linter.prototype.verify = (originalVerify => function patchingLinterVerify(source, config, options) {
-//   const messages = originalVerify.apply(this, [source, config, options]);
-
-//   this.events.emit('verifyFile', options.filename, messages);
-
-//   return messages;
-// })(Linter.prototype.verify);
-
-
 // Rules to patched
 const esLintRules = new Linter().getRules();
 const complexity = esLintRules.get('complexity');
@@ -91,19 +82,17 @@ class PatchedESLint extends ESLint {
   constructor(options) {
     super(options);
     this.events = new EventEmitter();
-
-    // Redefine of validator to intercept the results of the validation rules
-    // this._originalLinterVerify = slots.linter
-    //   .verify.bind(slots.linter);
-    // slots.linter.verify = this._patchingLinterVerify.bind(this);
   }
 
 
+  async lintFiles(patterns) {
+    const report = await super.lintFiles(patterns);
 
-  _patchingLinterVerify(source, config, options) {
-    const messages = this._originalLinterVerify(source, config, options);
-    this.events.emit('verifyFile', options.filename, messages);
-    return messages;
+    for (const { filePath, messages } of report) {
+      this.events.emit('verifyFile', filePath, messages);
+    }
+
+    return report;
   }
 
 }

@@ -35,11 +35,18 @@ if (processArgs.argv.length > 0) {
   const options = Object.assign({}, processArgs.flags, processArgs.options);
   const complexity = new Complexity(options);
   new ReportLogger(complexity, options);
-  const report = complexity.executeOnFiles(processArgs.argv);
-  const exitWithError = report.errors.maxRank > 0 || report.errors.maxAverageRank;
-  if (exitWithError) {
-    process.exit(1);
-  }
+  complexity.lintFiles(processArgs.argv)
+    .then(report => {
+      const exitWithError = report.errors.maxRank > 0 || report.errors.maxAverageRank;
+      if (exitWithError) {
+        process.exit(1);
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      process.exit(1);
+    });
+
 } else {
   console.log(require('./lib/help'));
 }

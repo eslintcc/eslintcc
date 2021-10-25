@@ -2,7 +2,7 @@
 const { Test } = require('../build/@nodutilus-test');
 
 
-class AllTests extends Test {}
+class AllTests extends Test { }
 
 
 AllTests['test: patching_eslint'] = require('./patching_eslint');

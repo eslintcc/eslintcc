@@ -1,6 +1,6 @@
 'use strict';
 
-const { equal, deepEqual, throws, doesNotThrow } = require('assert').strict;
+const { equal, deepEqual, throws, doesNotThrow, ok } = require('assert').strict;
 const { execSync, spawnSync } = require('child_process');
 const { sep, resolve } = require('path');
 
@@ -231,6 +231,15 @@ class TestCLI extends Test {
       '\u001b[31;1mF\u001b[0m (Infinity), messages - 1\n';
     equal(stderr, child.stderr);
   }
+
+  ['test: exitWithError - complexity.lintFiles']() {
+    const child = spawnSync('node', ['source/cli.js', '"@!#$%^&*"'], {
+      encoding: 'utf-8',
+      shell: true
+    });
+    ok(child.stdout.startsWith("NoFilesFoundError: No files matching '@!#$%^&*' were found."));
+  }
+
 
 }
 

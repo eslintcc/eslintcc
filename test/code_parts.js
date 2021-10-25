@@ -12,9 +12,9 @@ class TestCodeParts extends Test {
     return 'CodeParts';
   }
 
-  ['test: anonymous_class']() {
-    const messages = new Complexity()
-      .executeOnFiles(['test/src/code_parts/anonymous_class.mjs'])
+  async ['test: anonymous_class']() {
+    const messages = (await new Complexity()
+      .lintFiles(['test/src/code_parts/anonymous_class.mjs']))
       .files[0].messages;
     const [message0, message1, message2] = messages;
 

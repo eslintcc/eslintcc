@@ -31,7 +31,7 @@ Integration in JavaScript application:
 const { Complexity } = require('eslintcc');
 
 const complexity = new Complexity();
-const report = complexity.executeOnFiles(['yourfile.js']);
+const report = await complexity.lintFiles(['yourfile.js']);
 
 console.log(JSON.stringify(report, null, '\t'));
 ```

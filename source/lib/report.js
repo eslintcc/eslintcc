@@ -123,31 +123,31 @@ class ComplexityReport {
 
 class ReportGenerator {
 
-  static['resolveValue:complexity'](data) {
+  static ['resolveValue:complexity'](data) {
     return data.complexity;
   }
 
-  static['resolveValue:max-depth'](data) {
+  static ['resolveValue:max-depth'](data) {
     return data.depth;
   }
 
-  static['resolveValue:max-lines'](data) {
+  static ['resolveValue:max-lines'](data) {
     return data.actual;
   }
 
-  static['resolveValue:max-lines-per-function'](data) {
+  static ['resolveValue:max-lines-per-function'](data) {
     return data.lineCount;
   }
 
-  static['resolveValue:max-nested-callbacks'](data) {
+  static ['resolveValue:max-nested-callbacks'](data) {
     return data.num;
   }
 
-  static['resolveValue:max-params'](data) {
+  static ['resolveValue:max-params'](data) {
     return data.count;
   }
 
-  static['resolveValue:max-statements'](data) {
+  static ['resolveValue:max-statements'](data) {
     return data.count;
   }
 
@@ -199,7 +199,7 @@ class ReportGenerator {
         message.ruleId = 'fatal-error';
         message.ruleType = 'file';
         this.pushFatalMessage(fileReport, message);
-      } else {
+      } else if (message.ruleId in ruleTypes) {
         message = message.message;
         message.ruleType = ruleTypes[message.ruleId];
         this.pushMessage(fileReport, message);
