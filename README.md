@@ -281,6 +281,60 @@ Use only 2 rules and show rule name:
         A 6:7 function test (max-params = 1)
         A 7:2 function test, IfStatement (7:2-11:3) (max-depth = 1)
 
+## Node.js API
+
+While ESLintСС is designed to be run on the command line,
+  it's possible to use ESLintСС programmatically through the Node.js API.
+The purpose of the Node.js API is to allow plugin and tool authors to use the ESLintСС functionality directly,
+  without going through the command line interface.
+
+### Complexity class
+
+Is a main class for use in Node.js applications.
+
+#### new Complexity(options)
+
+Class options equivalent to the command line (see [Command line options](#command-line-options)):
+
+-   **options.rules** Default: 'logic'
+-   **options.greaterThan** Default: undefined
+-   **options.lessThan** Default: undefined
+-   **options.ranks** Default: null
+-   **options.noInlineConfig** Default: false
+-   **options.maxRank** Default: 'C'
+-   **options.maxAverageRank** Default: 'B'
+
+Additional options available in API mode:
+
+##### eslintOptions
+
+> **options.eslintOptions** Default: {}
+
+This option allows you to configure the internal `ESLint class`.
+It's allows you to set additional options described in the documentation:
+[ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
+
+#### Usage API Example
+
+```js
+const { Complexity } = require('eslintcc');
+
+const complexity = new Complexity({
+  rules: 'logic',
+  eslintOptions: {
+    useEslintrc: false,
+    overrideConfig: {
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+    }
+  }
+});
+const report = await complexity.lintFiles(['yourfile.ts']);
+
+console.log(JSON.stringify(report, null, '\t'));
+```
+
 [npm_img]: https://img.shields.io/npm/v/eslintcc.svg
 
 [npm_url]: https://www.npmjs.com/package/eslintcc
