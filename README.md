@@ -335,8 +335,8 @@ This method lints the files that match the glob patterns and then returns the re
 
 **Return Value**
 
-_Promise&lt;ComplexityResult\[]>_
-The promise that will be fulfilled with an array of ComplexityResult objects.
+_Promise&lt;ComplexityResult>_
+The promise that will be fulfilled with an ComplexityResult object.
 
 Example:
 
