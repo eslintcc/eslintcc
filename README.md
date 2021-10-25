@@ -292,6 +292,27 @@ The purpose of the Node.js API is to allow plugin and tool authors to use the ES
 
 Is a main class for use in Node.js applications.
 
+#### Example
+
+```js
+const { Complexity } = require('eslintcc');
+
+const complexity = new Complexity({
+  rules: 'logic',
+  eslintOptions: {
+    useEslintrc: false,
+    overrideConfig: {
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+    }
+  }
+});
+const report = await complexity.lintFiles(['yourfile.ts']);
+
+console.log(JSON.stringify(report, null, '\t'));
+```
+
 #### new Complexity(options)
 
 Class options equivalent to the command line (see [Command line options](#command-line-options)):
@@ -367,27 +388,6 @@ Example:
     }]
   }]
 }
-```
-
-#### Usage API Example
-
-```js
-const { Complexity } = require('eslintcc');
-
-const complexity = new Complexity({
-  rules: 'logic',
-  eslintOptions: {
-    useEslintrc: false,
-    overrideConfig: {
-      parser: '@typescript-eslint/parser',
-      plugins: ['@typescript-eslint'],
-      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
-    }
-  }
-});
-const report = await complexity.lintFiles(['yourfile.ts']);
-
-console.log(JSON.stringify(report, null, '\t'));
 ```
 
 [npm_img]: https://img.shields.io/npm/v/eslintcc.svg
