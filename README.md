@@ -25,7 +25,7 @@ NPX (you can do it without installing):
 
     $ npx eslintcc yourfile.js
 
-Integration in JavaScript application:
+Integration in JavaScript application ([see more...](#nodejs-api)):
 
 ```js
 const { Complexity } = require('eslintcc');
@@ -296,23 +296,33 @@ Is a main class for use in Node.js applications.
 
 Class options equivalent to the command line (see [Command line options](#command-line-options)):
 
--   **options.rules** Default: 'logic'
--   **options.greaterThan** Default: undefined
--   **options.lessThan** Default: undefined
--   **options.ranks** Default: null
--   **options.noInlineConfig** Default: false
--   **options.maxRank** Default: 'C'
--   **options.maxAverageRank** Default: 'B'
+-   **options.rules**, _Default: 'logic'_
+-   **options.greaterThan**, _Default: undefined_
+-   **options.lessThan**, _Default: undefined_
+-   **options.noInlineConfig**, _Default: false_
+-   **options.maxRank**, _Default: 'C'_
+-   **options.maxAverageRank**, _Default: 'B'_
 
 Additional options available in API mode:
 
-##### eslintOptions
+-   **options.ranks**, _Default: null_ -
+Allows you to set an arbitrary comparison of ranks and max counters of indicators of the corresponding rules.
 
-> **options.eslintOptions** Default: {}
+Example:
+```js
+const complexity = new Complexity({
+  ranks: {
+    'complexity': { A: 5, B: 10, C: 20, D: 30, E: 40, F: Infinity }
+    'max-depth': { A: 2, B: 3, C: 4, D: 6, E: 8, F: Infinity}
+  }
+})
+```
 
-This option allows you to configure the internal `ESLint class`.
-It's allows you to set additional options described in the documentation:
-[ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
+
+-   **options.eslintOptions**, _Default: {}_ -
+    This option allows you to configure the internal `ESLint class`.
+    It's allows you to set additional options described in the documentation:
+    [ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
 
 #### Usage API Example
 
