@@ -25,13 +25,13 @@ NPX (you can do it without installing):
 
     $ npx eslintcc yourfile.js
 
-Integration in JavaScript application:
+Integration in JavaScript application ([see more...](#nodejs-api)):
 
 ```js
 const { Complexity } = require('eslintcc');
 
 const complexity = new Complexity();
-const report = complexity.executeOnFiles(['yourfile.js']);
+const report = await complexity.lintFiles(['yourfile.js']);
 
 console.log(JSON.stringify(report, null, '\t'));
 ```
@@ -280,6 +280,115 @@ Use only 2 rules and show rule name:
       A test/src/custom_parser/typescript-eslint-parser.ts
         A 6:7 function test (max-params = 1)
         A 7:2 function test, IfStatement (7:2-11:3) (max-depth = 1)
+
+## Node.js API
+
+While ESLintСС is designed to be run on the command line,
+  it's possible to use ESLintСС programmatically through the Node.js API.
+The purpose of the Node.js API is to allow plugin and tool authors to use the ESLintСС functionality directly,
+  without going through the command line interface.
+
+### Complexity class
+
+Is a main class for use in Node.js applications.
+
+#### new Complexity(options)
+
+Class options equivalent to the command line (see [Command line options](#command-line-options)):
+
+-   **options.rules**, _Default: 'logic'_
+-   **options.greaterThan**, _Default: undefined_
+-   **options.lessThan**, _Default: undefined_
+-   **options.noInlineConfig**, _Default: false_
+-   **options.maxRank**, _Default: 'C'_
+-   **options.maxAverageRank**, _Default: 'B'_
+
+Additional options available in API mode:
+
+-   **options.ranks**, _Default: null_ -
+    Allows you to set an arbitrary comparison of ranks and max counters of indicators of the corresponding rules.
+
+Example:
+
+```js
+const complexity = new Complexity({
+  ranks: {
+    'complexity': { A: 5, B: 10, C: 20, D: 30, E: 40, F: Infinity }
+    'max-depth': { A: 2, B: 3, C: 4, D: 6, E: 8, F: Infinity}
+  }
+})
+```
+
+-   **options.eslintOptions**, _Default: {}_ -
+    This option allows you to configure the internal `ESLint class`.
+    It's allows you to set additional options described in the documentation:
+    [ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
+
+#### complexity.lintFiles(patterns)
+
+This method lints the files that match the glob patterns and then returns the results.
+
+**Parameters**
+
+-   patterns _(string | string\[])_
+      The lint target files. This can contain any of file paths, directory paths, and glob patterns.
+
+**Return Value**
+
+_Promise&lt;ComplexityResult>_
+The promise that will be fulfilled with an ComplexityResult object.
+
+Example:
+
+```js
+{
+  'average': { 'rank': 0.2, 'label': 'A' },
+  'errors': {
+    'maxAverageRank': false,
+    'maxRank': 0
+  },
+  'ranks': {
+    'A': 1,
+    'B': 0,
+    'C': 0,
+    'D': 0,
+    'E': 0,
+    'F': 0
+  },
+  'files': [{
+    'average': { 'rank': 0.2, 'label': 'A' },
+    'file': ...absolute path to file...,
+    'messages': [{
+      'type': 'function',
+      'loc': { 'start': { 'line': 3, 'column': 0 }, 'end': { 'line': 5, 'column': 1 } },
+      'name': 'function myFunc',
+      'rules': { 'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' } },
+      'maxRule': 'complexity'
+    }]
+  }]
+}
+```
+
+#### Usage API Example
+
+```js
+const { Complexity } = require('eslintcc');
+
+const complexity = new Complexity({
+  rules: 'logic',
+  eslintOptions: {
+    useEslintrc: false,
+    overrideConfig: {
+      parser: '@typescript-eslint/parser',
+      plugins: ['@typescript-eslint'],
+      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+    }
+  }
+});
+const report = await complexity.lintFiles(['yourfile.ts']);
+
+console.log(JSON.stringify(report, null, '\t'));
+```
 
 [npm_img]: https://img.shields.io/npm/v/eslintcc.svg
 

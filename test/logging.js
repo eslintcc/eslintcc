@@ -122,7 +122,7 @@ class TestReportLogger extends Test {
     equal(false, reportLogger.options.showRules);
   }
 
-  ['test: text']() {
+  async ['test: text']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messages', msg),
@@ -130,12 +130,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/logging__messages.js']);
+    await complexity.lintFiles(['./test/src/logging__messages.js']);
     equal(20, this.step);
     equal(2, this.errStep);
   }
 
-  ['test: text + average']() {
+  async ['test: text + average']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messagesAVG', msg),
@@ -144,12 +144,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/complexity__average_rank']);
+    await complexity.lintFiles(['./test/src/complexity__average_rank']);
     equal(7, this.step);
     equal(2, this.errStep);
   }
 
-  ['test: text + max-rank']() {
+  async ['test: text + max-rank']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messagesMR', msg),
@@ -157,12 +157,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/complexity__max_rank.js']);
+    await complexity.lintFiles(['./test/src/complexity__max_rank.js']);
     equal(8, this.step);
     equal(1, this.errStep);
   }
 
-  ['test: text + max-average-rank']() {
+  async ['test: text + max-average-rank']() {
     const complexity = new Complexity();
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messagesMAR', msg),
@@ -170,12 +170,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/complexity__max_average_rank.js']);
+    await complexity.lintFiles(['./test/src/complexity__max_average_rank.js']);
     equal(2, this.step);
     equal(1, this.errStep);
   }
 
-  ['test: text + showRules']() {
+  async ['test: text + showRules']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messagesSR', msg),
@@ -184,12 +184,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/logging__messages.js']);
+    await complexity.lintFiles(['./test/src/logging__messages.js']);
     equal(20, this.step);
     equal(2, this.errStep);
   }
 
-  ['test: text + messagesFatal']() {
+  async ['test: text + messagesFatal']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       logger: msg => this[logger]('messagesFatal', msg),
@@ -198,12 +198,12 @@ class TestReportLogger extends Test {
     });
     this.step = 0;
     this.errStep = 0;
-    complexity.executeOnFiles(['./test/src/complexity__fatal.js']);
+    await complexity.lintFiles(['./test/src/complexity__fatal.js']);
     equal(3, this.step);
     equal(2, this.errStep);
   }
 
-  ['test: json']() {
+  async ['test: json']() {
     const complexity = new Complexity({});
     new ReportLogger(complexity, {
       format: 'json',
@@ -319,7 +319,7 @@ class TestReportLogger extends Test {
         }, report);
       }
     });
-    complexity.executeOnFiles(['./test/src/logging__messages_json.js']);
+    await complexity.lintFiles(['./test/src/logging__messages_json.js']);
   }
 
 }

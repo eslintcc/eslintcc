@@ -34,41 +34,43 @@ class TestComplexity extends Test {
     };
   }
 
-  ['test: MessageNode #getName']() {
+  async ['test: MessageNode #getName']() {
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles(['test/src/message_node__get_name.js']).files[0].messages;
-    equal('function func1', report[0][nodeSymbol].getName());
-    equal('function func2', report[1][nodeSymbol].getName());
-    equal('function <anonymous> (14:1-14:14)', report[2][nodeSymbol].getName());
-    equal('function func3', report[3][nodeSymbol].getName());
-    equal('arrow function (21:14-33:1)', report[4][nodeSymbol].getName());
-    equal('IfStatement (22:2-24:3)', report[5][nodeSymbol].getName());
-    equal('SwitchStatement (25:2-32:3)', report[6][nodeSymbol].getName());
-    equal('function func5', report[7][nodeSymbol].getName());
-    equal('class myClass1#constructor', report[8][nodeSymbol].getName());
-    equal('class myClass1#myMethod1', report[9][nodeSymbol].getName());
-    equal('class myClass1#myProp1', report[10][nodeSymbol].getName());
-    equal('class myClass1.myMethod1', report[11][nodeSymbol].getName());
-    equal('class myClass1.myProp1', report[12][nodeSymbol].getName());
-    equal("class myClass1.'my method 2'", report[13][nodeSymbol].getName());
-    equal('function myMethod3', report[14][nodeSymbol].getName());
-    equal("function 'my method 3'", report[15][nodeSymbol].getName());
-    equal('function func6', report[16][nodeSymbol].getName());
-    equal('function func6, ForInStatement (61:2-63:3)', report[17][nodeSymbol].getName());
-    equal('function func6, arrow function (64:10-68:3)', report[18][nodeSymbol].getName());
-    equal('function func6IN', report[20][nodeSymbol].getName());
-    equal('function func6IN, IfStatement (72:4-74:5)', report[21][nodeSymbol].getName());
-    equal('arrow function (81:13-85:1)', report[22][nodeSymbol].getName());
-    equal('arrow function (82:3-84:3)', report[23][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1)', report[24][nodeSymbol].getName());
-    equal('function <anonymous> (90:3-90:16)', report[25][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1), IfStatement (91:2-95:3)', report[26][nodeSymbol].getName());
-    equal('function <anonymous> (89:7-96:1), IfStatement (92:4-94:5)', report[27][nodeSymbol].getName());
-    equal('function myMethod5', report[28][nodeSymbol].getName());
-    equal('function myFunc4', report[29][nodeSymbol].getName());
-    equal('function myFunc5', report[30][nodeSymbol].getName());
-    equal('function myFunc7', report[31][nodeSymbol].getName());
-    equal(undefined, report[32]);
+    const report = await complexity.lintFiles(['test/src/message_node__get_name.js']);
+    const messages = report.files[0].messages;
+
+    equal('function func1', messages[0][nodeSymbol].getName());
+    equal('function func2', messages[1][nodeSymbol].getName());
+    equal('function <anonymous> (14:1-14:14)', messages[2][nodeSymbol].getName());
+    equal('function func3', messages[3][nodeSymbol].getName());
+    equal('arrow function (21:14-33:1)', messages[4][nodeSymbol].getName());
+    equal('IfStatement (22:2-24:3)', messages[5][nodeSymbol].getName());
+    equal('SwitchStatement (25:2-32:3)', messages[6][nodeSymbol].getName());
+    equal('function func5', messages[7][nodeSymbol].getName());
+    equal('class myClass1#constructor', messages[8][nodeSymbol].getName());
+    equal('class myClass1#myMethod1', messages[9][nodeSymbol].getName());
+    equal('class myClass1#myProp1', messages[10][nodeSymbol].getName());
+    equal('class myClass1.myMethod1', messages[11][nodeSymbol].getName());
+    equal('class myClass1.myProp1', messages[12][nodeSymbol].getName());
+    equal("class myClass1.'my method 2'", messages[13][nodeSymbol].getName());
+    equal('function myMethod3', messages[14][nodeSymbol].getName());
+    equal("function 'my method 3'", messages[15][nodeSymbol].getName());
+    equal('function func6', messages[16][nodeSymbol].getName());
+    equal('function func6, ForInStatement (61:2-63:3)', messages[17][nodeSymbol].getName());
+    equal('function func6, arrow function (64:10-68:3)', messages[18][nodeSymbol].getName());
+    equal('function func6IN', messages[20][nodeSymbol].getName());
+    equal('function func6IN, IfStatement (72:4-74:5)', messages[21][nodeSymbol].getName());
+    equal('arrow function (81:13-85:1)', messages[22][nodeSymbol].getName());
+    equal('arrow function (82:3-84:3)', messages[23][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1)', messages[24][nodeSymbol].getName());
+    equal('function <anonymous> (90:3-90:16)', messages[25][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1), IfStatement (91:2-95:3)', messages[26][nodeSymbol].getName());
+    equal('function <anonymous> (89:7-96:1), IfStatement (92:4-94:5)', messages[27][nodeSymbol].getName());
+    equal('function myMethod5', messages[28][nodeSymbol].getName());
+    equal('function myFunc4', messages[29][nodeSymbol].getName());
+    equal('function myFunc5', messages[30][nodeSymbol].getName());
+    equal('function myFunc7', messages[31][nodeSymbol].getName());
+    equal(undefined, messages[32]);
   }
 
   ['test: #getComplexityRules']() {
@@ -81,9 +83,9 @@ class TestComplexity extends Test {
     deepEqual(['complexity'], Object.keys(complexity.getComplexityRules('complexity')));
   }
 
-  ['test: #executeOnFiles']() {
+  async ['test: #lintFiles']() {
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles(['test/src/complexity__messages.js']);
+    const report = await complexity.lintFiles(['test/src/complexity__messages.js']);
 
     equal('function myFunc', report.files[0].messages[0].name);
     deepEqual({
@@ -125,34 +127,34 @@ class TestComplexity extends Test {
     }, report.files[0].messages[21].rules);
   }
 
-  ['test: #executeOnFiles (complexity)']() {
+  async ['test: #lintFiles (complexity)']() {
     const file = 'test/src/complexity__one_rule.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    const report = (await complexity.lintFiles([file])).files[0].messages[0];
     equal('max-params', report.maxRule);
     deepEqual({
       'max-params': { value: 7, rank: 5.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, report.rules);
     const onlyComplexity = new Complexity({ rules: 'complexity' });
-    const onlyCReport = onlyComplexity.executeOnFiles([file]).files[0].messages[0];
+    const onlyCReport = (await onlyComplexity.lintFiles([file])).files[0].messages[0];
     equal('complexity', onlyCReport.maxRule);
     deepEqual({
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, onlyCReport.rules);
   }
 
-  ['test: #executeOnFiles (raw rules)']() {
+  async ['test: #lintFiles (raw rules)']() {
     const file = 'test/src/complexity__raw_rules.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    const report = (await complexity.lintFiles([file])).files[0].messages[0];
     equal('max-params', report.maxRule);
     deepEqual({
       'max-params': { value: 7, rank: 5.166, label: 'F' },
       'complexity': { value: 1, rank: 0.2, label: 'A' }
     }, report.rules);
     const rawComplexity = new Complexity({ rules: 'raw' });
-    const rawReport = rawComplexity.executeOnFiles([file]).files[0].messages;
+    const rawReport = (await rawComplexity.lintFiles([file])).files[0].messages;
     equal('max-lines', rawReport[0].maxRule);
     deepEqual({
       'max-lines': { value: 12, rank: 0.16, label: 'A' }
@@ -164,10 +166,10 @@ class TestComplexity extends Test {
     }, rawReport[1].rules);
   }
 
-  ['test: #executeOnFiles (parse Error: Fatal)']() {
+  async ['test: #lintFiles (parse Error: Fatal)']() {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]).files[0].messages[0];
+    const report = (await complexity.lintFiles([file])).files[0].messages[0];
     deepEqual({
       'fatal-error': { value: 1, rank: 6, label: 'F' }
     }, report.rules);
@@ -181,10 +183,10 @@ class TestComplexity extends Test {
     equal('file', report.type);
   }
 
-  ['test: #executeOnFiles (parse Error: Fatal, JSON)']() {
+  async ['test: #lintFiles (parse Error: Fatal, JSON)']() {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity();
-    const report = JSON.stringify(complexity.executeOnFiles([file]).files[0].messages[0]);
+    const report = JSON.stringify((await complexity.lintFiles([file])).files[0].messages[0]);
     deepEqual({
       'type': 'file',
       'loc': { 'start': { 'line': 4, 'column': 3 }, 'end': { 'line': 4, 'column': 3 } },
@@ -195,9 +197,9 @@ class TestComplexity extends Test {
     }, JSON.parse(report));
   }
 
-  ['test: #toJSON']() {
+  async ['test: #toJSON']() {
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles(['test/src/complexity__messages_json.js']);
+    const report = await complexity.lintFiles(['test/src/complexity__messages_json.js']);
     deepEqual({
       'average': { 'rank': 0.2, 'label': 'A' },
       'errors': {
@@ -226,16 +228,16 @@ class TestComplexity extends Test {
     }, JSON.parse(JSON.stringify(report)));
   }
 
-  ['test: ~greaterThan']() {
+  async ['test: ~greaterThan']() {
     const complexity = new Complexity();
-    const messages = complexity.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const messages = (await complexity.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0].messages;
     equal('A', messages[0].rules[messages[0].maxRule].label);
     equal('B', messages[1].rules[messages[1].maxRule].label);
     equal('C', messages[2].rules[messages[2].maxRule].label);
     equal('F', messages[3].rules[messages[3].maxRule].label);
     equal('F', messages[4].rules[messages[4].maxRule].label);
     const complexityB = new Complexity({ greaterThan: 'B' });
-    const fileB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const fileB = (await complexityB.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0];
     const messagesB = fileB.messages;
     equal('C', messagesB[0].rules[messagesB[0].maxRule].label);
     equal('F', messagesB[1].rules[messagesB[1].maxRule].label);
@@ -243,40 +245,40 @@ class TestComplexity extends Test {
     equal(undefined, messagesB[3]);
     equal(messagesB.length, fileB[messagesMapSymbol].size);
     const complexityE = new Complexity({ greaterThan: 'E' });
-    const fileE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const fileE = (await complexityE.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0];
     const messagesE = fileE.messages;
     equal('F', messagesE[0].rules[messagesE[0].maxRule].label);
     equal('F', messagesE[1].rules[messagesE[1].maxRule].label);
     equal(undefined, messagesE[2]);
     equal(messagesE.length, fileE[messagesMapSymbol].size);
     const complexityN = new Complexity({ greaterThan: 6 });
-    const fileN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0];
+    const fileN = (await complexityN.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0];
     const messagesN = fileN.messages;
     equal('F', messagesN[0].rules[messagesN[0].maxRule].label);
     equal(undefined, messagesN[1]);
     equal(messagesN.length, fileN[messagesMapSymbol].size);
   }
 
-  ['test: ~lessThan']() {
+  async ['test: ~lessThan']() {
     const complexityB = new Complexity({ lessThan: 'B' });
-    const messagesB = complexityB.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const messagesB = (await complexityB.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0].messages;
     equal('A', messagesB[0].rules[messagesB[0].maxRule].label);
     equal(undefined, messagesB[1]);
     const complexityE = new Complexity({ lessThan: 'E' });
-    const messagesE = complexityE.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const messagesE = (await complexityE.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0].messages;
     equal('A', messagesE[0].rules[messagesE[0].maxRule].label);
     equal('B', messagesE[1].rules[messagesE[1].maxRule].label);
     equal('C', messagesE[2].rules[messagesE[2].maxRule].label);
     equal(undefined, messagesE[3]);
     const complexityN = new Complexity({ lessThan: 0.5 });
-    const messagesN = complexityN.executeOnFiles(['test/src/complexity__messages_gtlt.js']).files[0].messages;
+    const messagesN = (await complexityN.lintFiles(['test/src/complexity__messages_gtlt.js'])).files[0].messages;
     equal('A', messagesN[0].rules[messagesN[0].maxRule].label);
     equal(undefined, messagesN[1]);
   }
 
-  ['test: ~name']() {
-    const messages = new Complexity()
-      .executeOnFiles(['test/src/complexity__messages_node_name.js'])
+  async ['test: ~name']() {
+    const messages = (await new Complexity()
+      .lintFiles(['test/src/complexity__messages_node_name.js']))
       .files[0].messages;
     equal('function myFunc1', messages[0].name);
     equal('function myFunc2', messages[1].name);
@@ -302,18 +304,18 @@ class TestComplexity extends Test {
     equal('function myFunc7', messages[21].name);
   }
 
-  ['test: ~noInlineConfig']() {
-    const messages1 = new Complexity()
-      .executeOnFiles(['test/src/complexity__inline_config_for_file.js'])
+  async ['test: ~noInlineConfig']() {
+    const messages1 = (await new Complexity()
+      .lintFiles(['test/src/complexity__inline_config_for_file.js']))
       .files[0].messages;
     equal(0, messages1.length);
-    const messages2 = new Complexity({ noInlineConfig: true })
-      .executeOnFiles(['test/src/complexity__inline_config_for_file.js'])
+    const messages2 = (await new Complexity({ noInlineConfig: true })
+      .lintFiles(['test/src/complexity__inline_config_for_file.js']))
       .files[0].messages;
     equal(1, messages2.length);
 
-    const messages3 = new Complexity()
-      .executeOnFiles(['test/src/complexity__inline_config.js'])
+    const messages3 = (await new Complexity()
+      .lintFiles(['test/src/complexity__inline_config.js']))
       .files[0].messages;
     equal(2, messages3.length);
     deepEqual({
@@ -323,22 +325,22 @@ class TestComplexity extends Test {
       'max-params': { 'value': 13, 'rank': 6.166, 'label': 'F' },
       'complexity': { 'value': 1, 'rank': 0.2, 'label': 'A' }
     }, messages3[1].rules);
-    const messages4 = new Complexity({ noInlineConfig: true })
-      .executeOnFiles(['test/src/complexity__inline_config.js'])
+    const messages4 = (await new Complexity({ noInlineConfig: true })
+      .lintFiles(['test/src/complexity__inline_config.js']))
       .files[0].messages;
     equal(4, messages4.length);
   }
 
-  ['test: ~average']() {
-    const report = new Complexity().executeOnFiles(['test/src/complexity__average_rank']);
+  async ['test: ~average']() {
+    const report = await new Complexity().lintFiles(['test/src/complexity__average_rank']);
     equal(3.416, report.average.rank);
     equal('D', report.average.label);
   }
 
-  ['test: ~maxRank']() {
+  async ['test: ~maxRank']() {
     const file = 'test/src/complexity__max_rank.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     const message = report.files[0].messages[6];
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
     equal(0.333, message.rules[message.maxRule].rank);
@@ -346,57 +348,57 @@ class TestComplexity extends Test {
     equal('B', report.average.label);
   }
 
-  ['test: ~maxRank + ~greaterThan']() {
+  async ['test: ~maxRank + ~greaterThan']() {
     const file = 'test/src/complexity__max_rank.js';
     const complexity = new Complexity({ greaterThan: 'E' });
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     equal(0, report.files[0].messages.length);
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
   }
 
-  ['test: ~maxRank + ~maxAverageRank + ~greaterThan (3.5)']() {
+  async ['test: ~maxRank + ~maxAverageRank + ~greaterThan (3.5)']() {
     const file = 'test/src/complexity__max_average_rank_3_5.js';
     const complexity = new Complexity({
       greaterThan: 'E',
       maxRank: 3.5,
       maxAverageRank: 3.5
     });
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     equal(3, report.files[0].messages.length);
     deepEqual({ maxAverageRank: false, maxRank: 6 }, report.errors);
   }
 
-  ['test: ~maxAverageRank']() {
+  async ['test: ~maxAverageRank']() {
     const file = 'test/src/complexity__max_average_rank.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     deepEqual({ maxAverageRank: true, maxRank: 0 }, report.errors);
   }
 
-  ['test: ~maxRank + ~maxAverageRank (parse Error: Fatal)']() {
+  async ['test: ~maxRank + ~maxAverageRank (parse Error: Fatal)']() {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity();
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     equal(1, report.files[0].messages.length);
     deepEqual({ maxAverageRank: true, maxRank: 1 }, report.errors);
   }
 
-  ['test: ~maxRank + ~maxAverageRank + ~greaterThan F (parse Error: Fatal)']() {
+  async ['test: ~maxRank + ~maxAverageRank + ~greaterThan F (parse Error: Fatal)']() {
     const file = 'test/src/complexity__fatal.js';
     const complexity = new Complexity({
       greaterThan: 'F',
       maxRank: 'F',
       maxAverageRank: 'F'
     });
-    const report = complexity.executeOnFiles([file]);
+    const report = await complexity.lintFiles([file]);
     equal(1, report.files[0].messages.length);
     deepEqual({ maxAverageRank: false, maxRank: 1 }, report.errors);
   }
 
-  ['test: *case: file-in-script-style']() {
+  async ['test: *case: file-in-script-style']() {
     const file = 'test/src/complexity__script.js';
     const complexity = new Complexity({ rules: 'all' });
-    const report = complexity.executeOnFiles([file]).files[0].messages;
+    const report = (await complexity.lintFiles([file])).files[0].messages;
     deepEqual([{
       loc: { end: { column: 0, line: 1 }, start: { column: 0, line: 1 } },
       maxRule: 'max-lines',
