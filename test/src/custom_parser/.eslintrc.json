@@ -14,7 +14,7 @@
     },
     {
       "files": [
-        "*.ts"
+        "typescript-eslint-parser.ts"
       ],
       "parser": "@typescript-eslint/parser",
       "plugins": [

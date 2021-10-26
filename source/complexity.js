@@ -46,7 +46,8 @@ class Complexity {
     ranks = null,
     noInlineConfig = false,
     maxRank = 'C',
-    maxAverageRank = 'B'
+    maxAverageRank = 'B',
+    eslintOptions = {}
   } = {}) {
     this.options = {
       ranks: new Ranks(ranks),
@@ -57,6 +58,7 @@ class Complexity {
       maxRank: Ranks.getLabelMaxValue(maxRank),
       maxAverageRank: Ranks.getLabelMaxValue(maxAverageRank)
     };
+    this.eslintOptions = eslintOptions;
     this.events = new EventEmitter();
   }
 
@@ -82,10 +84,12 @@ class Complexity {
   }
 
   executeOnFiles(patterns) {
-    const engine = new PatchedCLIEngine({
-      allowInlineConfig: !this.options.noInlineConfig,
-      rules: this.getComplexityRules()
-    });
+    const eslintOptions = Object.assign({}, this.eslintOptions);
+    if (this.options.noInlineConfig) {
+      eslintOptions.allowInlineConfig = false;
+    }
+    eslintOptions.rules = this.getComplexityRules();
+    const engine = new PatchedCLIEngine(eslintOptions);
     const generator = new ReportGenerator(this.options);
     engine.events.on('verifyFile', (...args) => {
       this.events.emit('verifyFile', generator.verifyFile(...args));

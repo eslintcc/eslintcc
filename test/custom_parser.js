@@ -35,6 +35,52 @@ class CustomParsers extends Test {
     }, messages[1].rules);
   }
 
+
+  ['test: @typescript-eslint/parser with eslintOptions']() {
+    const report = new Complexity({
+      rules: 'logic',
+      eslintOptions: {
+        useEslintrc: false,
+        parser: '@typescript-eslint/parser',
+        plugins: ['@typescript-eslint'],
+        extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended']
+      }
+    })
+      .executeOnFiles(['./test/src/custom_parser/typescript-eslint-parser__eslint-options.ts']);
+    const messages = report.files[0].messages;
+
+    deepEqual({
+      'max-params': { value: 1, rank: 1, label: 'A' },
+      'complexity': { value: 2, rank: 0.4, label: 'A' }
+    }, messages[0].rules);
+    deepEqual({
+      'max-depth': { value: 1, rank: 0.5, label: 'A' }
+    }, messages[1].rules);
+  }
+
+  ['test: @typescript-eslint/parser with eslintOptions+rules']() {
+    const report = new Complexity({
+      rules: 'logic',
+      eslintOptions: {
+        useEslintrc: false,
+        parser: '@typescript-eslint/parser',
+        plugins: ['@typescript-eslint'],
+        extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+        rules: { 'no-console': ['error'] }
+      }
+    })
+      .executeOnFiles(['./test/src/custom_parser/typescript-eslint-parser__eslint-options.ts']);
+    const messages = report.files[0].messages;
+
+    deepEqual({
+      'max-params': { value: 1, rank: 1, label: 'A' },
+      'complexity': { value: 2, rank: 0.4, label: 'A' }
+    }, messages[0].rules);
+    deepEqual({
+      'max-depth': { value: 1, rank: 0.5, label: 'A' }
+    }, messages[1].rules);
+  }
+
 }
 
 
