@@ -11,5 +11,7 @@ on:
 jobs:
   main:
     uses: nodutilus/project-actions/.github/workflows/main.yml@main
+    with:
+      eslintcc: false
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
