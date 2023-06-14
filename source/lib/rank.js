@@ -154,6 +154,7 @@ class Ranks {
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue
 
         return {
+          // @ts-ignore
           rank: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
           label
         }

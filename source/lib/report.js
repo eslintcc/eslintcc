@@ -69,6 +69,7 @@ class MessageNode {
 
     while (parent) {
       if (functionNodeTypes.includes(parent.type)) {
+        // @ts-ignore
         name = new this.constructor(parent).getFunctionName() + ', ' + name
         break
       }
@@ -185,6 +186,7 @@ class ReportGenerator {
     }
 
     const reportMessage = fileReport[messagesMapSymbol].get(node) ||
+      // @ts-ignore
       this.constructor.pushNewMessage(fileReport, { ruleType, node })
     const value = this.constructor[`resolveValue:${ruleId}`](data)
     const { rank, label } = this.options.ranks.getValue(ruleId, value)
@@ -199,7 +201,9 @@ class ReportGenerator {
   pushFatalMessage(fileReport, { ruleId, ruleType, line, column, message }) {
     const loc = { start: { line, column }, end: { line, column } }
     const node = { loc, type: 'Program', parent: null }
+    // @ts-ignore
     const reportMessage = this.constructor.pushNewMessage(fileReport, { ruleType, node })
+    // @ts-ignore
     const { rank, label } = this.options.ranks.constructor.getMaxValue()
 
     reportMessage.maxRule = ruleId

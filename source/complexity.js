@@ -84,6 +84,7 @@ class Complexity {
   }
 
   async lintFiles(patterns) {
+    /** @type {object} */
     const eslintOptions = Object.assign({}, this.eslintOptions, {})
 
     if (this.options.noInlineConfig) {

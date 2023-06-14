@@ -91,7 +91,7 @@ class CLArguments {
    * @property {RegExp} [setterPattern=CLArguments.setterPattern]
    * @property {string} [setter=CLArguments.setter]
    * @property {{[x: string]: string}} [types={}]
-   * @property {{[x: string]: string}} [aliases={}]
+   * @property {{[x: string]: string|string[]}} [aliases={}]
    */
   /**
    * @function CLArguments.resolveCLAOptions
@@ -118,7 +118,7 @@ class CLArguments {
   /**
    * @function CLArguments.resolveArgumentName
    * @param {string} name
-   * @param {{[x: string]: string}} aliases
+   * @param {{[x: string]: string|string[]}} aliases
    * @returns {string}
    */
   static resolveArgumentName(name, aliases) {
@@ -135,10 +135,10 @@ class CLArguments {
 
   /**
    * @typedef CLSolvedArgument
-   * @property {string} name
+   * @property {string} [name]
    * @property {string} value
-   * @property {string} type
-   * @property {boolean} offset
+   * @property {string} [type]
+   * @property {boolean} [offset]
    */
   /**
    * @function CLArguments.resolveArgumentType
@@ -166,7 +166,7 @@ class CLArguments {
    * @function CLArguments.resolveArgument
    * @param {string} testName
    * @param {string} [testValue]
-   * @param {CLArgumentsOptions} claOptions
+   * @param {CLArgumentsOptions} [claOptions]
    * @returns {CLSolvedArgument}
    */
   static resolveArgument(testName, testValue, claOptions) {
@@ -214,6 +214,7 @@ class CLArguments {
    */
   static setterTypeArray({ options }, { name, value }) {
     if (name in options) {
+      // @ts-ignore
       options[name].push(value)
     } else {
       options[name] = [value]
@@ -243,17 +244,17 @@ class CLArguments {
 
   /**
    * @typedef CLParsedArguments
-   * @property {{[x: string]: boolean}} flags
-   * @property {{[x: string]: string}} options
-   * @property {Array<string>} argv
+   * @property {{[x: string]: boolean}} [flags]
+   * @property {{[x: string]: string|string[]}} [options]
+   * @property {Array<string>} [argv]
    */
   /**
    * @function CLArguments.parse
    * @param {string|Array<string>} [input]
-   * @param {CLArgumentsOptions} claOptions
+   * @param {CLArgumentsOptions} [claOptions]
    * @returns {CLParsedArguments}
    */
-  static parse(input = [], claOptions) {
+  static parse(input = [], claOptions = {}) {
     const inputArgs = typeof input === 'string' ? input.split(' ').filter(Boolean) : input
     const parsed = { flags: {}, options: {}, argv: [] }
 
@@ -307,15 +308,17 @@ class CLArguments {
    * @property {Array<string>} argv
    */
   constructor(claOptions) {
+    // @ts-ignore
     this.claOptions = this.constructor.resolveCLAOptions(claOptions)
   }
 
   /**
    * @function CLArguments#parse
    * @param {string|Array<string>} [input]
-   * @returns {CLArguments}
+   * @returns {CLParsedArguments}
    */
   parse(input) {
+    // @ts-ignore
     return Object.assign(this, this.constructor.parse(input, this.claOptions))
   }
 
@@ -324,6 +327,7 @@ class CLArguments {
    * @returns {string}
    */
   stringify() {
+    // @ts-ignore
     return this.constructor.stringify(this, this.claOptions)
   }
 
@@ -333,7 +337,7 @@ class CLArguments {
 /**
  * @function getProcessArgs
  * @param {CLArgumentsOptions} claOptions
- * @returns {CLArguments}
+ * @returns {CLParsedArguments}
  */
 function getProcessArgs(claOptions) {
   return new CLArguments(claOptions).parse(process.argv.slice(2))

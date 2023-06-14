@@ -1,0 +1,7 @@
+{
+  "extends": "@nodutilus/project-config/tsconfig",
+  "exclude": [
+    "build/**",
+    "test/**"
+  ]
+}
