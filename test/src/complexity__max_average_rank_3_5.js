@@ -1,10 +1,10 @@
-'use strict';
+// test
 
 function MyFunc(a, b, c) {
-  console.log(a, b, c);
+  console.log(a, b, c)
 }
 
-MyFunc();
+MyFunc()
 
 
 function MyFunc2(a) {
@@ -19,7 +19,7 @@ function MyFunc2(a) {
                   if (a) {
                     if (a) {
                       if (a) {
-                        console.log(a);
+                        console.log(a)
                       }
                     }
                   }
@@ -31,7 +31,6 @@ function MyFunc2(a) {
       }
     }
   }
-
 }
 
-MyFunc2();
+MyFunc2()

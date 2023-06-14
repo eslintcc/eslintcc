@@ -1,7 +1,0 @@
-dist:           focal
-language:       node_js
-node_js:        node
-cache:
-  directories:  [node_modules]
-install:        npm install
-script:         node ./bin/travis-build

@@ -1,13 +1,22 @@
 {
   "editor.tabSize": 2,
-  "editor.rulers": [110],
+  "editor.rulers": [
+    110
+  ],
   "editor.detectIndentation": false,
   "files.autoSave": "afterDelay",
   "files.autoSaveDelay": 3000,
   "files.trimTrailingWhitespace": true,
   "files.eol": "\n",
+  "files.insertFinalNewline": true,
   "[javascript]": {
-    "files.insertFinalNewline": true
-   },
-  "npm.enableScriptExplorer": true
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "[jsonс]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "javascript.validate.enable": false
 }

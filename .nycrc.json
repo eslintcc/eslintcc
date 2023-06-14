@@ -1,0 +1,11 @@
+{
+  "extends": "@nodutilus/project-config/nyc",
+  "exclude": [
+    "bin",
+    "build",
+    "coverage",
+    "test",
+    "rollup.config.js",
+    "source/lib/args.js"
+  ]
+}

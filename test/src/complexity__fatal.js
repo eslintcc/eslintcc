@@ -1,8 +1,8 @@
-'use strict';
-
 function MyFunc(b) {
-  let a = b;
-  console.log(a);
+  const a = b
+
+  console.log(a)
 }
 
-MyFunc();
+// fatal
+MyFunc()

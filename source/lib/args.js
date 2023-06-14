@@ -1,8 +1,5 @@
-'use strict';
-
-
 function __escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 
@@ -11,323 +8,337 @@ class CLArguments {
   /**
    * @name CLArguments.prefixPattern
    * @type {RegExp}
-   * @default /^--?/
+   * @default
    */
   static get prefixPattern() {
-    return /^--?/;
+    return /^--?/
   }
 
   /**
    * @name CLArguments.flagPrefix
    * @type {string}
-   * @default -
+   * @default
    */
   static get flagPrefix() {
-    return '-';
+    return '-'
   }
 
   /**
    * @name CLArguments.optionPrefix
    * @type {string}
-   * @default --
+   * @default
    */
   static get optionPrefix() {
-    return '--';
+    return '--'
   }
 
   /**
-   * @method CLArguments.resolvePrefixPattern
-   * @param {string} [flagPrefix=CLArguments.flagPrefix]
-   * @param {string} [optionPrefix=CLArguments.optionPrefix]
+   * @function CLArguments.resolvePrefixPattern
+   * @param {string} [flagPrefix]
+   * @param {string} [optionPrefix]
    * @returns {RegExp}
    */
   static resolvePrefixPattern(flagPrefix, optionPrefix) {
     if (flagPrefix || optionPrefix) {
-      flagPrefix = __escapeRegExp(flagPrefix || this.flagPrefix);
-      optionPrefix = __escapeRegExp(optionPrefix || this.optionPrefix);
+      flagPrefix = __escapeRegExp(flagPrefix || this.flagPrefix)
+      optionPrefix = __escapeRegExp(optionPrefix || this.optionPrefix)
       if (flagPrefix.length < optionPrefix.length) {
-        return new RegExp(`^${optionPrefix}|^${flagPrefix}`);
+        return new RegExp(`^${optionPrefix}|^${flagPrefix}`)
       } else {
-        return new RegExp(`^${flagPrefix}|^${optionPrefix}`);
+        return new RegExp(`^${flagPrefix}|^${optionPrefix}`)
       }
     } else {
-      return this.prefixPattern;
+      return this.prefixPattern
     }
   }
 
   /**
    * @name CLArguments.setterPattern
    * @type {RegExp}
-   * @default /=/
+   * @default
    */
   static get setterPattern() {
-    return /=/;
+    return /=/
   }
 
   /**
    * @name CLArguments.setter
    * @type {string}
-   * @default =
+   * @default
    */
   static get setter() {
-    return '=';
+    return '='
   }
 
   /**
-   * @method CLArguments.resolveSetterPattern
-   * @param {string} [setter=CLArguments.setter]
+   * @function CLArguments.resolveSetterPattern
+   * @param {string} [setter]
    * @returns {RegExp}
    */
   static resolveSetterPattern(setter) {
     if (setter) {
-      return new RegExp(__escapeRegExp(setter));
+      return new RegExp(__escapeRegExp(setter))
     } else {
-      return this.setterPattern;
+      return this.setterPattern
     }
   }
 
   /**
-   * @typedef CLArguments~claOptions
-   * @prop {RegExp} [prefixPattern=CLArguments.prefixPattern]
-   * @prop {string} [flagPrefix=CLArguments.flagPrefix]
-   * @prop {string} [optionPrefix=CLArguments.optionPrefix]
-   * @prop {RegExp} [setterPattern=CLArguments.setterPattern]
-   * @prop {string} [setter=CLArguments.setter]
-   * @prop {Object<string>} [types={}]
-   * @prop {Object<string>|Object<Array<string>>} [aliases={}]
+   * @typedef CLArgumentsOptions
+   * @property {RegExp} [prefixPattern=CLArguments.prefixPattern]
+   * @property {string} [flagPrefix=CLArguments.flagPrefix]
+   * @property {string} [optionPrefix=CLArguments.optionPrefix]
+   * @property {RegExp} [setterPattern=CLArguments.setterPattern]
+   * @property {string} [setter=CLArguments.setter]
+   * @property {{[x: string]: string}} [types={}]
+   * @property {{[x: string]: string}} [aliases={}]
    */
   /**
-   * @method CLArguments.resolveCLAOptions
-   * @param {CLArguments~claOptions} claOptions
-   * @returns {CLArguments~claOptions}
+   * @function CLArguments.resolveCLAOptions
+   * @param {CLArgumentsOptions} claOptions
+   * @returns {CLArgumentsOptions}
    */
   static resolveCLAOptions(claOptions = {}) {
     claOptions.prefixPattern = claOptions.prefixPattern || this.resolvePrefixPattern(
       claOptions.flagPrefix,
       claOptions.optionPrefix
-    );
-    claOptions.flagPrefix = claOptions.flagPrefix || this.flagPrefix;
-    claOptions.optionPrefix = claOptions.optionPrefix || this.optionPrefix;
+    )
+    claOptions.flagPrefix = claOptions.flagPrefix || this.flagPrefix
+    claOptions.optionPrefix = claOptions.optionPrefix || this.optionPrefix
     claOptions.setterPattern = claOptions.setterPattern || this.resolveSetterPattern(
       claOptions.setter
-    );
-    claOptions.setter = claOptions.setter || this.setter;
-    claOptions.types = claOptions.types || {};
-    claOptions.aliases = claOptions.aliases || {};
-    return claOptions;
+    )
+    claOptions.setter = claOptions.setter || this.setter
+    claOptions.types = claOptions.types || {}
+    claOptions.aliases = claOptions.aliases || {}
+
+    return claOptions
   }
 
   /**
-   * @method CLArguments.resolveArgumentName
+   * @function CLArguments.resolveArgumentName
    * @param {string} name
-   * @param {Object<string>|Object<Array<string>>} aliases
+   * @param {{[x: string]: string}} aliases
    * @returns {string}
    */
   static resolveArgumentName(name, aliases) {
     if (aliases) {
       for (const [realName, alias] of Object.entries(aliases)) {
-        if (name === alias || alias instanceof Array && ~alias.indexOf(name)) {
-          return realName;
+        if (name === alias || (alias instanceof Array && ~alias.indexOf(name))) {
+          return realName
         }
       }
     }
-    return name;
+
+    return name
   }
 
   /**
-   * @typedef CLArguments~solvedArgument
-   * @prop {string} name
-   * @prop {string} value
-   * @prop {string} type
-   * @prop {boolean} offset
+   * @typedef CLSolvedArgument
+   * @property {string} name
+   * @property {string} value
+   * @property {string} type
+   * @property {boolean} offset
    */
   /**
-   * @method CLArguments.resolveArgumentType
-   * @param {CLArguments~solvedArgument} solvedArgument
-   * @param {Object<string>} types
+   * @function CLArguments.resolveArgumentType
+   * @param {CLSolvedArgument} solvedArgument
+   * @param {{[x: string]: string}} types
    * @returns {string}
    */
   static resolveArgumentType({ name, value }, types = {}) {
-    let type = types[name];
+    let type = types[name]
+
     if (!type) {
       if (name && value) {
-        type = 'Option';
+        type = 'Option'
       } else if (name) {
-        type = 'Flag';
+        type = 'Flag'
       } else {
-        type = 'Argument';
+        type = 'Argument'
       }
     }
-    return type;
+
+    return type
   }
 
   /**
-   * @method CLArguments.resolveArgument
+   * @function CLArguments.resolveArgument
    * @param {string} testName
    * @param {string} [testValue]
-   * @param {CLArguments~claOptions} claOptions
-   * @returns {CLArguments~solvedArgument}
+   * @param {CLArgumentsOptions} claOptions
+   * @returns {CLSolvedArgument}
    */
   static resolveArgument(testName, testValue, claOptions) {
-    const { prefixPattern, setterPattern, aliases, types } = this.resolveCLAOptions(claOptions);
-    const result = {};
+    const { prefixPattern, setterPattern, aliases, types } = this.resolveCLAOptions(claOptions)
+    const result = {}
+
     if (prefixPattern.test(testName)) {
-      const name = testName.replace(prefixPattern, '');
+      const name = testName.replace(prefixPattern, '')
+
       if (setterPattern.test(name)) {
-        const setter = name.replace(setterPattern, ' ').split(' ');
-        result.name = this.resolveArgumentName(setter[0], aliases);
-        result.value = setter[1];
-        result.offset = false;
+        const setter = name.replace(setterPattern, ' ').split(' ')
+
+        result.name = this.resolveArgumentName(setter[0], aliases)
+        /* eslint-disable prefer-destructuring */
+        result.value = setter[1]
+        result.offset = false
       } else if (typeof testValue === 'undefined' || prefixPattern.test(testValue)) {
-        result.name = this.resolveArgumentName(name, aliases);
+        result.name = this.resolveArgumentName(name, aliases)
       } else {
-        result.name = this.resolveArgumentName(name, aliases);
-        result.value = testValue;
-        result.offset = true;
+        result.name = this.resolveArgumentName(name, aliases)
+        result.value = testValue
+        result.offset = true
       }
     } else {
-      result.value = testName;
+      result.value = testName
     }
-    result.type = this.resolveArgumentType(result, types);
-    return result;
+    result.type = this.resolveArgumentType(result, types)
+
+    return result
   }
 
   /**
-   * @method CLArguments.setterTypeOption
-   * @param {CLArguments~parsedArguments} parsedArguments
-   * @param {CLArguments~solvedArgument} solvedArgument
+   * @function CLArguments.setterTypeOption
+   * @param {CLParsedArguments} parsedArguments
+   * @param {CLSolvedArgument} solvedArgument
    */
   static setterTypeOption({ options }, { name, value }) {
-    options[name] = value;
+    options[name] = value
   }
 
   /**
-   * @method CLArguments.setterTypeArray
-   * @param {CLArguments~parsedArguments} parsedArguments
-   * @param {CLArguments~solvedArgument} solvedArgument
+   * @function CLArguments.setterTypeArray
+   * @param {CLParsedArguments} parsedArguments
+   * @param {CLSolvedArgument} solvedArgument
    */
   static setterTypeArray({ options }, { name, value }) {
     if (name in options) {
-      options[name].push(value);
+      options[name].push(value)
     } else {
-      options[name] = [value];
+      options[name] = [value]
     }
   }
 
   /**
-   * @method CLArguments.setterTypeFlag
-   * @param {CLArguments~parsedArguments} parsedArguments
-   * @param {CLArguments~solvedArgument} solvedArgument
+   * @function CLArguments.setterTypeFlag
+   * @param {CLParsedArguments} parsedArguments
+   * @param {CLSolvedArgument} solvedArgument
    */
   static setterTypeFlag({ flags, argv }, { name, value }) {
-    flags[name] = true;
+    flags[name] = true
     if (value) {
-      this.setterTypeArgument({ argv }, { value });
+      this.setterTypeArgument({ argv }, { value })
     }
   }
 
   /**
-   * @method CLArguments.setterTypeArgument
-   * @param {CLArguments~parsedArguments} parsedArguments
-   * @param {CLArguments~solvedArgument} solvedArgument
+   * @function CLArguments.setterTypeArgument
+   * @param {CLParsedArguments} parsedArguments
+   * @param {CLSolvedArgument} solvedArgument
    */
   static setterTypeArgument({ argv }, { value }) {
-    argv.push(value);
+    argv.push(value)
   }
 
   /**
-   * @typedef CLArguments~parsedArguments
-   * @prop {Object<boolean>} flags
-   * @prop {Object<string>} options
-   * @prop {Array<string>} argv
+   * @typedef CLParsedArguments
+   * @property {{[x: string]: boolean}} flags
+   * @property {{[x: string]: string}} options
+   * @property {Array<string>} argv
    */
   /**
-   * @method CLArguments.parse
-   * @param {string|Array<string>} [input=[]]
-   * @param {CLArguments~claOptions} claOptions
-   * @returns {CLArguments~parsedArguments}
+   * @function CLArguments.parse
+   * @param {string|Array<string>} [input]
+   * @param {CLArgumentsOptions} claOptions
+   * @returns {CLParsedArguments}
    */
   static parse(input = [], claOptions) {
-    const inputArgs = typeof input === 'string' ? input.split(' ').filter(Boolean) : input;
-    const parsed = { flags: {}, options: {}, argv: [] };
+    const inputArgs = typeof input === 'string' ? input.split(' ').filter(Boolean) : input
+    const parsed = { flags: {}, options: {}, argv: [] }
+
     for (let index = 0; index < inputArgs.length; index++) {
       const solvedArgument = this.resolveArgument(
         inputArgs[index], inputArgs[index + 1], claOptions
-      );
-      this['setterType' + solvedArgument.type](parsed, solvedArgument);
+      )
+
+      this['setterType' + solvedArgument.type](parsed, solvedArgument)
       if (solvedArgument.offset) {
-        index++;
+        index++
       }
     }
-    return parsed;
+
+    return parsed
   }
 
   /**
-   * @method CLArguments.stringify
-   * @param {CLArguments~parsedArguments} parsedArguments
-   * @param {CLArguments~claOptions} claOptions
+   * @function CLArguments.stringify
+   * @param {CLParsedArguments} parsedArguments
+   * @param {CLArgumentsOptions} claOptions
    * @returns {string}
    */
   static stringify(parsedArguments, claOptions) {
-    const { flagPrefix, optionPrefix, setter } = this.resolveCLAOptions(claOptions);
-    const argv = [];
+    const { flagPrefix, optionPrefix, setter } = this.resolveCLAOptions(claOptions)
+    const argv = []
+
     if ('flags' in parsedArguments) {
       for (const [name] of Object.entries(parsedArguments.flags)) {
-        argv.push(flagPrefix + name);
+        argv.push(flagPrefix + name)
       }
     }
     if ('options' in parsedArguments) {
       for (const [name, value] of Object.entries(parsedArguments.options)) {
-        argv.push(optionPrefix + name + setter + value);
+        argv.push(optionPrefix + name + setter + value)
       }
     }
     if ('argv' in parsedArguments) {
-      argv.push(...parsedArguments.argv);
+      argv.push(...parsedArguments.argv)
     }
-    return argv.join(' ');
+
+    return argv.join(' ')
   }
 
   /**
    * @class CLArguments
-   * @param {CLArguments~claOptions} claOptions
-   * @prop {CLArguments~claOptions} claOptions
-   * @prop {Object<boolean>} flags
-   * @prop {Object<string>} options
-   * @prop {Array<string>} argv
+   * @param {CLArgumentsOptions} claOptions
+   * @property {CLArgumentsOptions} claOptions
+   * @property {{[x: string]: boolean}} flags
+   * @property {{[x: string]: string}} options
+   * @property {Array<string>} argv
    */
   constructor(claOptions) {
-    this.claOptions = this.constructor.resolveCLAOptions(claOptions);
+    this.claOptions = this.constructor.resolveCLAOptions(claOptions)
   }
 
   /**
-   * @method CLArguments#parse
-   * @param {string|Array<string>} [input=[]]
+   * @function CLArguments#parse
+   * @param {string|Array<string>} [input]
    * @returns {CLArguments}
    */
   parse(input) {
-    return Object.assign(this, this.constructor.parse(input, this.claOptions));
+    return Object.assign(this, this.constructor.parse(input, this.claOptions))
   }
 
   /**
-   * @method CLArguments#stringify
+   * @function CLArguments#stringify
    * @returns {string}
    */
   stringify() {
-    return this.constructor.stringify(this, this.claOptions);
+    return this.constructor.stringify(this, this.claOptions)
   }
 
 }
 
 
 /**
- * @method getProcessArgs
- * @param {CLArguments~claOptions} claOptions
+ * @function getProcessArgs
+ * @param {CLArgumentsOptions} claOptions
  * @returns {CLArguments}
  */
 function getProcessArgs(claOptions) {
-  return new CLArguments(claOptions).parse(process.argv.slice(2));
+  return new CLArguments(claOptions).parse(process.argv.slice(2))
 }
 
 
-exports.CLArguments = CLArguments;
-exports.getProcessArgs = getProcessArgs;
+exports.CLArguments = CLArguments
+exports.getProcessArgs = getProcessArgs

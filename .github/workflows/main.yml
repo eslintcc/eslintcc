@@ -1,0 +1,15 @@
+name: Checks ➜ Tests ➜ Publish
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    uses: nodutilus/project-config/.github/workflows/main.yml@main
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

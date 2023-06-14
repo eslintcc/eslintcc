@@ -1,7 +1,4 @@
-'use strict';
-
-
-exports.child_process = require('./child_process');
-exports.env = require('./env');
-exports.fs = require('./fs');
-exports.git = require('./git');
+exports.child_process = require('./child_process')
+exports.env = require('./env')
+exports.fs = require('./fs')
+exports.git = require('./git')
