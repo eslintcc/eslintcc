@@ -144,6 +144,7 @@ class Ranks {
 
   getValue(ruleID, value) {
     const ranks = this.ranks[ruleID]
+    let rank
 
     for (let i = 0; i < rankLabels.length; i++) {
       const label = rankLabels[i]
@@ -153,13 +154,16 @@ class Ranks {
         const prevMaxValue = ranks[rankLabels[i - 1]] || 0
         const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue
 
-        return {
+        rank = {
           // @ts-ignore
           rank: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
           label
         }
+        break
       }
     }
+
+    return rank
   }
 
 }
