@@ -1,19 +1,7 @@
 {
-  "extends": "eslint:recommended",
-  "parserOptions": {
-    "ecmaVersion": 2017
-  },
+  "extends": "@nodutilus",
   "env": {
-    "es6": true,
+    "browser": true,
     "node": true
-  },
-  "rules": {
-    "strict": "warn",
-    "indent": ["warn", 2, { "SwitchCase": 1 }],
-    "camelcase": ["warn", { "properties": "never" }],
-    "semi": ["warn", "always"],
-    "no-trailing-spaces": "warn",
-    "quotes": ["warn", "single", { "avoidEscape": true }],
-    "no-console": "off"
   }
 }

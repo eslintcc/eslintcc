@@ -1,0 +1,17 @@
+name: Checks ESLint integration
+
+on:
+  schedule:
+    - cron: '0 8 * * MON'
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
+        with:
+          node-version: latest
+      - run: npm install
+      - run: npm i eslint@latest
+      - run: npx nodutilus test

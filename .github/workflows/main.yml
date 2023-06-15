@@ -1,0 +1,17 @@
+name: Checks ➜ Tests ➜ Publish
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  main:
+    uses: nodutilus/project-actions/.github/workflows/main.yml@main
+    with:
+      eslintcc: false
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = `eslintcc [options] file.js [file.js] [dir]
 
 Rules used:
@@ -21,4 +19,4 @@ Options:
 Examples:
   $ eslintcc -f=json -gt=e file.js
   $ eslintcc --rules complexity --rules max-depth --show-rules file.js
-`;
+`

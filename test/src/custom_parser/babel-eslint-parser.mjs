@@ -1,13 +1,15 @@
 class Test {
+
   #a = 1
 
   #b() {
-    return this.#a;
+    return this.#a
   }
 
   get a() {
-    return this.#b();
+    return this.#b()
   }
+
 }
 
-export default Test;
+export default Test

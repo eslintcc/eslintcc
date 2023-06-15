@@ -1,12 +1,12 @@
 interface IOptions {
-  test?: boolean
+    test: boolean
 }
 
 
 export function test(option: IOptions): string | boolean {
-  if ('test' in option) {
-    return option.test;
-  } else {
-    return 'test not in option';
-  }
+    if ('test' in option) {
+        return option.test;
+    } else {
+        return 'test not in option';
+    }
 }

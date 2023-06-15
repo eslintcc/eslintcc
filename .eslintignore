@@ -1,1 +1,2 @@
 build
+test/src/cli/parse_error.js

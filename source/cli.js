@@ -1,9 +1,6 @@
-'use strict';
-
-const { getProcessArgs } = require('./lib/args');
-
-const { Complexity } = require('./complexity');
-const { ReportLogger } = require('./lib/logging');
+const { getProcessArgs } = require('./lib/args')
+const { Complexity } = require('./complexity')
+const { ReportLogger } = require('./lib/logging')
 
 const processArgs = getProcessArgs({
   types: {
@@ -28,25 +25,27 @@ const processArgs = getProcessArgs({
     maxRank: ['max-rank', 'mr'],
     maxAverageRank: ['max-average-rank', 'mar']
   }
-});
+})
 
 
 if (processArgs.argv.length > 0) {
-  const options = Object.assign({}, processArgs.flags, processArgs.options);
-  const complexity = new Complexity(options);
-  new ReportLogger(complexity, options);
+  const options = Object.assign({}, processArgs.flags, processArgs.options)
+  const complexity = new Complexity(options)
+
+  /* eslint-disable no-new */
+  new ReportLogger(complexity, options)
   complexity.lintFiles(processArgs.argv)
     .then(report => {
-      const exitWithError = report.errors.maxRank > 0 || report.errors.maxAverageRank;
+      const exitWithError = report.errors.maxRank > 0 || report.errors.maxAverageRank
+
       if (exitWithError) {
-        process.exit(1);
+        process.exit(1)
       }
     })
     .catch(error => {
-      console.log(error);
-      process.exit(1);
-    });
-
+      console.log(error)
+      process.exit(1)
+    })
 } else {
-  console.log(require('./lib/help'));
+  console.log(require('./lib/help'))
 }

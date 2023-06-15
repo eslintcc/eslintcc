@@ -1,6 +1,4 @@
-'use strict';
-
-const rankLabels = ['A', 'B', 'C', 'D', 'E', 'F'];
+const rankLabels = ['A', 'B', 'C', 'D', 'E', 'F']
 const rankLabelsMaxValue = {
   A: 1,
   B: 2,
@@ -8,50 +6,55 @@ const rankLabelsMaxValue = {
   D: 4,
   E: 5,
   F: Infinity
-};
+}
 
 
 class Ranks {
 
   static createRanksCounters() {
-    return rankLabels.reduce((prev, curr) => (prev[curr] = 0) || prev, {});
+    return rankLabels.reduce((prev, curr) => (prev[curr] = 0) || prev, {})
   }
 
   static roundValue(value) {
-    return (value * 1000 ^ 0) / 1000;
+    return (value * 1000 ^ 0) / 1000
   }
 
   static getLabelMaxValue(label) {
-    label = String(label).toUpperCase();
-    const maxValue = rankLabelsMaxValue[label] || Number(label);
+    label = String(label).toUpperCase()
+
+    const maxValue = rankLabelsMaxValue[label] || Number(label)
+
     if (isNaN(maxValue)) {
-      return null;
+      return null
     } else {
-      return maxValue;
+      return maxValue
     }
   }
 
   static getLabelMinValue(label) {
-    label = String(label).toUpperCase();
-    const minValue = rankLabels.includes(label) ? rankLabels.indexOf(label) : Number(label);
+    label = String(label).toUpperCase()
+
+    const minValue = rankLabels.includes(label) ? rankLabels.indexOf(label) : Number(label)
+
     if (isNaN(minValue)) {
-      return null;
+      return null
     } else {
-      return minValue;
+      return minValue
     }
   }
 
   static getMaxValue() {
     return {
-      rank: rankLabelsMaxValue['E'] + 1,
+      rank: rankLabelsMaxValue.E + 1,
       label: 'F'
-    };
+    }
   }
 
   static getLabelByValue(value) {
-    value = Math.ceil(value) - 1;
-    value = value < 0 ? 0 : value;
-    return rankLabels[value] || rankLabels[rankLabels.length - 1];
+    value = Math.ceil(value) - 1
+    value = value < 0 ? 0 : value
+
+    return rankLabels[value] || rankLabels[rankLabels.length - 1]
   }
 
   get defaultRanks() {
@@ -77,7 +80,7 @@ class Ranks {
         E: 8,
         F: Infinity
       },
-      //'max-len': {},
+      // 'max-len': {},
       'max-lines': {
         A: 75,
         B: 150,
@@ -118,42 +121,52 @@ class Ranks {
         E: 20,
         F: Infinity
       }
-    };
+    }
   }
 
   constructor(customRulesRanks = {}) {
-    const ranks = this.defaultRanks;
+    const ranks = this.defaultRanks
+
     for (const ruleID in customRulesRanks) {
       if (ruleID in ranks) {
-        const customRanks = customRulesRanks[ruleID];
+        const customRanks = customRulesRanks[ruleID]
+
         for (let rankName in customRanks) {
-          rankName = rankName.toUpperCase();
+          rankName = rankName.toUpperCase()
           if (rankName in ranks[ruleID]) {
-            ranks[ruleID][rankName] = Number(customRanks[rankName]);
+            ranks[ruleID][rankName] = Number(customRanks[rankName])
           }
         }
       }
     }
-    this.ranks = ranks;
+    this.ranks = ranks
   }
 
   getValue(ruleID, value) {
-    const ranks = this.ranks[ruleID];
+    const ranks = this.ranks[ruleID]
+    let rank
+
     for (let i = 0; i < rankLabels.length; i++) {
-      const label = rankLabels[i];
-      const rankMaxValue = ranks[label];
+      const label = rankLabels[i]
+      const rankMaxValue = ranks[label]
+
       if (value <= rankMaxValue) {
-        const prevMaxValue = ranks[rankLabels[i - 1]] || 0;
-        const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue;
-        return {
+        const prevMaxValue = ranks[rankLabels[i - 1]] || 0
+        const range = rankMaxValue === Infinity ? prevMaxValue : rankMaxValue - prevMaxValue
+
+        rank = {
+          // @ts-ignore
           rank: this.constructor.roundValue((i + (value - prevMaxValue) / range)),
-          label: label
-        };
+          label
+        }
+        break
       }
     }
+
+    return rank
   }
 
 }
 
 
-exports.Ranks = Ranks;
+exports.Ranks = Ranks
