@@ -279,7 +279,7 @@ Use only 2 rules and show rule name:
       $ npx eslintcc --show-rules ./test/src/custom_parser/typescript-eslint-parser.ts
       A test/src/custom_parser/typescript-eslint-parser.ts
         A 6:7 function test (max-params = 1)
-        A 7:2 function test, IfStatement (7:2-11:3) (max-depth = 1)
+        A 7:4 function test, IfStatement (7:4-11:5) (max-depth = 1)
 
 ## Node.js API
 
@@ -394,7 +394,7 @@ Example:
 
 [npm_url]: https://www.npmjs.com/package/eslintcc
 
-[build_img]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml/badge.svg
+[build_img]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml/badge.svg?branch=main
 
 [build_url]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml
 
