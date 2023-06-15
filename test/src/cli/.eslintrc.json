@@ -1,0 +1,13 @@
+{
+  "overrides": [
+    {
+      "files": [
+        "parse_error.js"
+      ],
+      "parserOptions": {
+        "ecmaVersion": 5,
+        "sourceType": "script"
+      }
+    }
+  ]
+}

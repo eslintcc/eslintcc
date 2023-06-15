@@ -226,7 +226,7 @@ class TestCLI extends Test {
   }
 
   ['test: exitWithError']() {
-    const cmd = 'node source/cli.js test/src/cli__exit_with_error.js'
+    const cmd = 'node source/cli.js test/src/cli/exit_with_error.js'
 
     throws(() => {
       execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' })
@@ -234,7 +234,7 @@ class TestCLI extends Test {
   }
 
   ['test: exitWithError -mr=f -mar=f']() {
-    const cmd = 'node source/cli.js -mr=f -mar=f test/src/cli__exit_with_error.js'
+    const cmd = 'node source/cli.js -mr=f -mar=f test/src/cli/exit_with_error.js'
 
     doesNotThrow(() => {
       execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' })
@@ -242,24 +242,29 @@ class TestCLI extends Test {
   }
 
   ['test: exitWithError -mr=f -mar=f (parse Error: Fatal)']() {
-    const cmd = 'node source/cli.js -mr=f -mar=f test/src/complexity__fatal.js'
+    const cmd = 'node ../../../source/cli.js -mr=f -mar=f parse_error.js'
 
     throws(() => {
-      execSync(cmd, { encoding: 'utf-8', stdio: 'ignore' })
+      execSync(cmd, {
+        cwd: 'test/src/cli',
+        encoding: 'utf-8',
+        stdio: 'ignore'
+      })
     })
   }
 
   ['test: exitWithError - stdout/stderr']() {
-    const child = spawnSync('node', ['source/cli.js', '-mr=f', '-mar=f', 'test/src/complexity__fatal.js'], {
+    const child = spawnSync('node', ['../../../source/cli.js', '-mr=f', '-mar=f', 'parse_error.js'], {
+      cwd: 'test/src/cli',
       encoding: 'utf-8',
       shell: true
     })
 
     equal(1, child.status)
 
-    const stdout = `\u001b[31;1mF\u001b[0m test${sep}src${sep}complexity__fatal.js` +
-      '\n  \u001b[31;1mF\u001b[0m 4:3 Program (4:3-4:3)' +
-      '\n    \u001b[31;1mError\u001b[0m Parsing error: The keyword \'let\' is reserved\n'
+    const stdout = '\u001b[31;1mF\u001b[0m parse_error.js' +
+      '\n  \u001b[31;1mF\u001b[0m 2:3 Program (2:3-2:3)' +
+      '\n    \u001b[31;1mError\u001b[0m Parsing error: The keyword \'const\' is reserved\n'
 
     equal(stdout, child.stdout)
 
