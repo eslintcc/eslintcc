@@ -1,7 +1,6 @@
 {
   "extends": "@nodutilus/project-config/nyc",
   "exclude": [
-    "bin",
     "build",
     "coverage",
     "test/src",

@@ -29,7 +29,6 @@
   "devDependencies": {
     "@nodutilus/project-config": "latest",
     "@nodutilus/test": "latest",
-    "semver": "7.5.1",
     "rollup": "3.25.1",
     "@rollup/plugin-node-resolve": "15.1.0",
     "@babel/eslint-parser": "7.22.5",
