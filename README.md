@@ -396,7 +396,7 @@ Example:
 
 [build_img]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml/badge.svg?branch=main
 
-[build_url]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml
+[build_url]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml?query=branch:main
 
 [eslint_npm]: https://www.npmjs.com/package/eslint
 
