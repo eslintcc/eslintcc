@@ -1,7 +1,7 @@
-# ESLint Complexity of Code [![npm][npm_img]][npm_url] [![Build Status][build_img]][build_url] [![Coverage Status][coverage_img]][coverage_url]
+# ESLint Complexity of Code [![npm][npm_img]][npm_url] [![Checks ➜ Tests ➜ Publish][build_img]][build_url]
 
 [ESLintCC][npm_url] is a ECMAScript/JavaScript/TypeScript tool
-  that computes complexity of code by using [ESLint][eslint_npm]
+that computes complexity of code by using [ESLint][eslint_npm]
 
 > ESLint calculates complexity of code,
 > while this tool only collects a report based on his [complexity rule messages][eslint_rule]
@@ -9,7 +9,7 @@
 ## Installation and Usage
 
 > Requirements, principles of local and global installation and usage
->   are the same as [ESLint Installation and Usage][eslint_usage]
+> are the same as [ESLint Installation and Usage][eslint_usage]
 
 Globally:
 
@@ -37,7 +37,7 @@ console.log(JSON.stringify(report, null, '\t'));
 ```
 
 **Note:** ESLintCC ignores all rules, specified in configuration files,
-    and uses to generate a report only [complexity rules][eslint_rule].
+and uses to generate a report only [complexity rules][eslint_rule].
 
 ## Configuration
 
@@ -45,7 +45,7 @@ ESLintCC uses ESLint along with [Its configuration system][eslint_config].
 You can use configuration comments and files, as described in the configuration for ESLint.
 
 **Difference:** ESLintCC uses its own settings for complexity rules,
-  so they cannot be overridden through a configuration file.
+so they cannot be overridden through a configuration file.
 However, you can disable them locally in the file.
 
 **Features:**
@@ -154,7 +154,7 @@ package.json
 
 This parser is used you can add a code complexity score to your TypeScript project.
 In this case, the same standard ESLint rules are used for calculating complexity,
-  [described in "Complexity ranks" section](#complexity-ranks).
+[described in "Complexity ranks" section](#complexity-ranks).
 
 package.json
 
@@ -197,12 +197,12 @@ This ranks is based on the ranks of complexity of the [Python Radon][radon_cc_ra
 
 **Rank	Risk**
 
--   **A**	low - simple block
--   **B**	low - well structured and stable block
--   **C**	moderate - slightly complex block
--   **D**	more than moderate - more complex block
--   **E**	high - complex block, alarming
--   **F**	very high - error-prone, unstable block
+*   **A**	low - simple block
+*   **B**	low - well structured and stable block
+*   **C**	moderate - slightly complex block
+*   **D**	more than moderate - more complex block
+*   **E**	high - complex block, alarming
+*   **F**	very high - error-prone, unstable block
 
 Ranks corresponds to rule complexity scores as follows:
 
@@ -219,11 +219,11 @@ Ranks corresponds to rule complexity scores as follows:
 | [**max-statements**][eslint_max_statements]                 | 1 - 3  | 4 - 5    | 6 - 10    | 11 - 15   | 16 - 20   | 21 +  |
 
 > **Note:** For rank "C", the maximum score, using from the standard score of ESLint rules.
->   See [complexity rules][eslint_rule].
->   Other rules are calculated relative to the values of the "complexity" rule.
+> See [complexity rules][eslint_rule].
+> Other rules are calculated relative to the values of the "complexity" rule.
 >
 > Example formula:
->   `[5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))`
+> `[5, 10, 20, 30, 40].map(score => Math.round((score / 20) * defaultRuleScoreLimit))`
 
 ## Command line options
 
@@ -233,15 +233,15 @@ Command line format:
 
 | Option                                         | Type             | Description                                                              |
 | ---------------------------------------------- | ---------------- | ------------------------------------------------------------------------ |
-| --rules &lt;rules>, -r=&lt;rules>              | Array of String  | Rule, or group: all, logic, raw. Default: logic                          |
-| --format &lt;format>, -f=&lt;format>           | String           | Use a specific output format, text or json. Default: text                |
+| --rules \<rules>, -r=\<rules>              | Array of String  | Rule, or group: all, logic, raw. Default: logic                          |
+| --format \<format>, -f=\<format>           | String           | Use a specific output format, text or json. Default: text                |
 | --average, -a                                  | Flag             | Show the average complexity at the end of output, if used text format    |
 | --show-rules, -sr                              | Flag             | Show rule name and value, if used text format                            |
-| --greater-than &lt;value>, -gt=&lt;value>      | String or Number | Will show rules more than rank a, b, c, d, e, or rank value              |
-| --less-than &lt;value>, -lt=&lt;value>         | String or Number | Will show rules less than rank b, c, d, e, f, or rank value              |
+| --greater-than \<value>, -gt=\<value>      | String or Number | Will show rules more than rank a, b, c, d, e, or rank value              |
+| --less-than \<value>, -lt=\<value>         | String or Number | Will show rules less than rank b, c, d, e, f, or rank value              |
 | --no-inline-config, -nlc                       | Flag             | Disable the use of configuration comments (such as `/*eslint-disable*/`) |
-| --max-rank &lt;value>, -mr=&lt;value>          | String or Number | Maximum allowed complexity rank for a single message. Default: C         |
-| --max-average-rank &lt;value>, -mar=&lt;value> | String or Number | Maximum allowed complexity rank for average value. Default: B            |
+| --max-rank \<value>, -mr=\<value>          | String or Number | Maximum allowed complexity rank for a single message. Default: C         |
+| --max-average-rank \<value>, -mar=\<value> | String or Number | Maximum allowed complexity rank for average value. Default: B            |
 
 > If the rank value for one message or the average value is higher than the allowed value, the program terminates with error code 1
 
@@ -284,9 +284,9 @@ Use only 2 rules and show rule name:
 ## Node.js API
 
 While ESLintСС is designed to be run on the command line,
-  it's possible to use ESLintСС programmatically through the Node.js API.
+it's possible to use ESLintСС programmatically through the Node.js API.
 The purpose of the Node.js API is to allow plugin and tool authors to use the ESLintСС functionality directly,
-  without going through the command line interface.
+without going through the command line interface.
 
 ### Complexity class
 
@@ -317,16 +317,16 @@ console.log(JSON.stringify(report, null, '\t'));
 
 Class options equivalent to the command line (see [Command line options](#command-line-options)):
 
--   **options.rules**, _Default: 'logic'_
--   **options.greaterThan**, _Default: undefined_
--   **options.lessThan**, _Default: undefined_
--   **options.noInlineConfig**, _Default: false_
--   **options.maxRank**, _Default: 'C'_
--   **options.maxAverageRank**, _Default: 'B'_
+*   **options.rules**, *Default: 'logic'*
+*   **options.greaterThan**, *Default: undefined*
+*   **options.lessThan**, *Default: undefined*
+*   **options.noInlineConfig**, *Default: false*
+*   **options.maxRank**, *Default: 'C'*
+*   **options.maxAverageRank**, *Default: 'B'*
 
 Additional options available in API mode:
 
--   **options.ranks**, _Default: null_ -
+*   **options.ranks**, *Default: null* -
     Allows you to set an arbitrary comparison of ranks and max counters of indicators of the corresponding rules.
 
 Example:
@@ -340,7 +340,7 @@ const complexity = new Complexity({
 })
 ```
 
--   **options.eslintOptions**, _Default: {}_ -
+*   **options.eslintOptions**, *Default: {}* -
     This option allows you to configure the internal `ESLint class`.
     It's allows you to set additional options described in the documentation:
     [ESLint: Node.js API](https://eslint.org/docs/developer-guide/nodejs-api#-new-eslintoptions)
@@ -351,12 +351,12 @@ This method lints the files that match the glob patterns and then returns the re
 
 **Parameters**
 
--   patterns _(string | string\[])_ -
+*   patterns *(string | string\[])* -
     The lint target files. This can contain any of file paths, directory paths, and glob patterns.
 
 **Return Value**
 
-_Promise&lt;ComplexityResult>_ -
+*Promise\<ComplexityResult>* -
 The promise that will be fulfilled with an ComplexityResult object.
 
 Example:
@@ -394,13 +394,9 @@ Example:
 
 [npm_url]: https://www.npmjs.com/package/eslintcc
 
-[build_img]: https://app.travis-ci.com/eslintcc/eslintcc.svg?branch=master
+[build_img]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml/badge.svg
 
-[build_url]: https://app.travis-ci.com/eslintcc/eslintcc
-
-[coverage_img]: https://coveralls.io/repos/github/eslintcc/eslintcc/badge.svg?branch=master
-
-[coverage_url]: https://coveralls.io/github/eslintcc/eslintcc?branch=master
+[build_url]: https://github.com/eslintcc/eslintcc/actions/workflows/main.yml
 
 [eslint_npm]: https://www.npmjs.com/package/eslint
 

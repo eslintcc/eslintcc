@@ -30,8 +30,6 @@
     "@nodutilus/project-config": "latest",
     "@nodutilus/test": "latest",
     "semver": "7.5.1",
-    "nyc": "15.1.0",
-    "coveralls": "3.1.1",
     "rollup": "3.25.1",
     "@rollup/plugin-node-resolve": "15.1.0",
     "@babel/eslint-parser": "7.22.5",
@@ -43,8 +41,7 @@
   },
   "scripts": {
     "pre-test": "npx rollup --config",
-    "test": "node bin/test",
-    "coverage": "node bin/coverage",
-    "coverage-all": "node bin/coverage-all"
+    "test": "node test",
+    "coverage": "npx c8 node test && npx c8 report --reporter=html"
   }
 }

@@ -6,10 +6,6 @@ const { Complexity } = require('../source/complexity')
 
 class TestCodeParts extends Test {
 
-  get name() {
-    return 'CodeParts'
-  }
-
   async ['test: anonymous_class']() {
     const { messages } = (await new Complexity()
       .lintFiles(['test/src/code_parts/anonymous_class.mjs']))

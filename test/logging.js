@@ -93,9 +93,6 @@ class TestReportLogger extends Test {
     }
   }
 
-  get name() {
-    return 'ReportLogger'
-  }
 
   [logger](msgData, message) {
     if (this.step in this[msgData]) {

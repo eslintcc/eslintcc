@@ -5,10 +5,6 @@ const { Ranks } = require('../source/lib/rank')
 
 class TestRank extends Test {
 
-  get name() {
-    return 'Ranks'
-  }
-
   ['test: init']() {
     const ranks = new Ranks()
 

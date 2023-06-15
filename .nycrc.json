@@ -4,7 +4,7 @@
     "bin",
     "build",
     "coverage",
-    "test",
+    "test/src",
     "rollup.config.js",
     "source/lib/args.js"
   ]

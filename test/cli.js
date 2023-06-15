@@ -6,10 +6,6 @@ const { Test } = require('../build/@nodutilus-test')
 
 class TestCLI extends Test {
 
-  get name() {
-    return 'cli'
-  }
-
   ['test: help']() {
     const helpMod = require('../source/lib/help')
 

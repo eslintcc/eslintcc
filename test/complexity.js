@@ -8,10 +8,6 @@ const { nodeSymbol, messagesMapSymbol } = require('../source/lib/report')
 
 class TestComplexity extends Test {
 
-  get name() {
-    return 'Complexity'
-  }
-
   constructor() {
     super()
     this.rules = {

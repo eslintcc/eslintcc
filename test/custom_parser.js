@@ -6,10 +6,6 @@ const { Complexity } = require('../source/complexity')
 
 class CustomParsers extends Test {
 
-  get name() {
-    return 'CustomParsers'
-  }
-
   async ['test: @babel/eslint-parser']() {
     const { messages } = (await new Complexity()
       .lintFiles(['./test/src/custom_parser/babel-eslint-parser.mjs']))
