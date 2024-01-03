@@ -117,8 +117,8 @@ package.json
 {
   "devDependencies": {
     "@babel/eslint-parser": "latest",
-    "@babel/plugin-proposal-class-properties": "latest",
-    "@babel/plugin-proposal-private-methods": "latest"
+    "@babel/plugin-transform-class-properties": "latest",
+    "@babel/plugin-transform-private-methods": "latest"
   }
 }
 ```
@@ -142,8 +142,8 @@ package.json
 ```json
 {
   "plugins": [
-    "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-proposal-private-methods"
+    "@babel/plugin-transform-class-properties",
+    "@babel/plugin-transform-private-methods"
   ]
 }
 ```
