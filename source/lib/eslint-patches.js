@@ -2,7 +2,7 @@ const EventEmitter = require('events')
 const { ESLint, Linter } = require('eslint')
 
 // Rules to patched
-const esLintRules = new Linter().getRules()
+const esLintRules = new Linter({ configType: 'eslintrc' }).getRules()
 const complexity = esLintRules.get('complexity')
 const maxDepth = esLintRules.get('max-depth')
 const maxLen = esLintRules.get('max-len')

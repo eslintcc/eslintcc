@@ -1,6 +1,6 @@
 {
   "name": "eslintcc",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "homepage": "https://eslintcc.github.io",
   "description": "ESLintCC is a ECMAScript/JavaScript tool that computes complexity of code by using ESLint",
   "keywords": [
@@ -24,7 +24,7 @@
     "eslintcc"
   ],
   "dependencies": {
-    "eslint": "8.56.0"
+    "eslint": "8.57.0"
   },
   "devDependencies": {
     "@nodutilus/project-config": "latest",
