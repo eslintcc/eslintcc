@@ -1,6 +1,6 @@
 {
   "name": "eslintcc",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "homepage": "https://eslintcc.github.io",
   "description": "ESLintCC is a ECMAScript/JavaScript tool that computes complexity of code by using ESLint",
   "keywords": [
@@ -29,14 +29,14 @@
   "devDependencies": {
     "@nodutilus/project-config": "latest",
     "@nodutilus/test": "latest",
-    "rollup": "4.9.2",
+    "rollup": "4.18.0",
     "@rollup/plugin-node-resolve": "15.2.3",
-    "@babel/eslint-parser": "7.23.3",
-    "@babel/plugin-transform-class-properties": "7.23.3",
-    "@babel/plugin-transform-private-methods": "7.23.3",
-    "typescript": "5.3.3",
-    "@typescript-eslint/parser": "6.17.0",
-    "@typescript-eslint/eslint-plugin": "6.17.0"
+    "@babel/eslint-parser": "7.24.7",
+    "@babel/plugin-transform-class-properties": "7.24.7",
+    "@babel/plugin-transform-private-methods": "7.24.7",
+    "typescript": "5.4.5",
+    "@typescript-eslint/parser": "7.12.0",
+    "@typescript-eslint/eslint-plugin": "7.12.0"
   },
   "scripts": {
     "pre-test": "npx rollup --config",
