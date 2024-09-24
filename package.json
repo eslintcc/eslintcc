@@ -29,7 +29,7 @@
   "devDependencies": {
     "@nodutilus/project-config": "latest",
     "@nodutilus/test": "latest",
-    "rollup": "4.18.0",
+    "rollup": "4.22.4",
     "@rollup/plugin-node-resolve": "15.2.3",
     "@babel/eslint-parser": "7.24.7",
     "@babel/plugin-transform-class-properties": "7.24.7",
